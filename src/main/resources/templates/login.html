@@ -38,6 +38,15 @@
         <a th:href="@{/register}" class="link link-primary font-semibold">Register here</a>
       </span>
     </div>
+
+    <div th:if="${param.error}" class="text-red-500 text-center mb-2">
+        Invalid email or password!
+    </div>
+    <div th:if="${param.logout}" class="text-green-500 text-center mb-2">
+        You have been logged out.
+    </div>
+
+
 </div>
 <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 <script>AOS.init();</script>
