@@ -13,9 +13,9 @@ public class AuthController {
         return "login"; // resolves to src/main/resources/templates/login.html
     }
 
-    // Show the registration page
-    @GetMapping("/register")
-    public String register() {
-        return "register"; // your register.html template
-    }
+//    // Show the registration page
+//    @GetMapping("/register")
+//    public String register() {
+//        return "register"; // your register.html template
+//    }
 }
