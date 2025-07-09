@@ -1,21 +1,11 @@
-package com.example.social_media_app.model.entity;
+package com.example.social_media_app.dto;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.*;
+import lombok.Data;
 
-@Entity
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Table(name = "users")
-@Builder
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class RegisterDto {
     @NotBlank(message = "First name is required")
     private String firstName;
 
@@ -24,11 +14,8 @@ public class User {
 
     @Email(message = "Email should be valid")
     @NotBlank(message = "Email is required")
-    @Column(unique = true)
     private String email;
 
     @NotBlank(message = "Password is required")
     private String password;
-
-    // Add other fields as you like, e.g. bio, profilePic, etc
 }
