@@ -1,10 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="socialApp" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+    <meta charset="UTF-8" />
+    <title>Login – Social Media App</title>
+    <link th:href="@{/css/main.css}" rel="stylesheet"/>
 
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+</head>
+
+<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-400 via-brand-200 to-blue-100 animate-gradient bg-[length:200%_200%]">
+<div class="card w-full max-w-sm shadow-xl" data-aos="fade-up" data-aos-duration="900">
+    <div class="card-body">
+        <h2 class="card-title text-primary">Welcome Back!</h2>
+        <form th:action="@{/login}" method="post" class="space-y-4">
+            <div class="form-control">
+                <label class="label"><span class="label-text">Email</span></label>
+                <input type="text" name="username" placeholder="you@example.com" class="input input-bordered" required />
+            </div>
+            <div class="form-control">
+                <label class="label"><span class="label-text">Password</span></label>
+                <input type="password" name="password" placeholder="••••••••" class="input input-bordered" required />
+            </div>
+            <div class="form-control mt-6">
+                <button type="submit" class="btn btn-primary w-full">Login</button>
+            </div>
+        </form>
+        <p class="text-center text-sm text-neutral mt-4">
+            Don’t have an account?
+            <a th:href="@{/register}" class="link link-primary">Register here</a>
+        </p>
+    </div>
+</div>
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script>AOS.init();</script>
 </body>
 </html>
