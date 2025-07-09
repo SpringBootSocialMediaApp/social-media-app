@@ -29,7 +29,7 @@
                    class="input input-bordered w-full px-4 py-2 rounded-xl border border-gray-200 bg-white/80 focus:ring-2 focus:ring-brand-400 focus:border-brand-400 outline-none transition" required />
         </div>
         <button type="submit"
-                class="btn btn-primary py-2 w-full rounded-xl text-lg font-semibold shadow hover:scale-105 duration-200 bg-brand-400 hover:bg-brand-500 border-none tracking-wide">
+                class="btn btn-primary py-2 w-full rounded-xl text-lg font-semibold shadow hover:scale-105 duration-200 bg-brand-400 hover:bg-brand-500 border-none tracking-wide text-white">
             Login
         </button>
     </form>
@@ -38,6 +38,15 @@
         <a th:href="@{/register}" class="link link-primary font-semibold">Register here</a>
       </span>
     </div>
+
+    <div th:if="${param.error}" class="text-red-500 text-center mb-2">
+        Invalid email or password!
+    </div>
+    <div th:if="${param.logout}" class="text-green-500 text-center mb-2">
+        You have been logged out.
+    </div>
+
+
 </div>
 <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 <script>AOS.init();</script>
