@@ -24,6 +24,11 @@ public class SecurityConfig {
                         .requestMatchers("/css/**", "/js/**", "/login", "/register", "/error").permitAll()
                         .anyRequest().authenticated()
                 )
+//                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers("/css/**", "/js/**", "/register", "/login", "/error").permitAll()
+//                        .anyRequest().authenticated()
+//                )
+
                 .formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/feed", true)
