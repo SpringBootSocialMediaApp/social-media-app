@@ -1,7 +1,7 @@
 package com.example.social_media_app.controller;
 
 import com.example.social_media_app.dto.RegisterDto;
-import com.example.social_media_app.model.entity.User;
+import com.example.social_media_app.model.User;
 import com.example.social_media_app.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
