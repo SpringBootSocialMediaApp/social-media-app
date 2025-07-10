@@ -30,7 +30,7 @@ public class Post {
 
     /** enforce non-null at JPA level */
     @Column(name = "like_count", nullable = false)
-    private int likeCount;
+    private Integer likeCount;
 
     @OneToMany(
             mappedBy = "post",
