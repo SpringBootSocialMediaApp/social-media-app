@@ -1,30 +1,29 @@
 package com.example.social_media_app.controller;
 
+import com.example.social_media_app.model.User;
 import com.example.social_media_app.service.PostService;
 import com.example.social_media_app.service.UserService;
-import com.example.social_media_app.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
-public class HomeController {
+public class PostController {
 
-    private final UserService userService;
     private final PostService postService;
+    private final UserService userService;
 
-    @GetMapping({"/", "/home"})
-    public String home(
-            Model model,
+    @PostMapping("/posts")
+    public String createPost(
+            @RequestParam("content") String content,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
-        User current = userService.findByEmail(userDetails.getUsername());
-        model.addAttribute("user", current);
-        model.addAttribute("posts", postService.getAllPosts());
-        return "home";
+        User author = userService.findByEmail(userDetails.getUsername());
+        postService.createPost(content, author);
+        return "redirect:/home";
     }
 }

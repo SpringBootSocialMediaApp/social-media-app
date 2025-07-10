@@ -11,13 +11,14 @@
 
 </head>
 <body class=" bg-base-100 text-white">
-<div th:replace="components/navbar :: navbar"></div>
+<div th:replace="~{components/navbar :: navbar}"></div>
 <div class="flex max-w-7xl mx-auto">
-  <div th:replace="components/profile-sidebar :: profileSidebar"></div>
-  <div th:replace="components/feed :: feed"></div>
-  <div th:replace="components/right-sidebar :: rightSidebar"></div>
+  <div th:replace="~{components/profile-sidebar :: profileSidebar}"></div>
+  <div th:replace="~{components/feed :: feed}"></div>
+  <div th:replace="~{components/right-sidebar :: rightSidebar}"></div>
 </div>
-<div th:replace="components/mobile-navbar :: mobileNavbar"></div>
+<div th:replace="~{components/mobile-navbar :: mobileNavbar}"></div>
+
 <script>
   // Simple interactivity
   document.addEventListener('DOMContentLoaded', function() {
