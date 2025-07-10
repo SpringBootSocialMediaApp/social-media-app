@@ -787,11 +787,6 @@ video {
   --tw-gradient-to: rgb(0 66 150 / 0) var(--tw-gradient-to-position);
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
 }
-.from-navy-900 {
-  --tw-gradient-from: #2A305F var(--tw-gradient-from-position);
-  --tw-gradient-to: rgb(42 48 95 / 0) var(--tw-gradient-to-position);
-  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
-}
 .via-brand-100 {
   --tw-gradient-to: rgb(235 249 254 / 0)  var(--tw-gradient-to-position);
   --tw-gradient-stops: var(--tw-gradient-from), #ebf9fe var(--tw-gradient-via-position), var(--tw-gradient-to);
@@ -803,8 +798,8 @@ video {
 .to-blue-100 {
   --tw-gradient-to: #dbeafe var(--tw-gradient-to-position);
 }
-.to-navy-700 {
-  --tw-gradient-to: #5265BF var(--tw-gradient-to-position);
+.to-brand-300 {
+  --tw-gradient-to: #10bbff var(--tw-gradient-to-position);
 }
 .bg-\[length\:200\%_200\%\] {
   background-size: 200% 200%;
@@ -992,7 +987,7 @@ video {
 }
 .animate-gradient {
         background-size: 200% 200%;
-        animation: gradientMove 160s ease infinite;
+        animation: gradientMove 20s ease infinite;
     }
 /* 2) Ocean: cool teals & blues */
 /* container for all shapes */
