@@ -8,20 +8,8 @@
     <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
 
 </head>
+<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-400 via-brand-200 to-blue-100 animate-gradient bg-[length:200%_200%]">
 
-<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-navy-900 via-navy-300 to-navy-700 animate-gradient bg-[length:200%_200%]">
-<div class="shape-wrapper">
-    <div class="shape bubble"   style="top:10%; left:15%;"></div>
-    <div class="shape rect"     style="top:25%; left:65%;"></div>
-    <div class="shape diamond"  style="top:50%; left:35%;"></div>
-    <div class="shape ring"     style="top:55%; left:20%;"></div>
-    <div class="shape diamond"     style="top:45%; left:90%;"></div>
-    <div class="shape ring"     style="top:75%; left:70%;"></div>
-    <div class="shape rect"     style="top:55%; left:80%;"></div>
-    <div class="shape rect"     style="top:85%; left:5%;"></div>
-
-
-</div>
 <div class="backdrop-blur-xl bg-white/70 border border-blue-100 rounded-3xl shadow-2xl w-full max-w-md p-10 flex flex-col gap-6"
      data-aos="fade-up" data-aos-duration="900">
     <div class="mb-4">
@@ -32,19 +20,20 @@
         <div>
             <label class="block text-sm text-gray-600 font-semibold mb-1">Email</label>
             <input type="text" name="username" placeholder="you@example.com"
-                   class="input input-bordered w-full px-4 py-2 rounded-xl border border-gray-200 bg-white/80 focus:ring-2 focus:ring-brand-400 focus:border-brand-400 outline-none transition" required />
+                   class="input input-bordered w-full px-4 py-2 rounded-full border border-gray-200 bg-white/80 focus:ring-2 focus:ring-brand-400 focus:border-brand-400 outline-none transition" required />
         </div>
         <div>
             <label class="block text-sm text-gray-600 font-semibold mb-1">Password</label>
             <input type="password" name="password" placeholder="••••••••"
-                   class="input input-bordered w-full px-4 py-2 rounded-xl border border-gray-200 bg-white/80 focus:ring-2 focus:ring-brand-400 focus:border-brand-400 outline-none transition" required />
+                   class="input input-bordered w-full px-4 py-2 rounded-full border border-gray-200 bg-white/80 focus:ring-2 focus:ring-brand-400 focus:border-brand-400 outline-none transition" required />
         </div>
         <button type="submit"
-                class="btn btn-primary py-2 w-full rounded-xl text-lg font-semibold shadow hover:scale-105 duration-200 bg-brand-400 hover:bg-brand-500 border-none tracking-wide text-white">
+                class="btn btn-primary py-2 w-full rounded-full text-lg font-semibold shadow hover:scale-105 duration-200 bg-brand-400 hover:bg-brand-500 border-none tracking-wide text-white mt-24"
+                style="margin-top: 1rem;">
             Login
         </button>
     </form>
-    <div class="text-center mt-2">
+    <div class="text-center mt-1">
       <span class="text-gray-600 text-sm">Don’t have an account?
         <a th:href="@{/register}" class="link link-primary font-semibold">Register here</a>
       </span>
