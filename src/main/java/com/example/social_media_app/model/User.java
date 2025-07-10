@@ -1,4 +1,4 @@
-package com.example.social_media_app.model.entity;
+package com.example.social_media_app.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
