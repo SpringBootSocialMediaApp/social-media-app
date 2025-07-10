@@ -1,11 +1,12 @@
 package com.example.social_media_app.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.*;
 import lombok.*;
+import java.time.LocalDate;
 
 @Entity
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,5 +31,12 @@ public class User {
     @NotBlank(message = "Password is required")
     private String password;
 
-    // Add other fields as you like, e.g. bio, profilePic, etc
+//    @NotBlank(message = "Mobile number is required")
+//    private String mobileNumber;
+
+    @NotNull(message = "Date of birth is required")
+    private LocalDate dateOfBirth;
+
+    @NotBlank(message = "Gender is required")
+    private String gender;
 }
