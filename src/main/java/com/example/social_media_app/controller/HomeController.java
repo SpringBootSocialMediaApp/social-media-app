@@ -9,4 +9,6 @@ public class HomeController {
     public String home() {
         return "home"; // returns home.html
     }
+
+
 }
