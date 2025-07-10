@@ -38,3 +38,6 @@ build/
 /yarn-debug.log*
 /yarn-error.log*
 
+
+#application proerties
+!**/src/main/resources/application.properties
