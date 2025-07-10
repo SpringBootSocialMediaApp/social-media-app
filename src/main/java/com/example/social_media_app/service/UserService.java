@@ -1,8 +1,8 @@
 package com.example.social_media_app.service;
 
-import com.example.social_media_app.model.entity.User;
+import com.example.social_media_app.model.User;
 
 public interface UserService {
-    User registerUser(User user);
+    void registerUser(User user);
     User findByEmail(String email);
 }
