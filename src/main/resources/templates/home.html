@@ -1,15 +1,76 @@
+<!-- src/main/resources/templates/home.html -->
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <title>Home – Social Media App</title>
-  <link th:href="@{/css/main.css}" rel="stylesheet"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SocialHub - Home</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              100: '#ebf9fe',
+              200: '#c7effd',
+              300: '#a3e5fc',
+              400: '#11bdf8',
+              500: '#10bbff',
+            }
+          }
+        }
+      }
+    }
+  </script>
 </head>
-<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-400 via-brand-200 to-blue-100">
-<div class="card w-full max-w-lg shadow-xl rounded-2xl p-8">
-  <h1 class="text-3xl font-bold text-primary text-center mb-6">Welcome to Social Media App!</h1>
-  <p class="text-center text-lg text-neutral">You have successfully logged in.</p>
-  <!-- Add more main page content here -->
+<body class="bg-gray-900 text-white">
+<div th:replace="components/navbar :: navbar"></div>
+<div class="flex max-w-7xl mx-auto">
+  <div th:replace="components/profile-sidebar :: profileSidebar"></div>
+  <div th:replace="components/feed :: feed"></div>
+  <div th:replace="components/right-sidebar :: rightSidebar"></div>
 </div>
+<div th:replace="components/mobile-navbar :: mobileNavbar"></div>
+<script>
+  // Simple interactivity
+  document.addEventListener('DOMContentLoaded', function() {
+    // Character counter for post textarea
+    const textarea = document.querySelector('textarea');
+    const charCounter = document.querySelector('.text-xs.text-gray-400');
+    if (textarea && charCounter) {
+      textarea.addEventListener('input', function() {
+        const count = this.value.length;
+        charCounter.textContent = `${count}/280 characters`;
+        if (count > 280) {
+          charCounter.classList.add('text-red-400');
+          charCounter.classList.remove('text-gray-400');
+        } else {
+          charCounter.classList.add('text-gray-400');
+          charCounter.classList.remove('text-red-400');
+        }
+      });
+    }
+    // Like button functionality
+    const likeButtons = document.querySelectorAll('.btn-ghost:has(svg)');
+    likeButtons.forEach(button => {
+      if (button.textContent.trim().match(/^\d+$/)) {
+        button.addEventListener('click', function() {
+          const heartSvg = this.querySelector('svg');
+          if (heartSvg && heartSvg.classList.contains('fill-red-400')) {
+            heartSvg.classList.remove('fill-red-400');
+            this.classList.remove('text-red-400');
+            this.classList.add('text-gray-400');
+          } else if (heartSvg) {
+            heartSvg.classList.add('fill-red-400');
+            this.classList.add('text-red-400');
+            this.classList.remove('text-gray-400');
+          }
+        });
+      }
+    });
+  });
+</script>
 </body>
 </html>
