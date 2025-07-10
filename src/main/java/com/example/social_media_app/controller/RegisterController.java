@@ -28,6 +28,11 @@ public class RegisterController {
             BindingResult result,
             Model model) {
 
+        // Check if passwords match
+        if (!registerDto.getPassword().equals(registerDto.getConfirmPassword())) {
+            result.rejectValue("confirmPassword", "error.registerDto", "Passwords do not match");
+        }
+
         // Check if email already exists
         if (userService.findByEmail(registerDto.getEmail()) != null) {
             result.rejectValue("email", "error.registerDto", "An account already exists for this email.");
@@ -42,11 +47,13 @@ public class RegisterController {
                 .firstName(registerDto.getFirstName())
                 .lastName(registerDto.getLastName())
                 .email(registerDto.getEmail())
-                .password(registerDto.getPassword()) // Will be encoded in service
+                .password(registerDto.getPassword())
+                .mobileNumber(registerDto.getMobileNumber())
+                .dateOfBirth(registerDto.getDateOfBirth())
+                .gender(registerDto.getGender())
                 .build();
 
         userService.registerUser(user);
-        model.addAttribute("successMessage", "Registration successful! Please log in.");
-        return "redirect:/login";
+        return "redirect:/login?success";
     }
 }
