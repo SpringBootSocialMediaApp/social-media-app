@@ -42,7 +42,7 @@ public class User {
 
     private String username;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Builder.Default
     private List<Post> posts = new ArrayList<>();
 

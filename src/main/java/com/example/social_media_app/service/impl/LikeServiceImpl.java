@@ -4,6 +4,7 @@ import com.example.social_media_app.model.Like;
 import com.example.social_media_app.model.Post;
 import com.example.social_media_app.model.User;
 import com.example.social_media_app.repository.LikeRepository;
+import com.example.social_media_app.repository.PostRepository;
 import com.example.social_media_app.service.LikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.util.Optional;
 public class LikeServiceImpl implements LikeService {
 
     private final LikeRepository likeRepository;
+    private final PostRepository postRepository;
 
     @Override
     @Transactional
@@ -24,12 +26,22 @@ public class LikeServiceImpl implements LikeService {
         
         if (existingLike.isPresent()) {
             likeRepository.delete(existingLike.get());
+            
+            // Update like count in post
+            post.setLikeCount(Math.max(0, post.getLikeCount() - 1));
+            postRepository.save(post);
+            
             return false;
         } else {
             Like newLike = new Like();
             newLike.setPost(post);
             newLike.setUser(user);
             likeRepository.save(newLike);
+            
+            // Update like count in post
+            post.setLikeCount(post.getLikeCount() + 1);
+            postRepository.save(post);
+            
             return true;
         }
     }
@@ -41,6 +53,14 @@ public class LikeServiceImpl implements LikeService {
 
     @Override
     public int getLikeCount(Post post) {
-        return likeRepository.countByPost(post);
+        int count = likeRepository.countByPost(post);
+        
+        // If the stored count doesn't match the actual count, update it
+        if (post.getLikeCount() != count) {
+            post.setLikeCount(count);
+            postRepository.save(post);
+        }
+        
+        return count;
     }
 }

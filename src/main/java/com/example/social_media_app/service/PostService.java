@@ -9,4 +9,8 @@ public interface PostService {
     
     Post createPost(String content, User author);
     Post findById(Long id);
+    Post save(Post post);
+    void deletePost(Long id);
+    List<Post> findAll();
+
 }

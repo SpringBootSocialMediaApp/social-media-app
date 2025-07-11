@@ -80,8 +80,8 @@
                 <div class="flex-1">
                     <div class="flex items-center gap-2 mb-2">
                         <h3 class="font-semibold text-white"
-                            th:text="${post.author.firstName} + ' ' + ${post.author.lastName}">Author Name</h3>
-                        <span class="text-gray-400" th:text="'@' + ${post.author.email.split('@')[0]}">@username</span>
+                            th:text="${post.user.firstName} + ' ' + ${post.user.lastName}">Author Name</h3>
+                        <span class="text-gray-400" th:text="'@' + ${post.user.email.split('@')[0]}">@username</span>
                         <span class="text-gray-500">•</span>
                         <span class="text-sm text-gray-400" th:text="${#temporals.format(post.createdAt, 'MMM dd, yyyy HH:mm')}">timestamp</span>
 

@@ -16,4 +16,5 @@ public interface CommentService {
     List<Comment> findByPost(Post post);
     Comment save(Comment comment);
     int countByPost(Post post);
+    void deleteComment(Comment comment);
 }
