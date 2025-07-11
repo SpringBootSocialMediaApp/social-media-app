@@ -1,9 +1,8 @@
 package com.example.social_media_app.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
+import java.time.LocalDate;
 
 @Data
 public class RegisterDto {
@@ -20,4 +19,16 @@ public class RegisterDto {
     @NotBlank(message = "Password is required")
     @Size(min = 6, message = "Password must be at least 6 characters")
     private String password;
+
+    @NotBlank(message = "Confirm password is required")
+    private String confirmPassword;
+
+//    @NotBlank(message = "Mobile number is required")
+//    private String mobileNumber;
+
+    @NotNull(message = "Date of birth is required")
+    private LocalDate dateOfBirth;
+
+    @NotBlank(message = "Gender is required")
+    private String gender;
 }
