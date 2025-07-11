@@ -16,14 +16,15 @@
 <div class="backdrop-blur-xl bg-white/70  border border-blue-100 rounded-3xl shadow-2xl w-full max-w-md p-10 flex flex-col gap-6"
      data-aos="fade-up" data-aos-duration="900">
     <div class="mb-4">
-        <h2 class="text-3xl font-bold text-center text-brand-500 mb-2 tracking-tight">Welcome Back!</h2>
+        <h2 class="text-4xl font-bold text-center text-brand-500 mb-2 tracking-tight">Socialite</h2>
+<!--        <h2 class="text-3xl font-bold text-center text-brand-500 mb-2 tracking-tight">Welcome Back!</h2>-->
         <p class="text-center text-gray-500 text-base">Sign in to your account</p>
     </div>
     <form th:action="@{/login}" method="post" class="flex flex-col gap-4">
         <div>
             <label class="block text-sm text-gray-600 font-semibold mb-1">Email</label>
             <input type="text" name="username" placeholder="you@example.com"
-                   class="input input-bordered w-full px-4 py-2 rounded-full border border-gray-200 bg-white/80 focus:ring-2 focus:ring-brand-400 focus:border-brand-400 outline-none transition text-black" required />
+                   class="input input-bordered w-full px-4 py-2 rounded-full border border-gray-200 bg-white/80 focus:ring-2 focus:ring-brand-400 focus:border-brand-500 outline-none transition text-black" required />
         </div>
         <div>
             <label class="block text-sm text-gray-600 font-semibold mb-1">Password</label>
