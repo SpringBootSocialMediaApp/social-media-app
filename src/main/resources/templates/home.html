@@ -72,5 +72,36 @@
     });
   });
 </script>
+<!-- ✅ Edit Profile Modal -->
+<input type="checkbox" id="edit-profile-modal" class="modal-toggle" />
+<div class="modal" role="dialog">
+  <div class="modal-box bg-gray-800 text-white">
+    <h3 class="font-bold text-lg mb-4">Edit Profile</h3>
+
+    <form th:action="@{/profile/update}" th:object="${user}" method="post">
+      <input type="hidden" th:field="*{id}" />
+
+      <div class="mb-3">
+        <label class="label">First Name</label>
+        <input type="text" th:field="*{firstName}" class="input input-bordered w-full text-black" required />
+      </div>
+
+      <div class="mb-3">
+        <label class="label">Last Name</label>
+        <input type="text" th:field="*{lastName}" class="input input-bordered w-full text-black" required />
+      </div>
+
+      <div class="mb-3">
+        <label class="label">Email</label>
+        <input type="email" th:field="*{email}" class="input input-bordered w-full text-black" required />
+      </div>
+
+      <div class="modal-action">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <label for="edit-profile-modal" class="btn">Cancel</label>
+      </div>
+    </form>
+  </div>
+</div>
 </body>
 </html>
