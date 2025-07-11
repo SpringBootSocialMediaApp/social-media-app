@@ -26,4 +26,9 @@ public class PostServiceImpl implements PostService {
                 .build();
         return postRepository.save(p);
     }
+    @Override
+    public Post findById(Long id) {
+        return postRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Post not found with id: " + id));
+    }
 }

@@ -7,4 +7,5 @@ import java.util.List;
 public interface PostService {
     List<Post> getAllPosts();
     Post createPost(String content, User author);
+    Post findById(Long id);
 }
