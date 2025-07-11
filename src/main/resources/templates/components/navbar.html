@@ -22,30 +22,36 @@
                     <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
                 </svg>
             </a>
-            <!-- Messages Icon -->
-            <button class="btn btn-ghost btn-circle relative text-gray-600 bg-gray-200 hover:bg-gray-300">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
-                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
-                </svg>
-                <span class="badge badge-sm badge-primary absolute -top-2 -right-2 !bg-brand-500">3</span>
-            </button>
+<!--            &lt;!&ndash; Messages Icon &ndash;&gt;-->
+<!--            <button class="btn btn-ghost btn-circle relative text-gray-600 bg-gray-200 hover:bg-gray-300">-->
+<!--                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">-->
+<!--                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>-->
+<!--                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>-->
+<!--                </svg>-->
+<!--                <span class="badge badge-sm badge-primary absolute -top-2 -right-2 !bg-brand-500">3</span>-->
+<!--            </button>-->
             <!-- Notifications Icon -->
             <button class="btn btn-ghost btn-circle relative text-gray-600  bg-gray-200 hover:bg-gray-300">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/>
                 </svg>
-                <span class="badge badge-sm badge-error absolute -top-2 -right-2 !bg-brand-500">2</span>
+                <span class="badge badge-sm badge-primary absolute -top-2 -right-2 !bg-brand-500">2</span>
             </button>
-            <!-- Settings Icon -->
-            <button class="btn btn-ghost btn-circle text-gray-600  bg-gray-200 hover:bg-gray-300">
-                <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-logout">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
-                    <path d="M9 12h12l-3 -3" />
-                    <path d="M18 15l3 -3" />
-                </svg>
-            </button>
+            <!-- Logout Button -->
+            <form th:action="@{/logout}" method="post" class="inline">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button type="submit"
+                        class="btn btn-ghost btn-circle text-gray-600 bg-gray-200 hover:bg-gray-300"
+                        onclick="return confirm('Are you sure you want to logout?')"
+                        title="Logout">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-logout">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+                        <path d="M9 12h12l-3 -3" />
+                        <path d="M18 15l3 -3" />
+                    </svg>
+                </button>
+            </form>
         </div>
     </div>
 </nav>
