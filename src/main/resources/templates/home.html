@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="dark"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security6">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,7 +29,7 @@
     if (textarea && charCounter) {
       textarea.addEventListener('input', function() {
         const count = this.value.length;
-        charCounter.textContent = `${count}/280 characters`;
+        charCounter.textContent = count + '/280 characters';
         if (count > 280) {
           charCounter.classList.add('text-red-400');
           charCounter.classList.remove('text-gray-400');
