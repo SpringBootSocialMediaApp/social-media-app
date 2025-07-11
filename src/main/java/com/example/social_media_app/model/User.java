@@ -31,9 +31,6 @@ public class User {
     @NotBlank(message = "Password is required")
     private String password;
 
-//    @NotBlank(message = "Mobile number is required")
-//    private String mobileNumber;
-
     @NotNull(message = "Date of birth is required")
     private LocalDate dateOfBirth;
 

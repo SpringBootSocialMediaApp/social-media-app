@@ -519,79 +519,24 @@
             </div>
 
             <div class="p-6">
-                <div class="space-y-4">
-                    <!-- User Directory Cards -->
-                    <div class="friend-card bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow">
-                        <div class="flex items-center space-x-4">
-                            <img src="https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=60&h=60&fit=crop&crop=face"
-                                 alt="Profile" class="w-16 h-16 rounded-full object-cover">
-                            <div class="flex-1">
-                                <h3 class="font-semibold text-gray-800">Lisa Thompson</h3>
-                                <p class="text-sm text-gray-600">Works at Tech Corp</p>
-                                <p class="text-xs text-gray-500 mt-1">4 mutual friends</p>
-                            </div>
-                            <div class="flex space-x-3">
-                                <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                                    Add Friend
-                                </button>
-                                <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">
-                                    View Profile
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="friend-card bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow">
-                        <div class="flex items-center space-x-4">
-                            <img src="https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?w=60&h=60&fit=crop&crop=face"
-                                 alt="Profile" class="w-16 h-16 rounded-full object-cover">
-                            <div class="flex-1">
-                                <h3 class="font-semibold text-gray-800">James Wilson</h3>
-                                <p class="text-sm text-gray-600">Studied at State University</p>
-                                <p class="text-xs text-gray-500 mt-1">1 mutual friend</p>
-                            </div>
-                            <div class="flex space-x-3">
-                                <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                                    Add Friend
-                                </button>
-                                <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">
-                                    View Profile
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="friend-card bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow">
-                        <div class="flex items-center space-x-4">
-                            <img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=60&h=60&fit=crop&crop=face"
-                                 alt="Profile" class="w-16 h-16 rounded-full object-cover">
-                            <div class="flex-1">
-                                <h3 class="font-semibold text-gray-800">Maria Rodriguez</h3>
-                                <p class="text-sm text-gray-600">Lives in San Francisco</p>
-                                <p class="text-xs text-gray-500 mt-1">6 mutual friends</p>
-                            </div>
-                            <div class="flex space-x-3">
-                                <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                                    Add Friend
-                                </button>
-                                <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">
-                                    View Profile
-                                </button>
-                            </div>
-                        </div>
+                <div id="user-directory-cards" class="space-y-4">
+                    <!-- User Directory Cards will be populated dynamically -->
+                    <div id="loading-users" class="flex justify-center items-center py-8">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                        <span class="ml-3 text-gray-600">Loading users...</span>
                     </div>
                 </div>
 
                 <!-- Pagination -->
-                <div class="mt-8 flex justify-center">
+                <div id="user-directory-pagination" class="mt-8 flex justify-center hidden">
                     <div class="flex space-x-2">
-                        <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50" disabled>
+                        <button id="prev-page" class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50" disabled>
                             Previous
                         </button>
-                        <button class="px-3 py-2 bg-blue-600 text-white rounded-lg">1</button>
-                        <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">2</button>
-                        <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">3</button>
-                        <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                        <div id="page-numbers" class="flex space-x-2">
+                            <!-- Page numbers will be populated dynamically -->
+                        </div>
+                        <button id="next-page" class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
                             Next
                         </button>
                     </div>
@@ -602,7 +547,220 @@
 </div>
 
 <script>
-    // Navigation functionality
+    // Global variables for user directory
+    let currentPage = 0;
+    let totalPages = 0;
+    let currentUserId = 2; // You might want to make this dynamic based on logged-in user
+
+    // Function to get random profile image based on gender
+    function getRandomProfileImage(gender, id) {
+        const maleImages = [
+            'photo-1472099645785-5658abf4ff4e',
+            'photo-1500648767791-00dcc994a43e',
+            'photo-1507003211169-0a1dd7228f2d',
+            'photo-1570295999919-56ceb5ecca61',
+            'photo-1519244703995-f4e0f30006d5',
+            'photo-1566492031773-4f4e44671d66'
+        ];
+
+        const femaleImages = [
+            'photo-1494790108755-2616b612b8c5',
+            'photo-1544725176-7c40e5a71c5e',
+            'photo-1438761681033-6461ffad8d80',
+            'photo-1487412720507-e7ab37603c6f',
+            'photo-1527980965255-d3b416303d12'
+        ];
+
+        const images = gender === 'female' ? femaleImages : maleImages;
+        const selectedImage = images[id % images.length];
+        return `https://images.unsplash.com/${selectedImage}?w=60&h=60&fit=crop&crop=face`;
+    }
+
+    // Function to create user card HTML
+    function createUserCard(user) {
+        const fullName = `${user.firstName} ${user.lastName}`;
+        const profileImage = getRandomProfileImage(user.gender, user.id);
+        const mutualFriends = Math.floor(Math.random() * 10) + 1; // Random number for now
+
+        return `
+            <div class="friend-card bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow">
+                <div class="flex items-center space-x-4">
+                    <img src="${profileImage}" alt="Profile" class="w-16 h-16 rounded-full object-cover">
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-gray-800">${fullName}</h3>
+                        <p class="text-sm text-gray-600">${user.email}</p>
+                        <p class="text-xs text-gray-500 mt-1">${mutualFriends} mutual friends</p>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                                onclick="addFriend(${user.id})">
+                            Add Friend
+                        </button>
+                        <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors"
+                                onclick="viewProfile(${user.id})">
+                            View Profile
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Function to fetch users from API
+    async function fetchUsers(page = 0, size = 5) {
+        try {
+            const response = await fetch(`http://localhost:8081/api/users?currentUserId=${currentUserId}&page=${page}&size=${size}`);
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error fetching users:', error);
+            return null;
+        }
+    }
+
+    // Function to display users in the UI
+    function displayUsers(users) {
+        const container = document.getElementById('user-directory-cards');
+        const loadingDiv = document.getElementById('loading-users');
+
+        if (loadingDiv) {
+            loadingDiv.style.display = 'none';
+        }
+
+        if (!users || users.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-8">
+                    <div class="text-gray-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        <p class="text-lg font-medium">No users found</p>
+                        <p class="text-sm">Try adjusting your search criteria</p>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = users.map(user => createUserCard(user)).join('');
+    }
+
+    // Function to update pagination
+    function updatePagination(pageData) {
+        const paginationDiv = document.getElementById('user-directory-pagination');
+        const pageNumbersDiv = document.getElementById('page-numbers');
+        const prevButton = document.getElementById('prev-page');
+        const nextButton = document.getElementById('next-page');
+
+        currentPage = pageData.number;
+        totalPages = pageData.totalPages;
+
+        if (totalPages <= 1) {
+            paginationDiv.classList.add('hidden');
+            return;
+        }
+
+        paginationDiv.classList.remove('hidden');
+
+        // Update previous button
+        prevButton.disabled = pageData.first;
+
+        // Update next button
+        nextButton.disabled = pageData.last;
+
+        // Generate page numbers
+        pageNumbersDiv.innerHTML = '';
+        for (let i = 0; i < totalPages; i++) {
+            const pageButton = document.createElement('button');
+            pageButton.className = i === currentPage ?
+                'px-3 py-2 bg-blue-600 text-white rounded-lg' :
+                'px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50';
+            pageButton.textContent = i + 1;
+            pageButton.onclick = () => loadUsersPage(i);
+            pageNumbersDiv.appendChild(pageButton);
+        }
+    }
+
+    // Function to load users for a specific page
+    async function loadUsersPage(page) {
+        const loadingDiv = document.getElementById('loading-users');
+        if (loadingDiv) {
+            loadingDiv.style.display = 'flex';
+        }
+
+        const data = await fetchUsers(page, 5);
+
+        if (data) {
+            displayUsers(data.content);
+            updatePagination(data.pageable);
+        } else {
+            // Handle error case
+            const container = document.getElementById('user-directory-cards');
+            container.innerHTML = `
+                <div class="text-center py-8">
+                    <div class="text-red-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p class="text-lg font-medium">Error loading users</p>
+                        <p class="text-sm">Please check your connection and try again</p>
+                        <button onclick="loadUsersPage(0)" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            Retry
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    // Function to handle search
+    async function searchUsers(searchTerm) {
+        if (searchTerm.trim() === '') {
+            loadUsersPage(0);
+            return;
+        }
+
+        // For now, we'll filter the current results
+        // You might want to implement server-side search later
+        const cards = document.querySelectorAll('#user-directory-cards .friend-card');
+        cards.forEach(card => {
+            const nameElement = card.querySelector('h3');
+            if (nameElement) {
+                const name = nameElement.textContent.toLowerCase();
+                if (name.includes(searchTerm.toLowerCase())) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            }
+        });
+    }
+
+    // Functions for user actions
+    function addFriend(userId) {
+        // You can implement the actual API call here
+        console.log('Adding friend with ID:', userId);
+
+        // For now, just update the button text
+        const button = event.target;
+        button.textContent = 'Request Sent';
+        button.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+        button.classList.add('bg-gray-400', 'cursor-not-allowed');
+        button.disabled = true;
+    }
+
+    function viewProfile(userId) {
+        // You can implement profile viewing here
+        console.log('Viewing profile for user ID:', userId);
+        // For example: window.location.href = `/profile/${userId}`;
+    }
+
+    // Update existing navigation functionality
     function showSection(sectionId) {
         // Hide all sections
         const sections = document.querySelectorAll('.content-section');
@@ -621,6 +779,11 @@
         // Set active nav item
         event.target.classList.add('active', 'bg-blue-50', 'text-blue-600');
         event.target.classList.remove('text-gray-700');
+
+        // Load users when user-directory section is shown
+        if (sectionId === 'user-directory') {
+            loadUsersPage(0);
+        }
     }
 
     // Friend request actions
@@ -643,7 +806,8 @@
             e.target.closest('.bg-white').style.display = 'none';
         }
 
-        if (e.target.textContent === 'Add Friend') {
+        // Handle Add Friend buttons that don't have onclick handlers (legacy)
+        if (e.target.textContent === 'Add Friend' && !e.target.hasAttribute('onclick')) {
             e.target.textContent = 'Request Sent';
             e.target.classList.remove('bg-blue-600', 'hover:bg-blue-700');
             e.target.classList.add('bg-gray-400', 'cursor-not-allowed');
@@ -654,26 +818,48 @@
     // Search functionality
     document.addEventListener('input', function(e) {
         if (e.target.placeholder.includes('Search')) {
-            // Simple search filter (you can enhance this)
             const searchTerm = e.target.value.toLowerCase();
-            const cards = document.querySelectorAll('.friend-card');
 
-            cards.forEach(card => {
-                const nameElement = card.querySelector('h3');
-                if (nameElement) {
-                    const name = nameElement.textContent.toLowerCase();
-                    if (name.includes(searchTerm)) {
-                        card.style.display = 'block';
-                    } else {
-                        card.style.display = 'none';
+            // Check if we're in the user directory section
+            const userDirectorySection = document.getElementById('user-directory');
+            if (!userDirectorySection.classList.contains('hidden')) {
+                // Handle user directory search
+                searchUsers(searchTerm);
+            } else {
+                // Handle regular friend search
+                const cards = document.querySelectorAll('.friend-card');
+                cards.forEach(card => {
+                    const nameElement = card.querySelector('h3');
+                    if (nameElement) {
+                        const name = nameElement.textContent.toLowerCase();
+                        if (name.includes(searchTerm)) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     });
 
-    // Initialize the page with the first section active
+    // Pagination event listeners
     document.addEventListener('DOMContentLoaded', function() {
+        // Previous page button
+        document.getElementById('prev-page').addEventListener('click', function() {
+            if (currentPage > 0) {
+                loadUsersPage(currentPage - 1);
+            }
+        });
+
+        // Next page button
+        document.getElementById('next-page').addEventListener('click', function() {
+            if (currentPage < totalPages - 1) {
+                loadUsersPage(currentPage + 1);
+            }
+        });
+
+        // Initialize the page with the first section active
         showSection('all-friends');
     });
 </script>

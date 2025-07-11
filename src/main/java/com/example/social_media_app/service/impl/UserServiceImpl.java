@@ -4,6 +4,8 @@ import com.example.social_media_app.model.User;
 import com.example.social_media_app.repository.UserRepository;
 import com.example.social_media_app.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,5 +29,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    // NEW
+    @Override
+    public Page<User> findAllUsersExceptCurrent(Long currentUserId, Pageable pageable) {
+        return userRepository.findAllExceptCurrentUser(currentUserId, pageable);
     }
 }
