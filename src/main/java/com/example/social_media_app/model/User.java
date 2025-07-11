@@ -42,7 +42,7 @@ public class User {
 
     private String username;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     @Builder.Default
     private List<Post> posts = new ArrayList<>();
 
@@ -52,7 +52,7 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Builder.Default
-    private List<PostLike> likes = new ArrayList<>();
+    private List<Like> likes = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {
