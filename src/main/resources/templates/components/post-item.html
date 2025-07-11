@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Post Item Component</title>
+</head>
+<body>
+
+<div th:fragment="postItem(post)" class="bg-white rounded-lg shadow mb-6 overflow-hidden">
+    <!-- Post Header -->
+    <div class="p-4 flex items-center">
+        <div class="w-12 h-12 rounded-full bg-gray-300 flex-shrink-0 overflow-hidden">
+            <img th:if="${post.user.profilePicture}" th:src="${post.user.profilePicture}" alt="Profile" class="w-full h-full object-cover">
+            <div th:unless="${post.user.profilePicture}" class="w-full h-full bg-blue-500 flex items-center justify-center text-white font-bold">
+                <span th:text="${post.user.firstName?.charAt(0)}"></span>
+            </div>
+        </div>
+        <div class="ml-3">
+            <div class="font-medium text-gray-900">
+                <span th:text="${post.user.firstName + ' ' + post.user.lastName}"></span>
+            </div>
+            <div class="text-sm text-gray-500" th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy, HH:mm')}">
+                Date
+            </div>
+        </div>
+    </div>
+    
+    <!-- Post Content -->
+    <div class="px-4 pb-3">
+        <p class="text-gray-800" th:text="${post.content}">Post content goes here...</p>
+    </div>
+    
+    <!-- Post Stats -->
+    <div class="px-4 py-2 bg-gray-50 border-t border-gray-100 text-sm text-gray-500 flex items-center space-x-3">
+        <div th:if="${post.likeCount > 0}" class="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
+            </svg>
+            <span class="ml-1" th:text="${post.likeCount}">0</span>
+        </div>
+        <div th:if="${post.commentCount > 0}" class="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd" />
+            </svg>
+            <span class="ml-1" th:text="${post.commentCount}">0</span>
+        </div>
+    </div>
+    
+    <!-- Post Actions -->
+    <div class="px-4 py-2 border-t border-gray-100 flex">
+        <!-- Like Button -->
+        <button th:data-post-id="${post.id}" class="like-button flex-1 flex justify-center items-center py-2 hover:bg-gray-50 rounded-md transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" 
+                 class="h-5 w-5 transition-all" 
+                 th:classappend="${post.likedByCurrentUser} ? 'text-red-500 fill-current' : 'text-gray-500'" 
+                 viewBox="0 0 20 20" 
+                 fill="none">
+                <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
+            </svg>
+            <span class="ml-2 like-count" th:text="${post.likeCount}">0</span>
+        </button>
+        
+        <!-- Comment Button -->
+        <button th:data-post-id="${post.id}" class="comment-button flex-1 flex justify-center items-center py-2 hover:bg-gray-50 rounded-md transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+            </svg>
+            <span class="ml-2" th:text="${post.commentCount}">0</span>
+        </button>
+        
+        <!-- Share Button -->
+        <button class="flex-1 flex justify-center items-center py-2 hover:bg-gray-50 rounded-md transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+            </svg>
+            <span class="ml-2">Share</span>
+        </button>
+    </div>
+    
+    <!-- Comments Section -->
+    <div class="border-t border-gray-100 px-4 py-3">
+        <!-- Comment Form -->
+        <form th:data-post-id="${post.id}" class="comment-form hidden mb-4">
+            <div class="flex space-x-3 items-start">
+                <div class="w-8 h-8 rounded-full bg-gray-300 flex-shrink-0 overflow-hidden">
+                    <!-- Use current user profile picture or placeholder -->
+                    <div class="w-full h-full bg-blue-500 flex items-center justify-center text-white font-bold text-sm">
+                        <span>U</span>
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <textarea class="comment-input w-full px-3 py-2 border border-gray-300 rounded-md resize-none focus:outline-none focus:ring-1 focus:ring-blue-500" 
+                              rows="2" 
+                              placeholder="Write a comment..."></textarea>
+                    <div class="flex justify-end mt-2">
+                        <button type="submit" class="bg-blue-500 text-white text-sm px-3 py-1 rounded-md hover:bg-blue-600">
+                            Comment
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        
+        <!-- Comments List -->
+        <div th:if="${post.comments != null and !post.comments.isEmpty()}">
+            <div th:each="comment : ${post.comments}" class="mb-3 flex space-x-3">
+                <div class="w-8 h-8 rounded-full bg-gray-300 flex-shrink-0 overflow-hidden">
+                    <img th:if="${comment.user.profilePicture}" th:src="${comment.user.profilePicture}" alt="Profile" class="w-full h-full object-cover">
+                    <div th:unless="${comment.user.profilePicture}" class="w-full h-full bg-blue-500 flex items-center justify-center text-white font-bold text-sm">
+                        <span th:text="${comment.user.firstName?.charAt(0)}"></span>
+                    </div>
+                </div>
+                <div>
+                    <div class="bg-gray-100 rounded-lg px-3 py-2">
+                        <div class="font-medium text-gray-900">
+                            <span th:text="${comment.user.firstName + ' ' + comment.user.lastName}"></span>
+                        </div>
+                        <p class="text-gray-800 text-sm" th:text="${comment.content}">Comment content</p>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1" th:text="${#temporals.format(comment.createdAt, 'dd MMM yyyy, HH:mm')}">
+                        Date
+                    </div>
+                </div>
+            </div>
+            <a th:if="${post.commentCount > 3}" th:href="@{'/posts/' + ${post.id}}" class="text-blue-500 text-sm hover:underline">
+                View all comments
+            </a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
