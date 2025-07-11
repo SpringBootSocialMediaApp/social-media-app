@@ -12,4 +12,8 @@ public interface CommentService {
     List<Comment> getCommentsByPost(Post post);
 
     List<Comment> getCommentsByPostId(Long postId);
+
+    List<Comment> findByPost(Post post);
+    Comment save(Comment comment);
+    int countByPost(Post post);
 }

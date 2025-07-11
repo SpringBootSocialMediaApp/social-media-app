@@ -191,8 +191,8 @@
       });
   }
 
-  // Function to create comment element
-  function createCommentElement(comment) {
+ // Fix the createCommentElement function
+function createCommentElement(comment) {
     const div = document.createElement('div');
     div.className = 'flex items-start gap-3';
     
@@ -226,12 +226,12 @@
           <h5 class="font-medium text-white">${firstName} ${lastName}</h5>
           <span class="text-xs text-gray-400">${formattedDate}</span>
         </div>
-        <p class="text-sm text-gray-300">${comment.content || 'No content'}</p>
+        <p class="text-sm text-gray-300">${comment.content}</p>
       </div>
     `;
     
     return div;
-  }
+}
 
   // Function to submit comment
   function submitComment(e) {

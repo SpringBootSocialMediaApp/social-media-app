@@ -36,9 +36,15 @@ public class UserServiceImpl implements UserService {
         return userRepository.existsByEmail(email);
     }
 
-    // NEW
+    
+
     @Override
     public Page<User> findAllUsersExceptCurrent(Long currentUserId, Pageable pageable) {
         return userRepository.findAllExceptCurrentUser(currentUserId, pageable);
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username).orElse(null);
     }
 }

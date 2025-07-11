@@ -38,4 +38,25 @@ public class CommentServiceImpl implements CommentService {
     public List<Comment> getCommentsByPostId(Long postId) {
         return commentRepository.findByPostIdOrderByCreatedAtDesc(postId);
     }
+
+
+    @Override
+    public List<Comment> findByPost(Post post) {
+        return commentRepository.findByPostOrderByCreatedAtDesc(post);
+    }
+
+    @Override
+    public Comment save(Comment comment) {
+        if (comment.getCreatedAt() == null) {
+            comment.setCreatedAt(LocalDateTime.now());
+        }
+        comment.setUpdatedAt(LocalDateTime.now());
+        return commentRepository.save(comment);
+    }
+    
+    @Override
+    public int countByPost(Post post) {
+        return commentRepository.countByPost(post);
+    }
+    
 }
