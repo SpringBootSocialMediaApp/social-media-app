@@ -1,11 +1,10 @@
-// src/main/java/com/example/social_media_app/config/SecurityConfig.java
 package com.example.social_media_app.config;
-
 
 import com.example.social_media_app.service.impl.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,11 +23,6 @@ public class SecurityConfig {
                         .requestMatchers("/css/**", "/js/**", "/login", "/register", "/error").permitAll()
                         .anyRequest().authenticated()
                 )
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/css/**", "/js/**", "/register", "/login", "/error").permitAll()
-//                        .anyRequest().authenticated()
-//                )
-
                 .formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/home", true)
@@ -41,7 +35,12 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)
                         .permitAll()
                 )
-                .userDetailsService(userDetailsService);
+                .userDetailsService(userDetailsService)
+                .sessionManagement(session -> session
+                        .maximumSessions(1)
+                        .maxSessionsPreventsLogin(false)
+                        .expiredUrl("/login?expired"))
+                .csrf(Customizer.withDefaults()); // CSRF protection
 
         return http.build();
     }
