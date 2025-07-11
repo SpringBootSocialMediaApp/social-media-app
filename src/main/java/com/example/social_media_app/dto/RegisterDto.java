@@ -23,9 +23,6 @@ public class RegisterDto {
     @NotBlank(message = "Confirm password is required")
     private String confirmPassword;
 
-//    @NotBlank(message = "Mobile number is required")
-//    private String mobileNumber;
-
     @NotNull(message = "Date of birth is required")
     private LocalDate dateOfBirth;
 

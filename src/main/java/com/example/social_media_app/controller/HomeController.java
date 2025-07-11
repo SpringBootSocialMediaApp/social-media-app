@@ -24,6 +24,11 @@ public class HomeController {
         return "components/profileSetings"; // no .html extension
     }
 
+    @GetMapping("/friends")
+    public String friends() {
+        return "friends"; // resolves to src/main/resources/templates/friends.html
+    }
+
 
     @GetMapping({"/", "/home"})
     public String home(

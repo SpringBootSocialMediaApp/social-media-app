@@ -17,18 +17,14 @@ public class SecurityConfig {
     @Autowired
     private CustomUserDetailsService userDetailsService;
 
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/css/**", "/js/**", "/login", "/register", "/error").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/login", "/register", "/error", "/api/users/**").permitAll()
                         .anyRequest().authenticated()
                 )
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/css/**", "/js/**", "/register", "/login", "/error").permitAll()
-//                        .anyRequest().authenticated()
-//                )
-
                 .formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/home", true)
@@ -41,10 +37,11 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)
                         .permitAll()
                 )
-                .userDetailsService(userDetailsService);
+                .userDetailsService(userDetailsService); // This is also incorrect here!
 
         return http.build();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
