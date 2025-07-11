@@ -10,5 +10,10 @@ public class HomeController {
         return "home"; // returns home.html
     }
 
+    @GetMapping("/friends")
+    public String friends() {
+        return "friends"; // resolves to src/main/resources/templates/friends.html
+    }
+
 
 }
