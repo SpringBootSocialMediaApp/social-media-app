@@ -39,4 +39,12 @@ public class User {
 
     @NotBlank(message = "Gender is required")
     private String gender;
+
+    // NEW FIELDS for editable profile
+    private String bio;
+    private String city;
+    private String website;
+    private String joinDate;
+
+
 }

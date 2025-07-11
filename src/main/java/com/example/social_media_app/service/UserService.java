@@ -8,4 +8,8 @@ public interface UserService {
     User findByEmail(String email);
     boolean existsByEmail(String email);
 
+
+    // 🔽 ADD THIS
+    User updateUser(User updatedUser);
+
 }
