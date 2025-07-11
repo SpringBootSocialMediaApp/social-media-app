@@ -1,46 +1,104 @@
+<!--&lt;!&ndash; src/main/resources/templates/components/navbar.html &ndash;&gt;-->
+<!--<nav th:fragment="navbar" class="navbar bg-gray-800 shadow-lg sticky top-0 z-50">-->
+<!--    <div class="navbar-start">-->
+<!--        <a class="btn btn-ghost normal-case text-xl text-brand-500 font-bold">SocialHub</a>-->
+<!--    </div>-->
+<!--    <div class="navbar-center hidden lg:flex">-->
+<!--        <div class="form-control">-->
+<!--            <input type="text" placeholder="Search posts, people..." class="input input-bordered w-96 bg-gray-700 border-gray-600 text-white placeholder-gray-400" />-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="navbar-end">-->
+<!--        <div class="flex items-center gap-4">-->
+<!--            &lt;!&ndash; Home Icon &ndash;&gt;-->
+<!--            <button class="btn btn-ghost btn-circle">-->
+<!--                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">-->
+<!--                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>-->
+<!--                </svg>-->
+<!--            </button>-->
+<!--            &lt;!&ndash; Profile Icon &ndash;&gt;-->
+<!--            <button class="btn btn-ghost btn-circle">-->
+<!--                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">-->
+<!--                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>-->
+<!--                </svg>-->
+<!--            </button>-->
+<!--            &lt;!&ndash; Messages Icon &ndash;&gt;-->
+<!--            <button class="btn btn-ghost btn-circle relative">-->
+<!--                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">-->
+<!--                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>-->
+<!--                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>-->
+<!--                </svg>-->
+<!--                <span class="badge badge-sm badge-primary absolute -top-2 -right-2">3</span>-->
+<!--            </button>-->
+<!--            &lt;!&ndash; Notifications Icon &ndash;&gt;-->
+<!--            <button class="btn btn-ghost btn-circle relative">-->
+<!--                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">-->
+<!--                    <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/>-->
+<!--                </svg>-->
+<!--                <span class="badge badge-sm badge-error absolute -top-2 -right-2">2</span>-->
+<!--            </button>-->
+<!--            &lt;!&ndash; Settings Icon &ndash;&gt;-->
+<!--            <button class="btn btn-ghost btn-circle">-->
+<!--                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">-->
+<!--                    <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>-->
+<!--                </svg>-->
+<!--            </button>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</nav>-->
+
 <!-- src/main/resources/templates/components/navbar.html -->
-<nav th:fragment="navbar" class="navbar bg-gray-800 shadow-lg sticky top-0 z-50">
+<nav th:fragment="navbar" class="navbar bg-white shadow-lg sticky top-0 z-50">
     <div class="navbar-start">
-        <a class="btn btn-ghost normal-case text-xl text-brand-500 font-bold">SocialHub</a>
+        <a class="btn btn-ghost normal-case text-3xl  font-bold !text-brand-500">Socialite</a>
     </div>
+    <!-- SearchBar -->
     <div class="navbar-center hidden lg:flex">
         <div class="form-control">
-            <input type="text" placeholder="Search posts, people..." class="input input-bordered w-96 bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+            <input type="text" placeholder="Search posts, people..."
+                   class="input input-bordered w-96 bg-white rounded-full border-gray-400 placeholder-gray-400 focus:border-gray-400 text-black" />
         </div>
     </div>
     <div class="navbar-end">
         <div class="flex items-center gap-4">
             <!-- Home Icon -->
-            <button class="btn btn-ghost btn-circle">
+            <button class="btn btn-ghost btn-circle text-gray-600  bg-gray-200 hover:bg-gray-300">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
                 </svg>
             </button>
             <!-- Profile Icon -->
-            <button class="btn btn-ghost btn-circle">
+            <button class="btn btn-ghost btn-circle text-gray-600  bg-gray-200 hover:bg-gray-300">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
                 </svg>
             </button>
             <!-- Messages Icon -->
-            <button class="btn btn-ghost btn-circle relative">
+            <button class="btn btn-ghost btn-circle relative text-gray-600 bg-gray-200 hover:bg-gray-300">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
                     <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
                 </svg>
-                <span class="badge badge-sm badge-primary absolute -top-2 -right-2">3</span>
+                <span class="badge badge-sm badge-primary absolute -top-2 -right-2 !bg-brand-500">3</span>
             </button>
             <!-- Notifications Icon -->
-            <button class="btn btn-ghost btn-circle relative">
+            <button class="btn btn-ghost btn-circle relative text-gray-600  bg-gray-200 hover:bg-gray-300">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/>
                 </svg>
-                <span class="badge badge-sm badge-error absolute -top-2 -right-2">2</span>
+                <span class="badge badge-sm badge-error absolute -top-2 -right-2 !bg-brand-500">2</span>
             </button>
             <!-- Settings Icon -->
-            <button class="btn btn-ghost btn-circle">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>
+            <button class="btn btn-ghost btn-circle text-gray-600  bg-gray-200 hover:bg-gray-300">
+<!--                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">-->
+<!--                    <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>-->
+<!--                </svg>-->
+                <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"
+                      class="icon icon-tabler icons-tabler-outline icon-tabler-logout">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+                    <path d="M9 12h12l-3 -3" />
+                    <path d="M18 15l3 -3" />
                 </svg>
             </button>
         </div>

@@ -39,8 +39,7 @@ build/
 /yarn-error.log*
 
 
-# Ignore the main application.properties
-/src/main/resources/application.properties
+
 
 # Ignore your custom CSS
 /src/main/resources/static/css/main.css
