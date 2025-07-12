@@ -105,4 +105,14 @@ public class PostServiceImpl implements PostService {
             postRepository.save(post);
         }
     }
+
+    @Override
+    public List<Post> getFeedPosts(Long userId) {
+        List<Post> posts = postRepository.findFeedPostsForUser(userId);
+
+        // Update like and comment counts for each post
+        posts.forEach(this::updateCounts);
+
+        return posts;
+    }
 }
