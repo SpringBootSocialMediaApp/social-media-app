@@ -4,72 +4,74 @@
      xmlns:sec="https://www.thymeleaf.org/extras/spring-security6"
      class="w-80 p-6 hidden lg:block">
 
-    <div class="card bg-gray-800 shadow-xl">
+    <div class="card bg-white shadow-xl">
         <div class="card-body">
             <div class="flex flex-col items-center">
 
                 <!-- Avatar + Online Dot -->
                 <div class="relative w-20 h-20">
                     <a href="/profile.html">
-                        <div class="rounded-full ring ring-brand-500 ring-offset-base-100 ring-offset-2 w-full h-full bg-brand-500 flex items-center justify-center transition-transform hover:scale-105">
+                        <div class="rounded-full ring  ring-brand-500 ring-offset-white ring-offset-2 w-full h-full bg-brand-500 flex items-center justify-center transition-transform hover:scale-105">
                             <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
                             </svg>
                         </div>
                     </a>
-                    <div class="absolute bottom-0 right-0 w-5 h-5 bg-green-500 rounded-full border-2 border-gray-800"></div>
+                    <div class="absolute bottom-0 right-0 w-5 h-5 bg-green-500 rounded-full border-2 border-white"></div>
                 </div>
 
                 <!-- User Info -->
-                <h2 class="card-title text-white mt-4" data-user-name
+                <h2 class="card-title text-black mt-4" data-user-name
                     th:text="${#authentication.principal.firstName + ' ' + #authentication.principal.lastName}">Name</h2>
 
-                <p class="text-gray-400" data-user-username
-                   th:text="'@' + ${#authentication.principal.username}">@username</p>
+                <p class="text-gray-900" data-user-username
+                   th:text="'@' + ${#authentication.principal.firstName + #authentication.principal.lastName + T(java.lang.Math).round(T(java.lang.Math).random() * 10000)}">@username</p>
 
-                <p class="text-sm text-center text-gray-300 mt-2" data-user-email
+                <!--                   th:text="'@' + ${#authentication.principal.fristName} + ${#authentication.principal.lastName}">@username</p>-->
+
+                <p class="text-sm text-center text-gray-700 mt-2" data-user-email
                    th:text="${#authentication.principal.email}">email@example.com</p>
 
-                <!-- Static fields -->
-                <div class="flex items-center gap-2 mt-3 text-sm text-gray-400">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                              d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                              clip-rule="evenodd"/>
-                    </svg>
-                    San Francisco, CA
-                </div>
-                <div class="flex items-center gap-2 mt-1 text-sm text-gray-400">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M6 2a1..." />
-                    </svg>
-                    Joined March 2023
-                </div>
-                <div class="flex items-center gap-2 mt-1 text-sm text-gray-400">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M12.586 4.586a2..." />
-                    </svg>
-                    <span th:text="${#authentication.principal.firstName + '.dev'}">Username.dev</span>
-                </div>
+<!--                &lt;!&ndash; Static fields &ndash;&gt;-->
+<!--                <div class="flex items-center gap-2 mt-3 text-sm text-gray-700">-->
+<!--                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">-->
+<!--                        <path fill-rule="evenodd"-->
+<!--                              d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"-->
+<!--                              clip-rule="evenodd"/>-->
+<!--                    </svg>-->
+<!--                    San Francisco, CA-->
+<!--                </div>-->
+<!--                <div class="flex items-center gap-2 mt-1 text-sm text-gray-700">-->
+<!--                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">-->
+<!--                        <path fill-rule="evenodd" d="M6 2a1..." />-->
+<!--                    </svg>-->
+<!--                    Joined March 2023-->
+<!--                </div>-->
+<!--                <div class="flex items-center gap-2 mt-1 text-sm text-gray-700">-->
+<!--                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">-->
+<!--                        <path fill-rule="evenodd" d="M12.586 4.586a2..." />-->
+<!--                    </svg>-->
+<!--                    <span th:text="${#authentication.principal.firstName + '.dev'}">Username.dev</span>-->
+<!--                </div>-->
             </div>
 
             <!-- Static stats -->
-            <div class="stats stats-vertical mt-6 bg-gray-700">
+            <div class="stats stats-vertical mt-6 divide-y-2 divide-gray-200  bg-gray-100">
                 <div class="stat">
-                    <div class="stat-title text-gray-400">Posts</div>
-                    <div class="stat-value text-white">1.2K</div>
+                    <div class="stat-title text-gray-700">Posts</div>
+                    <div class="stat-value text-black">1.2K</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-title text-gray-400">Friends</div>
-                    <div class="stat-value text-white">5.8K</div>
+                    <div class="stat-title text-gray-700">Friends</div>
+                    <div class="stat-value text-black">5.8K</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-title text-gray-400">Likes</div>
-                    <div class="stat-value text-white">2.4K</div>
+                    <div class="stat-title text-gray-700">Likes</div>
+                    <div class="stat-value text-black">2.4K</div>
                 </div>
             </div>
 
-            <button onclick="openProfileSettingsModal()" class="btn btn-primary mt-4 w-full text-center transition-transform hover:scale-105">Edit Profile</button>
+            <button onclick="openProfileSettingsModal()" class="btn btn-primary mt-4 w-full text-center transition-transform hover:scale-105 !bg-brand-500 !border-brand-500 !shadow-brand-500">Edit Profile</button>
         </div>
     </div>
 </div>
