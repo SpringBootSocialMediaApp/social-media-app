@@ -550,7 +550,21 @@
     // Global variables for user directory
     let currentPage = 0;
     let totalPages = 0;
-    let currentUserId = 2; // You might want to make this dynamic based on logged-in user
+    let currentUserId = null; // Will be loaded dynamically
+
+    // Function to get current user ID
+    async function getCurrentUserId() {
+        try {
+            const response = await fetch('/api/users/current');
+            if (response.ok) {
+                const user = await response.json();
+                return user.id;
+            }
+        } catch (error) {
+            console.error('Error fetching current user:', error);
+        }
+        return null;
+    }
 
     // Function to get random profile image based on gender
     function getRandomProfileImage(gender, id) {
@@ -609,7 +623,7 @@
     // Function to fetch users from API
     async function fetchUsers(page = 0, size = 5) {
         try {
-            const response = await fetch(`http://localhost:8081/api/users?currentUserId=${currentUserId}&page=${page}&size=${size}`);
+            const response = await fetch(`/api/users?currentUserId=${currentUserId}&page=${page}&size=${size}`);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -693,11 +707,20 @@
             loadingDiv.style.display = 'flex';
         }
 
+        // Get current user ID if not already loaded
+        if (currentUserId === null) {
+            currentUserId = await getCurrentUserId();
+            if (currentUserId === null) {
+                console.error('Could not get current user ID');
+                return;
+            }
+        }
+
         const data = await fetchUsers(page, 5);
 
         if (data) {
             displayUsers(data.content);
-            updatePagination(data.pageable);
+            updatePagination(data);
         } else {
             // Handle error case
             const container = document.getElementById('user-directory-cards');
