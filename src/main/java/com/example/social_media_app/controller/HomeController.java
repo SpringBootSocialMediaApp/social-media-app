@@ -48,11 +48,12 @@ public class HomeController {
         // Get user stats
         UserStatsDto userStats = userStatsService.getUserStats(user.getId());
         
-        // put it into the Thymeleaf model
+        // Friend Integration: Use friend-integrated feed instead of all posts
         model.addAttribute("currentUser", user);
         model.addAttribute("user", user);
         model.addAttribute("userStats", userStats);
-        model.addAttribute("posts", postService.getAllPosts());
+        model.addAttribute("posts", postService.getFeedPosts(user.getId()));
+
         // render templates/home.html
         return "home";
     }
