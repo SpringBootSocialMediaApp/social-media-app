@@ -22,11 +22,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void save(User user) {
-        userRepository.save(user);  // saves changes
-    }
-
-    @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
     }
@@ -36,15 +31,9 @@ public class UserServiceImpl implements UserService {
         return userRepository.existsByEmail(email);
     }
 
-    
-
+    // NEW
     @Override
     public Page<User> findAllUsersExceptCurrent(Long currentUserId, Pageable pageable) {
         return userRepository.findAllExceptCurrentUser(currentUserId, pageable);
-    }
-
-    @Override
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username).orElse(null);
     }
 }
