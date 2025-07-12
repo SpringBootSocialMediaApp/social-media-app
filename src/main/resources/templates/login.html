@@ -20,6 +20,14 @@
           border-radius: .5rem;             /* rounded-lg */
           font-weight: 600;
         }
+        .alert-success {
+          background-color: #D1FAE5;       /* green-100 */
+          border-left-color: #10B981;      /* green-500 */
+          color: #065F46;                   /* green-900 */
+        }
+        .alert-success svg {
+          color: #10B981;                   /* green-500 */
+        }
         .alert svg {
           flex-shrink: 0;
           width: 1.5rem;                    /* w-6 */
@@ -65,13 +73,24 @@
         <span>Warning: Invalid email or password!</span>
     </div>
 
+    <!-- show success message after logout -->
+    <div th:if="${param.logout}" role="alert" class="alert alert-success">
+        <svg xmlns="http://www.w3.org/2000/svg"
+             fill="none" viewBox="0 0 24 24"
+             stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <span>You have been logged out successfully!</span>
+    </div>
+
     <!-- login form -->
     <form th:action="@{/login}" method="post" class="flex flex-col gap-4">
         <div>
             <label class="block text-sm text-gray-600 font-semibold mb-1">Email</label>
             <input type="text" name="username" placeholder="you@example.com"
                    class="input input-bordered w-full px-4 py-2 rounded-xl
-                      border border-gray-200 bg-white/80
+                      border border-gray-200 bg-white/80 text-black
                       focus:ring-2 focus:ring-brand-400 focus:border-brand-400
                       outline-none transition"
                    required />
@@ -79,7 +98,7 @@
         <div>
             <label class="block text-sm text-gray-600 font-semibold mb-1">Password</label>
             <input type="password" name="password" placeholder="••••••••"
-                   class="input input-bordered w-full px-4 py-2 rounded-xl
+                   class="input input-bordered w-full px-4 py-2 rounded-xl text-black
                       border border-gray-200 bg-white/80
                       focus:ring-2 focus:ring-brand-400 focus:border-brand-400
                       outline-none transition"
