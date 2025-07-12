@@ -26,7 +26,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/js/**", "/login", "/register", "/error").permitAll()
-                        .requestMatchers("/api/users/**").authenticated() // Require authentication for user API
+                        .requestMatchers("/api/users/**", "/api/friends/**").authenticated() // Require authentication for APIs
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

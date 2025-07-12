@@ -11,4 +11,7 @@ public interface UserService {
 
     // NEW
     Page<User> findAllUsersExceptCurrent(Long currentUserId, Pageable pageable);
+    
+    // NEW - for friend suggestions (excludes current friends and pending requests)
+    Page<User> findUsersForFriendSuggestions(Long currentUserId, Pageable pageable);
 }

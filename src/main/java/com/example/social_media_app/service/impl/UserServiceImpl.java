@@ -36,4 +36,10 @@ public class UserServiceImpl implements UserService {
     public Page<User> findAllUsersExceptCurrent(Long currentUserId, Pageable pageable) {
         return userRepository.findAllExceptCurrentUser(currentUserId, pageable);
     }
+    
+    // NEW - for friend suggestions
+    @Override
+    public Page<User> findUsersForFriendSuggestions(Long currentUserId, Pageable pageable) {
+        return userRepository.findUsersForFriendSuggestions(currentUserId, pageable);
+    }
 }
