@@ -14,4 +14,6 @@ public interface PostService {
     void deletePost(Post post);
     List<Post> findAll();
 
+    // Friend Integration: Get posts from user and their friends
+    List<Post> getFeedPosts(Long userId);
 }
