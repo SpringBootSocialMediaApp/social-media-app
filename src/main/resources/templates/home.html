@@ -12,6 +12,38 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
 
+  <!-- Custom styles for scrollable posts -->
+  <style>
+    /* Custom scrollbar styles for post content */
+    .post-content-scroll {
+      scrollbar-width: thin;
+      scrollbar-color: #d1d5db #f9fafb;
+    }
+    
+    .post-content-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .post-content-scroll::-webkit-scrollbar-track {
+      background: #f9fafb;
+      border-radius: 3px;
+    }
+    
+    .post-content-scroll::-webkit-scrollbar-thumb {
+      background: #d1d5db;
+      border-radius: 3px;
+    }
+    
+    .post-content-scroll::-webkit-scrollbar-thumb:hover {
+      background: #9ca3af;
+    }
+    
+    /* Smooth scrolling */
+    .post-content-scroll {
+      scroll-behavior: smooth;
+    }
+  </style>
+
   <!-- CSRF Token for AJAX requests -->
   <meta name="_csrf" th:content="${_csrf.token}"/>
   <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
