@@ -38,20 +38,42 @@
                 <span class="badge badge-sm badge-primary absolute -top-1 -right-1 !bg-brand-500 border-none">2</span>
             </button>
             <!-- Logout Button -->
-            <form th:action="@{/logout}" method="post" class="inline">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                <button type="submit"
-                        class="btn btn-ghost btn-circle text-gray-600 bg-gray-200 hover:bg-gray-300"
-                        onclick="return confirm('Are you sure you want to logout?')"
-                        title="Logout">
+            <div class="dropdown dropdown-end">
+                <label tabindex="0" class="btn btn-ghost btn-circle text-gray-600 bg-gray-200 hover:bg-gray-300" title="Logout">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-logout">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                         <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
                         <path d="M9 12h12l-3 -3" />
                         <path d="M18 15l3 -3" />
                     </svg>
-                </button>
-            </form>
+                </label>
+                
+                <div tabindex="0" class="dropdown-content mt-3 z-[100] card card-compact w-72 bg-gray-800 shadow-xl border border-gray-700">
+                    <div class="card-body">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-blue-900 rounded-full flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-white text-base">Are you sure you want to logout?</h3>
+                                <div class="flex gap-2 mt-4">
+                                    <form th:action="@{/logout}" method="post" class="inline">
+                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200">
+                                            Yes
+                                        </button>
+                                    </form>
+                                    <button onclick="document.activeElement.blur(); event.stopPropagation();" class="px-4 py-2 bg-gray-700 text-gray-100 text-sm font-medium rounded-lg hover:bg-gray-600 transition-colors duration-200">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </nav>
