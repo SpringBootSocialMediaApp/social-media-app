@@ -140,14 +140,21 @@ public class ProfileController {
             // Return updated user data
             response.put("success", true);
             response.put("message", "Profile updated successfully!");
-            response.put("user", Map.of(
+            
+            Map<String, Object> userData = Map.of(
                     "id", existingUser.getId(),
                     "firstName", existingUser.getFirstName(),
                     "lastName", existingUser.getLastName(),
                     "email", existingUser.getEmail(),
                     "username", existingUser.getUsername(),
-                    "profilePicture",
-                    existingUser.getProfilePicture() != null ? existingUser.getProfilePicture() : ""));
+                    "profilePicture", existingUser.getProfilePicture() != null ? existingUser.getProfilePicture() : "");
+            
+            response.put("user", userData);
+            
+            System.out.println("=== Profile Update Response ===");
+            System.out.println("User data being returned: " + userData);
+            System.out.println("Username: " + existingUser.getUsername());
+            System.out.println("Email: " + existingUser.getEmail());
 
             return ResponseEntity.ok(response);
 

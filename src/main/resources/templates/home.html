@@ -423,10 +423,13 @@ function getCurrentUserEmail() {
     fetch('/profile/current')
       .then(response => response.json())
       .then(data => {
+        console.log('=== Loading current user data ===');
+        console.log('Current user data:', data);
         document.getElementById('firstName').value = data.firstName || '';
         document.getElementById('lastName').value = data.lastName || '';
         document.getElementById('email').value = data.email || '';
         document.getElementById('password').value = ''; // Never pre-populate password
+        console.log('Form populated with current data');
       })
       .catch(error => {
         console.error('Error loading user data:', error);
@@ -454,6 +457,9 @@ function getCurrentUserEmail() {
       password: document.getElementById('password').value
     };
     
+    console.log('=== Submitting profile update ===');
+    console.log('Form data:', formData);
+    
     // Get CSRF token
     const csrfToken = document.querySelector('input[name="_csrf"]').value;
     
@@ -467,7 +473,11 @@ function getCurrentUserEmail() {
     })
     .then(response => response.json())
     .then(data => {
+      console.log('=== Profile update response ===');
+      console.log('Response data:', data);
+      
       if (data.success) {
+        console.log('Update successful, user data:', data.user);
         // Update UI elements with new user data
         updateUIWithUserData(data.user);
         
@@ -477,6 +487,7 @@ function getCurrentUserEmail() {
         // Close modal
         closeProfileSettingsModal();
       } else {
+        console.log('Update failed:', data.message);
         showNotification(data.message || 'Failed to update profile', 'error');
       }
     })
@@ -488,22 +499,34 @@ function getCurrentUserEmail() {
 
   // Function to update UI elements with new user data
   function updateUIWithUserData(userData) {
+    console.log('=== Updating UI with user data ===');
+    console.log('User data received:', userData);
+    
     // Update profile sidebar name
     const profileName = document.querySelector('[data-user-name]');
     if (profileName) {
       profileName.textContent = `${userData.firstName} ${userData.lastName}`;
+      console.log('✅ Updated profile name to:', profileName.textContent);
+    } else {
+      console.log('❌ Profile name element not found');
     }
     
     // Update username display
     const usernameElement = document.querySelector('[data-user-username]');
     if (usernameElement) {
       usernameElement.textContent = `@${userData.username}`;
+      console.log('✅ Updated username to:', usernameElement.textContent);
+    } else {
+      console.log('❌ Username element not found');
     }
     
     // Update email display
     const emailElement = document.querySelector('[data-user-email]');
     if (emailElement) {
       emailElement.textContent = userData.email;
+      console.log('✅ Updated email to:', emailElement.textContent);
+    } else {
+      console.log('❌ Email element not found');
     }
     
     // Update any other name displays in the UI (for posts, comments, etc.)
@@ -512,11 +535,25 @@ function getCurrentUserEmail() {
       element.textContent = `${userData.firstName} ${userData.lastName}`;
     });
     
-    // Update profile picture if exists (for future enhancement)
-    // const profilePicture = document.querySelector('.profile-picture');
-    // if (profilePicture && userData.profilePicture) {
-    //   profilePicture.src = userData.profilePicture;
-    // }
+    console.log('=== UI Update Complete ===');
+  }
+
+  // Debug function to test UI elements
+  function testUIElements() {
+    console.log('=== Testing UI Elements ===');
+    console.log('Profile name element:', document.querySelector('[data-user-name]'));
+    console.log('Username element:', document.querySelector('[data-user-username]'));
+    console.log('Email element:', document.querySelector('[data-user-email]'));
+    
+    // Test updating manually
+    const testData = {
+      firstName: 'Test',
+      lastName: 'User',
+      username: 'testuser',
+      email: 'test@example.com'
+    };
+    console.log('Testing with data:', testData);
+    updateUIWithUserData(testData);
   }
 
   // Function to show notification messages
