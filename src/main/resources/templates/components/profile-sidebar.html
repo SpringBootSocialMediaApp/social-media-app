@@ -68,19 +68,19 @@
                 </div>
             </div>
 
-            <!-- Static stats -->
+            <!-- Dynamic stats -->
             <div class="stats stats-vertical mt-6 bg-gray-700">
                 <div class="stat">
                     <div class="stat-title text-gray-400">Posts</div>
-                    <div class="stat-value text-white">1.2K</div>
+                    <div class="stat-value text-white" th:text="${userStats.formattedPostsCount}">0</div>
                 </div>
                 <div class="stat">
                     <div class="stat-title text-gray-400">Friends</div>
-                    <div class="stat-value text-white">5.8K</div>
+                    <div class="stat-value text-white" th:text="${userStats.formattedFriendsCount}">0</div>
                 </div>
                 <div class="stat">
                     <div class="stat-title text-gray-400">Likes</div>
-                    <div class="stat-value text-white">2.4K</div>
+                    <div class="stat-value text-white" th:text="${userStats.formattedLikesCount}">0</div>
                 </div>
             </div>
 
