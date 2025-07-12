@@ -79,4 +79,21 @@ public class CustomUserDetails implements UserDetails {
     public String getUserUsername() {
         return user.getUsername();
     }
+
+    // New profile field getters
+    public String getCity() {
+        return user.getCity();
+    }
+
+    public String getCountry() {
+        return user.getCountry();
+    }
+
+    public String getEducation() {
+        return user.getEducation();
+    }
+
+    public String getWorkplace() {
+        return user.getWorkplace();
+    }
 }

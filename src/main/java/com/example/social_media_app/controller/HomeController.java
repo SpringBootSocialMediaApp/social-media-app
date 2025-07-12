@@ -1,8 +1,10 @@
 package com.example.social_media_app.controller;
 
+import com.example.social_media_app.dto.UserStatsDto;
 import com.example.social_media_app.model.User;
 import com.example.social_media_app.service.PostService;
 import com.example.social_media_app.service.UserService;
+import com.example.social_media_app.service.UserStatsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,13 +16,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
 
     private final UserService userService;
-    private final  PostService postService;
-
+    private final PostService postService;
+    private final UserStatsService userStatsService;
 
     @Autowired
-    public HomeController(UserService userService, PostService postService) {
+    public HomeController(UserService userService, PostService postService, UserStatsService userStatsService) {
         this.userService = userService;
         this.postService = postService;
+        this.userStatsService = userStatsService;
     }
 
     @GetMapping("/profile-settings")
@@ -41,14 +44,17 @@ public class HomeController {
     ) {
         // lookup your JPA User by the logged-in username
         User user = userService.findByEmail(currentUserDetails.getUsername());
+        
+        // Get user stats
+        UserStatsDto userStats = userStatsService.getUserStats(user.getId());
+        
         // put it into the Thymeleaf model
         model.addAttribute("currentUser", user);
         model.addAttribute("user", user);
+        model.addAttribute("userStats", userStats);
         model.addAttribute("posts", postService.getAllPosts());
         // render templates/home.html
         return "home";
-
-
     }
 
 }
