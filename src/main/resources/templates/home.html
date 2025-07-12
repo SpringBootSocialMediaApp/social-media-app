@@ -74,40 +74,49 @@
     const charCounter = document.querySelector('.text-xs.text-gray-700');
     const postForm = document.querySelector('form[action*="/posts"]');
     const postButton = document.querySelector('form[action*="/posts"] button[type="submit"]');
+    const errorContainer = document.getElementById('postErrorMessage');
+    const errorText = document.getElementById('postErrorText');
+    
+    // Reset button text on page load (in case of redirects after failed submissions)
+    if (postButton && postButton.innerHTML.includes('Posting...')) {
+      postButton.innerHTML = 'Post';
+    }
+    
+    function showPostError(message) {
+      if (errorContainer && errorText) {
+        errorText.textContent = message;
+        errorContainer.classList.remove('hidden');
+      }
+    }
+    
+    function hidePostError() {
+      if (errorContainer) {
+        errorContainer.classList.add('hidden');
+      }
+    }
     
     if (textarea && charCounter) {
-      // Set initial button state
-      if (postButton) {
-        postButton.disabled = true;
-        postButton.classList.add('opacity-50', 'cursor-not-allowed');
-        postButton.title = 'Please write something before posting.';
-      }
-      
       textarea.addEventListener('input', function() {
         const count = this.value.length;
+        const trimmedLength = this.value.trim().length;
+        
         charCounter.textContent = count + '/280 Characters';
         
-        // Update submit button state
-        if (postButton) {
-          if (count > 280) {
-            charCounter.classList.add('text-red-400');
-            charCounter.classList.remove('text-gray-700');
-            postButton.disabled = true;
-            postButton.classList.add('opacity-50', 'cursor-not-allowed');
-            postButton.title = 'Post is too long. Please reduce to 280 characters or less.';
-          } else if (count === 0) {
-            charCounter.classList.add('text-gray-700');
-            charCounter.classList.remove('text-red-400');
-            postButton.disabled = true;
-            postButton.classList.add('opacity-50', 'cursor-not-allowed');
-            postButton.title = 'Please write something before posting.';
-          } else {
-            charCounter.classList.add('text-gray-700');
-            charCounter.classList.remove('text-red-400');
-            postButton.disabled = false;
-            postButton.classList.remove('opacity-50', 'cursor-not-allowed');
-            postButton.title = '';
-          }
+        // Hide error when user starts typing after an error
+        hidePostError();
+        
+        if (count > 280) {
+          charCounter.classList.add('text-red-400');
+          charCounter.classList.remove('text-gray-700');
+          showPostError('Post is too long. Please reduce to 280 characters or less.');
+        } else if (trimmedLength === 0 && count > 0) {
+          charCounter.classList.add('text-yellow-500');
+          charCounter.classList.remove('text-gray-700', 'text-red-400');
+          showPostError('Post cannot be empty or contain only spaces.');
+        } else {
+          charCounter.classList.add('text-gray-700');
+          charCounter.classList.remove('text-red-400', 'text-yellow-500');
+          hidePostError();
         }
       });
     }
@@ -119,19 +128,23 @@
         
         if (content === '') {
           e.preventDefault();
-          showNotification('Post content cannot be empty. Please write something before posting.', 'error');
+          showPostError('Post content cannot be empty. Please write something before posting.');
+          textarea.focus();
           return false;
         }
         
         if (content.length > 280) {
           e.preventDefault();
-          showNotification('Post content is too long. Please keep it under 280 characters.', 'error');
+          showPostError('Post content is too long. Please keep it under 280 characters.');
+          textarea.focus();
           return false;
         }
         
-        // Disable submit button to prevent double submission
+        // Hide any existing errors before submission
+        hidePostError();
+        
+        // Show loading state but don't disable
         if (postButton) {
-          postButton.disabled = true;
           postButton.innerHTML = '<span class="loading loading-spinner loading-xs"></span> Posting...';
         }
       });
