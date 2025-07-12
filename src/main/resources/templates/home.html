@@ -23,6 +23,25 @@
 <!-- Hidden input to store current user email for JavaScript -->
 <input type="hidden" id="currentUserEmail" th:value="${#authentication.name}" sec:authorize="isAuthenticated()">
 
+<!-- Flash Messages -->
+<div th:if="${error}" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg max-w-md">
+  <div class="flex items-center">
+    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+    </svg>
+    <span th:text="${error}">Error message</span>
+  </div>
+</div>
+
+<div th:if="${success}" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg max-w-md">
+  <div class="flex items-center">
+    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+    </svg>
+    <span th:text="${success}">Success message</span>
+  </div>
+</div>
+
 <div th:replace="~{components/navbar :: navbar}"></div>
 <div class="flex mx-2 max-w-7xl">
   <div th:replace="~{components/profile-sidebar :: profileSidebar}"></div>
@@ -35,20 +54,98 @@
   const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
   const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
 
+  // Auto-hide flash messages
+  document.addEventListener('DOMContentLoaded', function() {
+    const flashMessages = document.querySelectorAll('.fixed.top-4');
+    flashMessages.forEach(function(message) {
+      setTimeout(function() {
+        message.style.transition = 'opacity 0.5s ease-out';
+        message.style.opacity = '0';
+        setTimeout(function() {
+          message.remove();
+        }, 500);
+      }, 5000); // Hide after 5 seconds
+    });
+  });
+
   document.addEventListener('DOMContentLoaded', function() {
     // Character counter for post textarea
     const textarea = document.querySelector('textarea[name="content"]');
     const charCounter = document.querySelector('.text-xs.text-gray-700');
+    const postForm = document.querySelector('form[action*="/posts"]');
+    const postButton = document.querySelector('form[action*="/posts"] button[type="submit"]');
+    const errorContainer = document.getElementById('postErrorMessage');
+    const errorText = document.getElementById('postErrorText');
+    
+    // Reset button text on page load (in case of redirects after failed submissions)
+    if (postButton && postButton.innerHTML.includes('Posting...')) {
+      postButton.innerHTML = 'Post';
+    }
+    
+    function showPostError(message) {
+      if (errorContainer && errorText) {
+        errorText.textContent = message;
+        errorContainer.classList.remove('hidden');
+      }
+    }
+    
+    function hidePostError() {
+      if (errorContainer) {
+        errorContainer.classList.add('hidden');
+      }
+    }
+    
     if (textarea && charCounter) {
       textarea.addEventListener('input', function() {
         const count = this.value.length;
+        const trimmedLength = this.value.trim().length;
+        
         charCounter.textContent = count + '/280 Characters';
+        
+        // Hide error when user starts typing after an error
+        hidePostError();
+        
         if (count > 280) {
           charCounter.classList.add('text-red-400');
           charCounter.classList.remove('text-gray-700');
+          showPostError('Post is too long. Please reduce to 280 characters or less.');
+        } else if (trimmedLength === 0 && count > 0) {
+          charCounter.classList.add('text-yellow-500');
+          charCounter.classList.remove('text-gray-700', 'text-red-400');
+          showPostError('Post cannot be empty or contain only spaces.');
         } else {
           charCounter.classList.add('text-gray-700');
-          charCounter.classList.remove('text-red-400');
+          charCounter.classList.remove('text-red-400', 'text-yellow-500');
+          hidePostError();
+        }
+      });
+    }
+    
+    // Add form submission validation
+    if (postForm) {
+      postForm.addEventListener('submit', function(e) {
+        const content = textarea ? textarea.value.trim() : '';
+        
+        if (content === '') {
+          e.preventDefault();
+          showPostError('Post content cannot be empty. Please write something before posting.');
+          textarea.focus();
+          return false;
+        }
+        
+        if (content.length > 280) {
+          e.preventDefault();
+          showPostError('Post content is too long. Please keep it under 280 characters.');
+          textarea.focus();
+          return false;
+        }
+        
+        // Hide any existing errors before submission
+        hidePostError();
+        
+        // Show loading state but don't disable
+        if (postButton) {
+          postButton.innerHTML = '<span class="loading loading-spinner loading-xs"></span> Posting...';
         }
       });
     }
