@@ -44,20 +44,29 @@ public class CommentController {
 @PostMapping("/{postId}")
     public ResponseEntity<Comment> createComment(
             @PathVariable Long postId,
-            @RequestBody Map<String, String> payload
-            , @AuthenticationPrincipal UserDetails userDetails
+            @RequestBody Map<String, String> payload,
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
         try {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            String username = auth.getName();
-                    User user1 = userService.findByEmail(userDetails.getUsername());
+            // Get the authenticated user by email (which is the username in Spring Security)
+            User user = userService.findByEmail(userDetails.getUsername());
+
+            if (user == null) {
+                return ResponseEntity.badRequest().build();
+            }
 
             Post post = postService.findById(postId);
-            User user = userService.findByUsername(username);
+            if (post == null) {
+                return ResponseEntity.badRequest().build();
+            }
+
             String content = payload.get("content");
+            if (content == null || content.trim().isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
 
             Comment comment = Comment.builder()
-                    .content(content)
+                    .content(content.trim())
                     .post(post)
                     .user(user)
                     .build();
@@ -67,6 +76,43 @@ public class CommentController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<?> deleteComment(
+            @PathVariable Long commentId,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        try {
+            // Get the authenticated user
+            User currentUser = userService.findByEmail(userDetails.getUsername());
+
+            if (currentUser == null) {
+                return ResponseEntity.status(403).body("User not authenticated");
+            }
+
+            // Find the comment
+            Comment comment = commentService.findById(commentId);
+            if (comment == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // Check if the current user is the owner of the comment OR the owner of the post
+            boolean isCommentOwner = comment.getUser().getId().equals(currentUser.getId());
+            boolean isPostOwner = comment.getPost().getUser().getId().equals(currentUser.getId());
+
+            if (!isCommentOwner && !isPostOwner) {
+                return ResponseEntity.status(403).body("You can only delete your own comments or comments on your posts");
+            }
+
+            // Delete the comment
+            commentService.deleteComment(comment);
+
+            return ResponseEntity.ok().body("Comment deleted successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("Error deleting comment");
         }
     }
 

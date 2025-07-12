@@ -44,6 +44,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
+    public void deletePost(Post post) {
+        postRepository.delete(post);
+    }
+
+    @Override
+    @Transactional
     public Post createPost(String content, User user) {
         Post post = new Post();
         post.setContent(content);

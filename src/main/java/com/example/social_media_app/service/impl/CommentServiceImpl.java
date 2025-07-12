@@ -27,7 +27,7 @@ public class CommentServiceImpl implements CommentService {
         if (post == null) {
             return List.of();
         }
-        return commentRepository.findByPostOrderByCreatedAtDesc(post);
+        return commentRepository.findByPostOrderByCreatedAtAsc(post);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<Comment> getCommentsByPost(Post post) {
-        return commentRepository.findByPostOrderByCreatedAtDesc(post);
+        return commentRepository.findByPostOrderByCreatedAtAsc(post);
     }
 
     @Override
@@ -53,8 +53,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<Comment> findByPost(Post post) {
-        List<Comment> comments = commentRepository.findByPostOrderByCreatedAtDesc(post);
-        
+        List<Comment> comments = commentRepository.findByPostOrderByCreatedAtAsc(post);
+
         // Update comment count if it doesn't match
         if (post.getCommentCount() != comments.size()) {
             post.setCommentCount(comments.size());
@@ -94,6 +94,11 @@ public class CommentServiceImpl implements CommentService {
         postRepository.save(post);
     }
     
+    @Override
+    public Comment findById(Long commentId) {
+        return commentRepository.findById(commentId).orElse(null);
+    }
+
     @Override
     public int countByPost(Post post) {
         return commentRepository.countByPost(post);
