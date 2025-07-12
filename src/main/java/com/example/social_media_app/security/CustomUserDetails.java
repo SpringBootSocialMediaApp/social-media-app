@@ -75,7 +75,7 @@ public class CustomUserDetails implements UserDetails {
     public String getProfilePicture() {
         return user.getProfilePicture();
     }
-    
+
     public String getUserUsername() {
         return user.getUsername();
     }

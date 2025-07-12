@@ -414,6 +414,236 @@ function getCurrentUserEmail() {
         submitButton.textContent = 'Post Comment';
       });
   }
+
+  // Function to open profile settings modal
+  function openProfileSettingsModal() {
+    const modal = document.getElementById('profileSettingsModal');
+    
+    // Load current user data to pre-populate the form
+    fetch('/profile/current')
+      .then(response => response.json())
+      .then(data => {
+        console.log('=== Loading current user data ===');
+        console.log('Current user data:', data);
+        document.getElementById('firstName').value = data.firstName || '';
+        document.getElementById('lastName').value = data.lastName || '';
+        document.getElementById('email').value = data.email || '';
+        document.getElementById('password').value = ''; // Never pre-populate password
+        console.log('Form populated with current data');
+      })
+      .catch(error => {
+        console.error('Error loading user data:', error);
+      });
+    
+    modal.classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+  }
+
+  // Function to close profile settings modal
+  function closeProfileSettingsModal() {
+    const modal = document.getElementById('profileSettingsModal');
+    modal.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+  }
+
+  // Function to handle AJAX profile update
+  function updateProfileAjax(event) {
+    event.preventDefault();
+    
+    const formData = {
+      firstName: document.getElementById('firstName').value,
+      lastName: document.getElementById('lastName').value,
+      email: document.getElementById('email').value,
+      password: document.getElementById('password').value
+    };
+    
+    console.log('=== Submitting profile update ===');
+    console.log('Form data:', formData);
+    
+    // Get CSRF token
+    const csrfToken = document.querySelector('input[name="_csrf"]').value;
+    
+    fetch('/profile/update-ajax', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': csrfToken
+      },
+      body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('=== Profile update response ===');
+      console.log('Response data:', data);
+      
+      if (data.success) {
+        console.log('Update successful, user data:', data.user);
+        // Update UI elements with new user data
+        updateUIWithUserData(data.user);
+        
+        // Show success message
+        showNotification('Profile updated successfully!', 'success');
+        
+        // Close modal
+        closeProfileSettingsModal();
+      } else {
+        console.log('Update failed:', data.message);
+        showNotification(data.message || 'Failed to update profile', 'error');
+      }
+    })
+    .catch(error => {
+      console.error('Error updating profile:', error);
+      showNotification('Failed to update profile. Please try again.', 'error');
+    });
+  }
+
+  // Function to update UI elements with new user data
+  function updateUIWithUserData(userData) {
+    console.log('=== Updating UI with user data ===');
+    console.log('User data received:', userData);
+    
+    // Update profile sidebar name
+    const profileName = document.querySelector('[data-user-name]');
+    if (profileName) {
+      profileName.textContent = `${userData.firstName} ${userData.lastName}`;
+      console.log('✅ Updated profile name to:', profileName.textContent);
+    } else {
+      console.log('❌ Profile name element not found');
+    }
+    
+    // Update username display
+    const usernameElement = document.querySelector('[data-user-username]');
+    if (usernameElement) {
+      usernameElement.textContent = `@${userData.username}`;
+      console.log('✅ Updated username to:', usernameElement.textContent);
+    } else {
+      console.log('❌ Username element not found');
+    }
+    
+    // Update email display
+    const emailElement = document.querySelector('[data-user-email]');
+    if (emailElement) {
+      emailElement.textContent = userData.email;
+      console.log('✅ Updated email to:', emailElement.textContent);
+    } else {
+      console.log('❌ Email element not found');
+    }
+    
+    // Update any other name displays in the UI (for posts, comments, etc.)
+    const nameDisplays = document.querySelectorAll('[data-user-name]');
+    nameDisplays.forEach(element => {
+      element.textContent = `${userData.firstName} ${userData.lastName}`;
+    });
+    
+    console.log('=== UI Update Complete ===');
+  }
+
+  // Debug function to test UI elements
+  function testUIElements() {
+    console.log('=== Testing UI Elements ===');
+    console.log('Profile name element:', document.querySelector('[data-user-name]'));
+    console.log('Username element:', document.querySelector('[data-user-username]'));
+    console.log('Email element:', document.querySelector('[data-user-email]'));
+    
+    // Test updating manually
+    const testData = {
+      firstName: 'Test',
+      lastName: 'User',
+      username: 'testuser',
+      email: 'test@example.com'
+    };
+    console.log('Testing with data:', testData);
+    updateUIWithUserData(testData);
+  }
+
+  // Function to show notification messages
+  function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 transform translate-x-full ${
+      type === 'success' ? 'bg-green-600 text-white' : 
+      type === 'error' ? 'bg-red-600 text-white' : 
+      'bg-blue-600 text-white'
+    }`;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+      notification.classList.remove('translate-x-full');
+    }, 100);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+      notification.classList.add('translate-x-full');
+      setTimeout(() => {
+        document.body.removeChild(notification);
+      }, 300);
+    }, 3000);
+  }
 </script>
+
+<!-- Profile Settings Modal -->
+<div id="profileSettingsModal" class="fixed inset-0 z-50 hidden">
+  <div class="fixed inset-0 bg-black bg-opacity-50" onclick="closeProfileSettingsModal()"></div>
+  <div class="relative flex items-center justify-center min-h-screen p-4">
+    <div class="bg-gray-800 rounded-lg shadow-xl w-full max-w-md p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold text-white">Edit Profile</h2>
+        <button onclick="closeProfileSettingsModal()" class="text-gray-400 hover:text-white">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <form onsubmit="updateProfileAjax(event)" class="space-y-4">
+        <!-- CSRF Token -->
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" name="_csrf"/>
+        
+        <div>
+          <label for="firstName" class="block text-sm font-medium text-gray-300 mb-2">First Name</label>
+          <input type="text" id="firstName" name="firstName" 
+                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                 required>
+        </div>
+
+        <div>
+          <label for="lastName" class="block text-sm font-medium text-gray-300 mb-2">Last Name</label>
+          <input type="text" id="lastName" name="lastName" 
+                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                 required>
+        </div>
+
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+          <input type="email" id="email" name="email" 
+                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                 required>
+        </div>
+
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-300 mb-2">New Password (optional)</label>
+          <input type="password" id="password" name="password" 
+                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                 placeholder="Leave blank to keep current password">
+        </div>
+
+        <div class="flex gap-3 pt-4">
+          <button type="button" onclick="closeProfileSettingsModal()" 
+                  class="flex-1 px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500">
+            Cancel
+          </button>
+          <button type="submit" 
+                  class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            Update Profile
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

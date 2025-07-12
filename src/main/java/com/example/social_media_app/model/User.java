@@ -43,6 +43,7 @@ public class User {
 
     private String profilePicture;
 
+    @Column(unique = true)
     private String username;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

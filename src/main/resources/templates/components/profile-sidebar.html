@@ -9,66 +9,51 @@
             <div class="flex flex-col items-center">
 
                 <!-- Avatar + Online Dot -->
-                <a href="/profile.html" class="avatar relative">
-                    <div class="w-20 rounded-full ring ring-brand-500 ring-offset-base-100 ring-offset-2">
-                        <div class="w-20 h-20 rounded-full bg-brand-500 flex items-center justify-center">
+                <div class="relative w-20 h-20">
+                    <a href="/profile.html">
+                        <div class="rounded-full ring ring-brand-500 ring-offset-base-100 ring-offset-2 w-full h-full bg-brand-500 flex items-center justify-center transition-transform hover:scale-105">
                             <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                      d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                                      clip-rule="evenodd"/>
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
                             </svg>
                         </div>
-                    </div>
+                    </a>
                     <div class="absolute bottom-0 right-0 w-5 h-5 bg-green-500 rounded-full border-2 border-gray-800"></div>
-                </a>
+                </div>
 
-                <!-- DYNAMIC NAME -->
-                <h2 class="card-title text-white mt-4"
-                    th:text="${currentUser.firstName} + ' ' + ${currentUser.lastName}">
-                    John Doe
-                </h2>
+                <!-- User Info -->
+                <h2 class="card-title text-white mt-4" data-user-name
+                    th:text="${#authentication.principal.firstName + ' ' + #authentication.principal.lastName}">Name</h2>
 
+                <p class="text-gray-400" data-user-username
+                   th:text="'@' + ${#authentication.principal.username}">@username</p>
 
-                <!-- DYNAMIC USERNAME (prefixed with @) -->
-                <p class="text-gray-400"
-                   th:text="'@' + ${#authentication.principal.username}">
-                    @johndoe
-                </p>
+                <p class="text-sm text-center text-gray-300 mt-2" data-user-email
+                   th:text="${#authentication.principal.email}">email@example.com</p>
 
-                <!-- Bio (static for now) -->
-                <p class="text-sm text-center text-gray-300 mt-2">
-                    Full-stack developer passionate about creating amazing user experiences
-                </p>
-
-                <!-- Location + Joined date + Website (static placeholders) -->
+                <!-- Static fields -->
                 <div class="flex items-center gap-2 mt-3 text-sm text-gray-400">
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd"
-                              d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7
-                     7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                              d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
                               clip-rule="evenodd"/>
                     </svg>
                     San Francisco, CA
                 </div>
                 <div class="flex items-center gap-2 mt-1 text-sm text-gray-400">
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                              d="M6 2a1 1 0 00-1…(omitted)…v-1H7V3a1"/>
+                        <path fill-rule="evenodd" d="M6 2a1..." />
                     </svg>
                     Joined March 2023
                 </div>
                 <div class="flex items-center gap-2 mt-1 text-sm text-gray-400">
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                              d="M12.586 4.586a2 2…(omitted)…l3-3z"
-                              clip-rule="evenodd"/>
+                        <path fill-rule="evenodd" d="M12.586 4.586a2..." />
                     </svg>
-                    <h2 th:text="${currentUser.firstName} + '.dev'">Name</h2>
-  </span>
+                    <span th:text="${#authentication.principal.firstName + '.dev'}">Username.dev</span>
                 </div>
             </div>
 
-            <!-- Stats (still static) -->
+            <!-- Static stats -->
             <div class="stats stats-vertical mt-6 bg-gray-700">
                 <div class="stat">
                     <div class="stat-title text-gray-400">Posts</div>
@@ -84,29 +69,7 @@
                 </div>
             </div>
 
-            <a th:href="@{/profile-settings}" class="btn btn-primary mt-4 w-full text-center">Edit Profile</a>
-
-        </div>
-    </div>
-
-    <!-- Weekly Stats (still static) -->
-    <div class="card bg-gray-800 shadow-xl mt-6">
-        <div class="card-body">
-            <h3 class="card-title text-white">This Week</h3>
-            <div class="space-y-3">
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-400">Profile views</span>
-                    <span class="text-green-400 font-semibold">+24</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-400">New connections</span>
-                    <span class="text-green-400 font-semibold">+12</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-400">Post impressions</span>
-                    <span class="text-green-400 font-semibold">+156</span>
-                </div>
-            </div>
+            <button onclick="openProfileSettingsModal()" class="btn btn-primary mt-4 w-full text-center transition-transform hover:scale-105">Edit Profile</button>
         </div>
     </div>
 </div>
