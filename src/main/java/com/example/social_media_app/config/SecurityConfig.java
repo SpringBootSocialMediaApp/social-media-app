@@ -23,9 +23,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/api/**") // Disable CSRF for API endpoints
+                )
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/css/**", "/js/**", "/login", "/register", "/error").permitAll()
+                        .requestMatchers("/api/users/**", "/api/friends/**").authenticated() // Require authentication for APIs
+
                 .userDetailsService(customUserDetailsService) // THIS LINE IS CRITICAL
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/js/**", "/login", "/register", "/error").permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

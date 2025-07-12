@@ -22,11 +22,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void save(User user) {
-        userRepository.save(user);  // saves changes
-    }
-
-    @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
     }
@@ -36,15 +31,25 @@ public class UserServiceImpl implements UserService {
         return userRepository.existsByEmail(email);
     }
 
-    
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username).orElse(null);
+    }
+
+    @Override
+    public void save(User user) {
+        userRepository.save(user);
+    }
+
+    @Override
+    public Page<User> findUsersForFriendSuggestions(Long currentUserId, Pageable pageable) {
+        // You may need to implement this method in your UserRepository as well
+        // For now, let's assume such a method exists
+        return userRepository.findUsersForFriendSuggestions(currentUserId, pageable);
+    }
 
     @Override
     public Page<User> findAllUsersExceptCurrent(Long currentUserId, Pageable pageable) {
         return userRepository.findAllExceptCurrentUser(currentUserId, pageable);
-    }
-
-    @Override
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username).orElse(null);
     }
 }
