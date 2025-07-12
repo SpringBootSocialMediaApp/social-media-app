@@ -10,6 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
@@ -21,11 +22,34 @@ public class PostController {
     @PostMapping("/posts")
     public String createPost(
             @RequestParam("content") String content,
-            @AuthenticationPrincipal UserDetails userDetails
+            @AuthenticationPrincipal UserDetails userDetails,
+            RedirectAttributes redirectAttributes
     ) {
-        User author = userService.findByEmail(userDetails.getUsername());
-        postService.createPost(content, author);
-        return "redirect:/home";
+        // Validate content
+        if (content == null || content.trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Post content cannot be empty. Please write something before posting.");
+            return "redirect:/home";
+        }
+        
+        if (content.trim().length() > 280) {
+            redirectAttributes.addFlashAttribute("error", "Post content is too long. Please keep it under 280 characters.");
+            return "redirect:/home";
+        }
+        
+        try {
+            User author = userService.findByEmail(userDetails.getUsername());
+            if (author == null) {
+                redirectAttributes.addFlashAttribute("error", "User not found. Please try logging in again.");
+                return "redirect:/home";
+            }
+            
+            postService.createPost(content.trim(), author);
+            redirectAttributes.addFlashAttribute("success", "Post created successfully!");
+            return "redirect:/home";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to create post. Please try again.");
+            return "redirect:/home";
+        }
     }
 
     @DeleteMapping("/api/posts/{postId}")
