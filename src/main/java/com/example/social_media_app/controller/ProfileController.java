@@ -3,6 +3,7 @@ package com.example.social_media_app.controller;
 import com.example.social_media_app.model.User;
 import com.example.social_media_app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,10 +13,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Controller
 public class ProfileController {
@@ -25,6 +33,9 @@ public class ProfileController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Value("${app.upload.dir:uploads}")
+    private String uploadDir;
 
     @GetMapping("/profile/settings")
     public String showSettings(Model model, @AuthenticationPrincipal UserDetails userDetails) {
@@ -102,7 +113,17 @@ public class ProfileController {
 
     @PostMapping("/profile/update-ajax")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> updateProfileAjax(@RequestBody Map<String, String> updateData) {
+    public ResponseEntity<Map<String, Object>> updateProfileAjax(
+            @RequestParam("firstName") String firstName,
+            @RequestParam("lastName") String lastName,
+            @RequestParam("email") String email,
+            @RequestParam(value = "password", required = false) String password,
+            @RequestParam(value = "city", required = false) String city,
+            @RequestParam(value = "country", required = false) String country,
+            @RequestParam(value = "education", required = false) String education,
+            @RequestParam(value = "workplace", required = false) String workplace,
+            @RequestParam(value = "profilePictureFile", required = false) MultipartFile profilePictureFile) {
+        
         Map<String, Object> response = new HashMap<>();
 
         try {
@@ -110,9 +131,8 @@ public class ProfileController {
             User existingUser = userService.findByEmail(authentication.getName());
 
             // Check if email is being changed and if new email already exists
-            String newEmail = updateData.get("email");
-            if (newEmail != null && !existingUser.getEmail().equals(newEmail)) {
-                if (userService.existsByEmail(newEmail)) {
+            if (email != null && !existingUser.getEmail().equals(email)) {
+                if (userService.existsByEmail(email)) {
                     response.put("success", false);
                     response.put("message", "Email address is already in use by another account.");
                     return ResponseEntity.badRequest().body(response);
@@ -120,40 +140,48 @@ public class ProfileController {
             }
 
             // Update user fields
-            if (updateData.get("firstName") != null) {
-                existingUser.setFirstName(updateData.get("firstName"));
+            if (firstName != null && !firstName.trim().isEmpty()) {
+                existingUser.setFirstName(firstName);
             }
-            if (updateData.get("lastName") != null) {
-                existingUser.setLastName(updateData.get("lastName"));
+            if (lastName != null && !lastName.trim().isEmpty()) {
+                existingUser.setLastName(lastName);
             }
-            if (newEmail != null) {
-                existingUser.setEmail(newEmail);
+            if (email != null && !email.trim().isEmpty()) {
+                existingUser.setEmail(email);
                 // Update username based on new email
-                String newUsername = newEmail.split("@")[0];
+                String newUsername = email.split("@")[0];
                 existingUser.setUsername(newUsername);
             }
 
-            // Update new profile fields
-            if (updateData.get("profilePicture") != null) {
-                existingUser.setProfilePicture(updateData.get("profilePicture"));
+            // Handle profile picture upload
+            if (profilePictureFile != null && !profilePictureFile.isEmpty()) {
+                try {
+                    String profilePictureUrl = saveProfilePicture(profilePictureFile);
+                    existingUser.setProfilePicture(profilePictureUrl);
+                } catch (IOException e) {
+                    response.put("success", false);
+                    response.put("message", "Failed to upload profile picture. Please try again.");
+                    return ResponseEntity.badRequest().body(response);
+                }
             }
-            if (updateData.get("city") != null) {
-                existingUser.setCity(updateData.get("city"));
+
+            // Update other profile fields
+            if (city != null) {
+                existingUser.setCity(city.trim().isEmpty() ? null : city);
             }
-            if (updateData.get("country") != null) {
-                existingUser.setCountry(updateData.get("country"));
+            if (country != null) {
+                existingUser.setCountry(country.trim().isEmpty() ? null : country);
             }
-            if (updateData.get("education") != null) {
-                existingUser.setEducation(updateData.get("education"));
+            if (education != null) {
+                existingUser.setEducation(education.trim().isEmpty() ? null : education);
             }
-            if (updateData.get("workplace") != null) {
-                existingUser.setWorkplace(updateData.get("workplace"));
+            if (workplace != null) {
+                existingUser.setWorkplace(workplace.trim().isEmpty() ? null : workplace);
             }
 
             // Update password only if provided
-            String newPassword = updateData.get("password");
-            if (newPassword != null && !newPassword.trim().isEmpty()) {
-                existingUser.setPassword(passwordEncoder.encode(newPassword));
+            if (password != null && !password.trim().isEmpty()) {
+                existingUser.setPassword(passwordEncoder.encode(password));
             }
 
             userService.save(existingUser);
@@ -176,11 +204,6 @@ public class ProfileController {
 
             response.put("user", userData);
 
-            System.out.println("=== Profile Update Response ===");
-            System.out.println("User data being returned: " + userData);
-            System.out.println("Username: " + existingUser.getUsername());
-            System.out.println("Email: " + existingUser.getEmail());
-
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
@@ -188,5 +211,28 @@ public class ProfileController {
             response.put("message", "Failed to update profile. Please try again.");
             return ResponseEntity.badRequest().body(response);
         }
+    }
+
+    private String saveProfilePicture(MultipartFile file) throws IOException {
+        // Create upload directory if it doesn't exist
+        File uploadDirFile = new File(uploadDir + "/profiles");
+        if (!uploadDirFile.exists()) {
+            uploadDirFile.mkdirs();
+        }
+
+        // Generate unique filename
+        String originalFilename = file.getOriginalFilename();
+        String fileExtension = "";
+        if (originalFilename != null && originalFilename.contains(".")) {
+            fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+        }
+        String filename = UUID.randomUUID().toString() + fileExtension;
+
+        // Save file
+        Path filePath = Paths.get(uploadDir + "/profiles/" + filename);
+        Files.write(filePath, file.getBytes());
+
+        // Return URL path
+        return "/uploads/profiles/" + filename;
     }
 }

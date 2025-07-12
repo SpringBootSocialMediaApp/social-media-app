@@ -428,7 +428,7 @@ function getCurrentUserEmail() {
         document.getElementById('firstName').value = data.firstName || '';
         document.getElementById('lastName').value = data.lastName || '';
         document.getElementById('email').value = data.email || '';
-        document.getElementById('profilePicture').value = data.profilePicture || '';
+        // Don't pre-populate file input - it's not possible for security reasons
         document.getElementById('password').value = ''; // Never pre-populate password
         document.getElementById('city').value = data.city || '';
         document.getElementById('country').value = data.country || '';
@@ -449,26 +449,35 @@ function getCurrentUserEmail() {
     const modal = document.getElementById('profileSettingsModal');
     modal.classList.add('hidden');
     document.body.classList.remove('overflow-hidden');
+    
+    // Clear file input and preview
+    document.getElementById('profilePicture').value = '';
+    document.getElementById('imagePreview').classList.add('hidden');
   }
 
   // Function to handle AJAX profile update
   function updateProfileAjax(event) {
     event.preventDefault();
     
-    const formData = {
-      firstName: document.getElementById('firstName').value,
-      lastName: document.getElementById('lastName').value,
-      email: document.getElementById('email').value,
-      profilePicture: document.getElementById('profilePicture').value,
-      password: document.getElementById('password').value,
-      city: document.getElementById('city').value,
-      country: document.getElementById('country').value,
-      education: document.getElementById('education').value,
-      workplace: document.getElementById('workplace').value
-    };
+    // Create FormData to handle file upload
+    const formData = new FormData();
+    formData.append('firstName', document.getElementById('firstName').value);
+    formData.append('lastName', document.getElementById('lastName').value);
+    formData.append('email', document.getElementById('email').value);
+    formData.append('password', document.getElementById('password').value);
+    formData.append('city', document.getElementById('city').value);
+    formData.append('country', document.getElementById('country').value);
+    formData.append('education', document.getElementById('education').value);
+    formData.append('workplace', document.getElementById('workplace').value);
+    
+    // Add profile picture file if selected
+    const profilePictureFile = document.getElementById('profilePicture').files[0];
+    if (profilePictureFile) {
+      formData.append('profilePictureFile', profilePictureFile);
+    }
     
     console.log('=== Submitting profile update ===');
-    console.log('Form data:', formData);
+    console.log('Form data prepared with file:', profilePictureFile ? profilePictureFile.name : 'No file selected');
     
     // Get CSRF token
     const csrfToken = document.querySelector('input[name="_csrf"]').value;
@@ -476,10 +485,10 @@ function getCurrentUserEmail() {
     fetch('/profile/update-ajax', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
         'X-CSRF-TOKEN': csrfToken
+        // Don't set Content-Type - let browser set it for FormData
       },
-      body: JSON.stringify(formData)
+      body: formData
     })
     .then(response => response.json())
     .then(data => {
@@ -496,6 +505,9 @@ function getCurrentUserEmail() {
         
         // Close modal
         closeProfileSettingsModal();
+        
+        // Clear the file input
+        document.getElementById('profilePicture').value = '';
       } else {
         console.log('Update failed:', data.message);
         showNotification(data.message || 'Failed to update profile', 'error');
@@ -639,6 +651,25 @@ function getCurrentUserEmail() {
     console.log('Testing with data:', testData);
     updateUIWithUserData(testData);
   }
+
+  // Function to preview selected profile image
+  function previewProfileImage(input) {
+    const preview = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('previewImg');
+    
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      
+      reader.onload = function(e) {
+        previewImg.src = e.target.result;
+        preview.classList.remove('hidden');
+      };
+      
+      reader.readAsDataURL(input.files[0]);
+    } else {
+      preview.classList.add('hidden');
+    }
+  }
 </script>
 
 <!-- Profile Settings Modal -->
@@ -681,10 +712,13 @@ function getCurrentUserEmail() {
         </div>
 
         <div>
-          <label for="profilePicture" class="block text-sm font-medium text-gray-300 mb-2">Profile Picture (URL)</label>
-          <input type="url" id="profilePicture" name="profilePicture" 
-                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                 placeholder="https://example.com/your-image.jpg">
+          <label for="profilePicture" class="block text-sm font-medium text-gray-300 mb-2">Profile Picture</label>
+          <input type="file" id="profilePicture" name="profilePicture" accept="image/*" onchange="previewProfileImage(this)"
+                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-blue-600 file:text-white hover:file:bg-blue-700">
+          <p class="mt-1 text-xs text-gray-400">Upload an image file (JPG, PNG, GIF, max 10MB)</p>
+          <div id="imagePreview" class="mt-3 hidden">
+            <img id="previewImg" src="" alt="Preview" class="w-24 h-24 rounded-full object-cover border-2 border-gray-600">
+          </div>
         </div>
 
         <div>
