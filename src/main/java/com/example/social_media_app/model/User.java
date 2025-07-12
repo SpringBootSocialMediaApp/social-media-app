@@ -4,9 +4,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -36,4 +37,27 @@ public class User {
 
     @NotBlank(message = "Gender is required")
     private String gender;
+
+    private String profilePicture;
+
+    private String username;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<Post> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<Like> likes = new ArrayList<>();
+
+    @PrePersist
+    public void prePersist() {
+        if (username == null || username.isEmpty()) {
+            username = email.split("@")[0];
+        }
+    }
 }

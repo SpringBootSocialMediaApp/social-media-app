@@ -10,52 +10,35 @@
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+
+  <!-- CSRF Token for AJAX requests -->
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
-<body class="animate-gradient-ocean text-white">
+<body class="text-white animate-gradient-ocean">
+<!-- Hidden input to store current user email for JavaScript -->
+<input type="hidden" id="currentUserEmail" th:value="${#authentication.name}" sec:authorize="isAuthenticated()">
+
 <div th:replace="components/navbar :: navbar"></div>
-<div class="flex max-w-7xl mx-auto">
+<div class="flex mx-auto max-w-7xl">
   <div th:replace="components/profile-sidebar :: profileSidebar"></div>
   <div th:replace="components/feed :: feed"></div>
   <div th:replace="components/right-sidebar :: rightSidebar"></div>
 </div>
 <div th:replace="components/mobile-navbar :: mobileNavbar"></div>
-
-<!-- Profile Settings Modal -->
-<div id="profileSettingsModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-60 flex items-center justify-center">
-  <div class="bg-gray-900 rounded-2xl p-8 shadow-2xl w-full max-w-2xl relative">
-    <button onclick="closeProfileSettingsModal()" class="absolute top-4 right-4 text-white text-xl">&times;</button>
-    <h1 class="text-3xl font-bold text-brand-400 mb-6">Edit Profile</h1>
-
-    <form th:action="@{/profile/update}" method="post" class="space-y-4">
-      <div>
-        <label class="block text-sm font-semibold mb-1">First Name</label>
-        <input type="text" name="firstName" class="input input-bordered w-full bg-gray-800 border-gray-700 text-white" placeholder="Anujaya" required>
-      </div>
-      <div>
-        <label class="block text-sm font-semibold mb-1">Last Name</label>
-        <input type="text" name="lastName" class="input input-bordered w-full bg-gray-800 border-gray-700 text-white" placeholder="Perera" required>
-      </div>
-      <div>
-        <label class="block text-sm font-semibold mb-1">Email</label>
-        <input type="email" name="email" class="input input-bordered w-full bg-gray-800 border-gray-700 text-white" placeholder="you@example.com" required>
-      </div>
-      <div>
-        <label class="block text-sm font-semibold mb-1">Password</label>
-        <input type="password" name="password" class="input input-bordered w-full bg-gray-800 border-gray-700 text-white" placeholder="••••••••" required>
-      </div>
-      <button type="submit" class="btn btn-primary mt-4 w-full">Save Changes</button>
-    </form>
-  </div>
-</div>
-
 <script>
+  // CSRF setup for AJAX
+  const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
+  const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+
   document.addEventListener('DOMContentLoaded', function() {
-    const textarea = document.querySelector('textarea');
+    // Character counter for post textarea
+    const textarea = document.querySelector('textarea[name="content"]');
     const charCounter = document.querySelector('.text-xs.text-gray-400');
     if (textarea && charCounter) {
       textarea.addEventListener('input', function() {
         const count = this.value.length;
-        charCounter.textContent = count + '/280 characters';
+        charCounter.textContent = count + '/280 Characters';
         if (count > 280) {
           charCounter.classList.add('text-red-400');
           charCounter.classList.remove('text-gray-400');
@@ -66,31 +49,370 @@
       });
     }
 
-    const likeButtons = document.querySelectorAll('.btn-ghost:has(svg)');
-    likeButtons.forEach(button => {
-      if (button.textContent.trim().match(/^\d+$/)) {
-        button.addEventListener('click', function() {
-          const heartSvg = this.querySelector('svg');
-          if (heartSvg && heartSvg.classList.contains('fill-red-400')) {
-            heartSvg.classList.remove('fill-red-400');
-            this.classList.remove('text-red-400');
-            this.classList.add('text-gray-400');
-          } else if (heartSvg) {
-            heartSvg.classList.add('fill-red-400');
-            this.classList.add('text-red-400');
-            this.classList.remove('text-gray-400');
-          }
-        });
-      }
-    });
+    // Initialize like buttons and comment functionality
+    initializePostInteractions();
   });
 
-  function openProfileSettingsModal() {
-    document.getElementById('profileSettingsModal').classList.remove('hidden');
+  // Function to initialize post interactions
+  function initializePostInteractions() {
+    // Get all posts
+    const posts = document.querySelectorAll('.post-card');
+    
+    posts.forEach(post => {
+      const postId = post.dataset.postId;
+      const likeButton = post.querySelector('.like-button');
+      const commentButton = post.querySelector('.comment-button');
+      const deleteButton = post.querySelector('.delete-post-button');
+
+      // Initialize like count and status
+      fetchLikeStatus(postId, likeButton);
+      
+      // Add event listener for like button
+      likeButton.addEventListener('click', () => toggleLike(postId, likeButton));
+      
+      // Add event listener for comment button
+      commentButton.addEventListener('click', () => openCommentModal(postId));
+
+      // Add event listener for delete button (if it exists)
+      if (deleteButton) {
+        deleteButton.addEventListener('click', () => deletePost(postId));
+      }
+    });
+    
+    // Setup comment modal close button
+    document.getElementById('closeCommentModal').addEventListener('click', closeCommentModal);
+    
+    // Setup comment form submission
+    document.getElementById('commentForm').addEventListener('submit', submitComment);
+    
+    // Close modal when clicking outside
+    document.getElementById('commentModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeCommentModal();
+      }
+    });
   }
 
-  function closeProfileSettingsModal() {
-    document.getElementById('profileSettingsModal').classList.add('hidden');
+  // Function to fetch and update like status
+  function fetchLikeStatus(postId, likeButton) {
+    // Add user context to the request to ensure proper user-specific status
+    const currentUser = getCurrentUserEmail();
+    if (!currentUser) {
+      console.error('No current user found for like status check');
+      return;
+    }
+
+    fetch(`/api/likes/${postId}/status`, {
+      method: 'GET',
+      headers: {
+        [csrfHeader]: csrfToken,
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log(`Fetching like status for post ${postId}: user=${currentUser}, liked=${data.liked}, count=${data.likeCount}`);
+        updateLikeButton(likeButton, data.liked, data.likeCount);
+      })
+      .catch(error => {
+        console.error('Error fetching like status:', error);
+        // Set default state on error
+        updateLikeButton(likeButton, false, 0);
+      });
+  }
+
+  // Function to toggle like
+  function toggleLike(postId, likeButton) {
+    fetch(`/api/likes/${postId}`, {
+      method: 'POST',
+      headers: {
+        [csrfHeader]: csrfToken
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        updateLikeButton(likeButton, data.liked, data.likeCount);
+      })
+      .catch(error => console.error('Error toggling like:', error));
+  }
+
+  // Function to update like button appearance
+  function updateLikeButton(button, isLiked, likeCount) {
+    const countSpan = button.querySelector('.like-count');
+    countSpan.textContent = likeCount;
+    
+    // Debug logging to help identify the issue
+    const postId = button.closest('.post-card').dataset.postId;
+    console.log(`Post ${postId}: isLiked=${isLiked}, likeCount=${likeCount}, currentUser=${getCurrentUserEmail()}`);
+
+    // Update the heart icon and color
+    const svg = button.querySelector('svg');
+    
+    if (isLiked) {
+      button.classList.add('text-red-500');
+      button.classList.remove('text-gray-400');
+      svg.setAttribute('fill', 'currentColor');
+      svg.setAttribute('stroke', 'none');
+    } else {
+      button.classList.remove('text-red-500');
+      button.classList.add('text-gray-400');
+      svg.setAttribute('fill', 'none');
+      svg.setAttribute('stroke', 'currentColor');
+    }
+  }
+
+  // Function to open comment modal
+  function openCommentModal(postId) {
+    const modal = document.getElementById('commentModal');
+    document.getElementById('postIdInput').value = postId;
+    modal.classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+    
+    // Fetch post details
+    const postCard = document.querySelector(`.post-card[data-post-id="${postId}"]`);
+    const authorName = postCard.querySelector('h3').textContent;
+    const postTime = postCard.querySelector('.text-gray-400.text-sm').textContent;
+    const postContent = postCard.querySelector('p.text-gray-300').textContent;
+    
+    // Update modal content
+    document.getElementById('modalPostAuthor').textContent = authorName;
+    document.getElementById('modalPostTime').textContent = postTime;
+    document.getElementById('modalPostText').textContent = postContent;
+    
+    // Fetch comments
+    fetchComments(postId);
+  }
+
+  // Function to close comment modal
+  function closeCommentModal() {
+    const modal = document.getElementById('commentModal');
+    modal.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+    document.getElementById('commentContent').value = '';
+  }
+
+  // Function to fetch comments
+  function fetchComments(postId) {
+    const commentsList = document.getElementById('commentsList');
+    commentsList.innerHTML = '<div class="flex justify-center"><div class="w-6 h-6 border-b-2 rounded-full animate-spin border-brand-400"></div></div>';
+    
+    fetch(`/api/comments/${postId}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(comments => {
+        console.log("Comments loaded:", comments);
+        if (!comments || comments.length === 0) {
+          commentsList.innerHTML = '<p class="text-center text-gray-400">No comments yet. Be the first to comment!</p>';
+          return;
+        }
+        
+        commentsList.innerHTML = '';
+        comments.forEach(comment => {
+          const commentElement = createCommentElement(comment);
+          commentsList.appendChild(commentElement);
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching comments:', error);
+        commentsList.innerHTML = '<p class="text-center text-red-400">Failed to load comments. Please try again.</p>';
+      });
+  }
+
+ // Fix the createCommentElement function
+function createCommentElement(comment) {
+    const div = document.createElement('div');
+    div.className = 'flex items-start gap-3 p-3 bg-gray-700 rounded-lg';
+
+    let formattedDate;
+    try {
+      formattedDate = new Date(comment.createdAt).toLocaleString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (e) {
+      formattedDate = 'Unknown date';
+      console.error('Date formatting error:', e);
+    }
+    
+    // Handle potentially missing user data
+    const firstName = comment.user && comment.user.firstName ? comment.user.firstName : 'Unknown';
+    const lastName = comment.user && comment.user.lastName ? comment.user.lastName : 'User';
+    
+    // Get current user info from the post card (since we know the current user can see the page)
+    const currentUserEmail = document.querySelector('meta[name="_csrf"]') ?
+      getCurrentUserEmail() : '';
+
+    // Determine if current user can delete this comment (comment owner OR post owner)
+    const isCommentOwner = comment.user && comment.user.email === currentUserEmail;
+    const isPostOwner = comment.post && comment.post.user && comment.post.user.email === currentUserEmail;
+    const canDelete = isCommentOwner || isPostOwner;
+
+    const deleteButtonHTML = canDelete ? `
+      <button onclick="deleteComment(${comment.id}, ${comment.post.id})"
+              class="text-gray-400 hover:text-red-400 text-xs ml-2"
+              title="Delete comment">
+        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+        </svg>
+      </button>
+    ` : '';
+
+    div.innerHTML = `
+      <div class="avatar">
+        <div class="flex items-center justify-center w-8 rounded-full bg-brand-300">
+          <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+          </svg>
+        </div>
+      </div>
+      <div class="flex-1">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <h5 class="font-medium text-white">${firstName} ${lastName}</h5>
+            <span class="text-xs text-gray-400">${formattedDate}</span>
+          </div>
+          ${deleteButtonHTML}
+        </div>
+        <p class="text-sm text-gray-300 mt-1">${comment.content}</p>
+      </div>
+    `;
+    
+    return div;
+}
+
+// Helper function to get current user email
+function getCurrentUserEmail() {
+    // Get the current user email from the hidden input field
+    const currentUserEmailInput = document.getElementById('currentUserEmail');
+    if (currentUserEmailInput && currentUserEmailInput.value) {
+        return currentUserEmailInput.value;
+    }
+
+    return '';
+}
+
+  // Function to delete a post
+  function deletePost(postId) {
+    if (!confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+      return;
+    }
+
+    fetch(`/api/posts/${postId}`, {
+      method: 'DELETE',
+      headers: {
+        [csrfHeader]: csrfToken
+      }
+    })
+      .then(response => {
+        if (response.ok) {
+          // Remove the post from the DOM
+          const postCard = document.querySelector(`.post-card[data-post-id="${postId}"]`);
+          if (postCard) {
+            postCard.remove();
+          }
+          showNotification('Post deleted successfully!', 'success');
+        } else {
+          response.text().then(text => {
+            showNotification(text || 'Error deleting post', 'error');
+          });
+        }
+      })
+      .catch(error => {
+        console.error('Error deleting post:', error);
+        showNotification('Error deleting post. Please try again.', 'error');
+      });
+  }
+
+  // Function to delete a comment
+  function deleteComment(commentId, postId) {
+    if (!confirm('Are you sure you want to delete this comment?')) {
+      return;
+    }
+
+    fetch(`/api/comments/${commentId}`, {
+      method: 'DELETE',
+      headers: {
+        [csrfHeader]: csrfToken
+      }
+    })
+      .then(response => {
+        if (response.ok) {
+          // Refresh comments list
+          fetchComments(postId);
+          showNotification('Comment deleted successfully!', 'success');
+        } else {
+          response.text().then(text => {
+            showNotification(text || 'Error deleting comment', 'error');
+          });
+        }
+      })
+      .catch(error => {
+        console.error('Error deleting comment:', error);
+        showNotification('Error deleting comment. Please try again.', 'error');
+      });
+  }
+
+  // Function to show notification
+  function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg text-white ${
+      type === 'success' ? 'bg-green-500' : 'bg-red-500'
+    }`;
+    notification.textContent = message;
+
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+      notification.remove();
+    }, 3000);
+  }
+
+  // Function to submit comment
+  function submitComment(e) {
+    e.preventDefault();
+    
+    const postId = document.getElementById('postIdInput').value;
+    const content = document.getElementById('commentContent').value.trim();
+    
+    if (!content) return;
+    
+    const submitButton = this.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+    submitButton.innerHTML = '<span class="loading loading-spinner loading-xs"></span> Posting...';
+    
+    fetch(`/api/comments/${postId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        [csrfHeader]: csrfToken
+      },
+      body: JSON.stringify({ content })
+    })
+      .then(response => response.json())
+      .then(comment => {
+        // Reset form and re-fetch comments
+        document.getElementById('commentContent').value = '';
+        fetchComments(postId);
+        submitButton.disabled = false;
+        submitButton.textContent = 'Post Comment';
+      })
+      .catch(error => {
+        console.error('Error posting comment:', error);
+        submitButton.disabled = false;
+        submitButton.textContent = 'Post Comment';
+      });
   }
 </script>
 </body>

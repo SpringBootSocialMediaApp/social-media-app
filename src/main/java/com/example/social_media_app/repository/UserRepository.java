@@ -12,7 +12,7 @@ import org.springframework.data.repository.query.Param;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
     boolean existsByEmail(String email);
-
+    Optional<User> findByUsername(String username);
     @Query("SELECT u FROM User u WHERE u.id <> :currentUserId")
     Page<User> findAllExceptCurrentUser(@Param("currentUserId") Long currentUserId, Pageable pageable);
 }
