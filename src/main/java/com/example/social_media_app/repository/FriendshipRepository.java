@@ -20,7 +20,7 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Long> {
     
     // Get all friends for a user
     @Query(value = "SELECT u.* FROM users u " +
-           "JOIN friendship f ON (u.id = f.user1_id AND f.user2_id = :userId) " +
+           "JOIN friendships f ON (u.id = f.user1_id AND f.user2_id = :userId) " +
            "OR (u.id = f.user2_id AND f.user1_id = :userId)",
            nativeQuery = true)
     Page<User> findFriendsByUserId(@Param("userId") Long userId, Pageable pageable);
