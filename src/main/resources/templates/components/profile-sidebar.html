@@ -2,20 +2,20 @@
 <div th:fragment="profileSidebar"
      xmlns:th="http://www.thymeleaf.org"
      xmlns:sec="https://www.thymeleaf.org/extras/spring-security6"
-     class="w-80 p-6 hidden lg:block">
+     class="hidden p-6 w-80 lg:block">
 
-    <div class="card bg-gray-800 shadow-xl">
+    <div class="mr-1 bg-gray-800 shadow-xl w-80 rounded-xl card">
         <div class="card-body">
             <div class="flex flex-col items-center">
 
                 <!-- Avatar + Online Dot -->
                 <div class="relative w-20 h-20">
                     <a href="/profile.html">
-                        <div class="rounded-full ring ring-brand-500 ring-offset-base-100 ring-offset-2 w-full h-full bg-brand-500 flex items-center justify-center transition-transform hover:scale-105" id="profile-avatar-container">
+                        <div class="flex items-center justify-center w-full h-full transition-transform rounded-full ring ring-brand-500 ring-offset-base-100 ring-offset-2 bg-brand-500 hover:scale-105" id="profile-avatar-container">
                             <img th:if="${#authentication.principal.profilePicture != null and #authentication.principal.profilePicture != ''}" 
                                  th:src="${#authentication.principal.profilePicture}" 
                                  alt="Profile" 
-                                 class="w-full h-full rounded-full object-cover"
+                                 class="object-cover w-full h-full rounded-full"
                                  id="profile-picture-img"/>
                             <svg th:unless="${#authentication.principal.profilePicture != null and #authentication.principal.profilePicture != ''}" 
                                  class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20"
@@ -24,17 +24,17 @@
                             </svg>
                         </div>
                     </a>
-                    <div class="absolute bottom-0 right-0 w-5 h-5 bg-green-500 rounded-full border-2 border-gray-800"></div>
+                    <div class="absolute bottom-0 right-0 w-5 h-5 bg-green-500 border-2 border-gray-800 rounded-full"></div>
                 </div>
 
                 <!-- User Info -->
-                <h2 class="card-title text-white mt-4" data-user-name
+                <h2 class="mt-4 text-white card-title" data-user-name
                     th:text="${#authentication.principal.firstName + ' ' + #authentication.principal.lastName}">Name</h2>
 
                 <p class="text-gray-400" data-user-username
                    th:text="'@' + ${#authentication.principal.username}">@username</p>
 
-                <p class="text-sm text-center text-gray-300 mt-2" data-user-email
+                <p class="mt-2 text-sm text-center text-gray-300" data-user-email
                    th:text="${#authentication.principal.email}">email@example.com</p>
 
                 <!-- Location Info -->
@@ -69,22 +69,22 @@
             </div>
 
             <!-- Dynamic stats -->
-            <div class="stats stats-vertical mt-6 bg-gray-700">
-                <div class="stat">
-                    <div class="stat-title text-gray-400">Posts</div>
-                    <div class="stat-value text-white" th:text="${userStats.formattedPostsCount}">0</div>
+            <div class="flex items-center mt-6 bg-gray-700 stats stats-vertical">
+                <div class="stat ">
+                    <div class="text-xs text-gray-400 stat-title">Posts</div>
+                    <div class="text-white stat-value " th:text="${userStats.formattedPostsCount}">0</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-title text-gray-400">Friends</div>
-                    <div class="stat-value text-white" th:text="${userStats.formattedFriendsCount}">0</div>
+                    <div class="text-xs text-gray-400 stat-title">Friends</div>
+                    <div class="text-white stat-value" th:text="${userStats.formattedFriendsCount}">0</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-title text-gray-400">Likes</div>
-                    <div class="stat-value text-white" th:text="${userStats.formattedLikesCount}">0</div>
+                    <div class="text-xs text-gray-400 stat-title">Likes</div>
+                    <div class="text-white stat-value" th:text="${userStats.formattedLikesCount}">0</div>
                 </div>
             </div>
 
-            <button onclick="openProfileSettingsModal()" class="btn btn-primary mt-4 w-full text-center transition-transform hover:scale-105">Edit Profile</button>
+            <button onclick="openProfileSettingsModal()" class="w-full mt-4 text-center transition-transform btn btn-primary hover:scale-105">Edit Profile</button>
         </div>
     </div>
 </div>

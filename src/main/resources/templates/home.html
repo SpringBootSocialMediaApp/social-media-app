@@ -17,12 +17,12 @@
   <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
   
 </head>
-<body class="text-white animate-gradient-ocean">
+<body class="text-white animate-gradient-ocean ">
 <!-- Hidden input to store current user email for JavaScript -->
 <input type="hidden" id="currentUserEmail" th:value="${#authentication.name}" sec:authorize="isAuthenticated()">
 
 <div th:replace="~{components/navbar :: navbar}"></div>
-<div class="flex mx-auto max-w-7xl">
+<div class="flex mx-2 max-w-7xl">
   <div th:replace="~{components/profile-sidebar :: profileSidebar}"></div>
   <div th:replace="~{components/feed :: feed}"></div>
   <div th:replace="~{components/right-sidebar :: rightSidebar}"></div>
