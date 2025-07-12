@@ -382,7 +382,6 @@
 
     // Function to load incoming friend requests
     async function loadIncomingRequests(page = 0) {
-        console.log('Loading incoming requests, page:', page);
         const loadingDiv = document.getElementById('loading-requests');
         if (loadingDiv) {
             loadingDiv.style.display = 'flex';
@@ -390,10 +389,8 @@
         
         try {
             const response = await fetch(`/api/friends/incoming?page=${page}&size=10`);
-            console.log('Response status:', response.status);
             if (response.ok) {
                 const data = await response.json();
-                console.log('Incoming requests data:', data);
                 displayIncomingRequests(data.content);
                 return data;
             } else {
@@ -422,6 +419,8 @@
                 const data = await response.json();
                 displayOutgoingRequests(data.content);
                 return data;
+            } else {
+                console.error('Failed to load outgoing requests:', response.status, response.statusText);
             }
         } catch (error) {
             console.error('Error loading outgoing requests:', error);
@@ -628,7 +627,6 @@
 
     // Function to display incoming friend requests
     function displayIncomingRequests(requests) {
-        console.log('Displaying incoming requests:', requests);
         const container = document.getElementById('friend-requests-container');
         const loadingDiv = document.getElementById('loading-requests');
         
@@ -637,7 +635,6 @@
         }
         
         if (!requests || requests.length === 0) {
-            console.log('No incoming requests to display');
             container.innerHTML = `
                 <div class="text-center py-8">
                     <div class="text-gray-500">
@@ -652,7 +649,6 @@
             return;
         }
 
-        console.log('Creating HTML for', requests.length, 'requests');
         container.innerHTML = `
             <div class="space-y-4">
                 ${requests.map(request => createIncomingRequestCard(request)).join('')}
@@ -726,7 +722,6 @@
 
     // Function to create incoming request card
     function createIncomingRequestCard(request) {
-        console.log('Creating card for request:', request);
         const sender = request.sender;
         const fullName = `${sender.firstName} ${sender.lastName}`;
         const profileImage = getRandomProfileImage(sender.gender, sender.id);
@@ -958,9 +953,12 @@
             item.classList.add('text-gray-700');
         });
 
-        // Set active nav item
-        event.target.classList.add('active', 'bg-blue-50', 'text-blue-600');
-        event.target.classList.remove('text-gray-700');
+        // Set active nav item - find the button for this section
+        const targetButton = document.querySelector(`[onclick="showSection('${sectionId}')"]`);
+        if (targetButton) {
+            targetButton.classList.add('active', 'bg-blue-50', 'text-blue-600');
+            targetButton.classList.remove('text-gray-700');
+        }
 
         // Load appropriate data for each section
         switch(sectionId) {

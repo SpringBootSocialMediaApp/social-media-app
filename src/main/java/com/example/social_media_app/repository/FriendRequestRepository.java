@@ -7,9 +7,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+@Repository
 public interface FriendRequestRepository extends JpaRepository<FriendRequest, Long> {
     
     // Check if friend request already exists between two users
@@ -20,11 +22,11 @@ public interface FriendRequestRepository extends JpaRepository<FriendRequest, Lo
     Optional<FriendRequest> findPendingRequestBetweenUsers(@Param("senderId") Long senderId, @Param("receiverId") Long receiverId);
     
     // Get incoming friend requests for a user
-    @Query("SELECT fr FROM FriendRequest fr WHERE fr.receiver.id = :userId AND fr.status = 'PENDING'")
+    @Query("SELECT fr FROM FriendRequest fr JOIN FETCH fr.sender WHERE fr.receiver.id = :userId AND fr.status = 'PENDING'")
     Page<FriendRequest> findIncomingRequests(@Param("userId") Long userId, Pageable pageable);
     
     // Get outgoing friend requests for a user
-    @Query("SELECT fr FROM FriendRequest fr WHERE fr.sender.id = :userId AND fr.status = 'PENDING'")
+    @Query("SELECT fr FROM FriendRequest fr JOIN FETCH fr.receiver WHERE fr.sender.id = :userId AND fr.status = 'PENDING'")
     Page<FriendRequest> findOutgoingRequests(@Param("userId") Long userId, Pageable pageable);
     
     // Count incoming requests

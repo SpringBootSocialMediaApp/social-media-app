@@ -3,6 +3,8 @@ package com.example.social_media_app.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name = "users")
 @Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,14 +47,17 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Builder.Default
+    @JsonIgnore
     private List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Builder.Default
+    @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Builder.Default
+    @JsonIgnore
     private List<Like> likes = new ArrayList<>();
 
     @PrePersist
