@@ -40,6 +40,7 @@ public class User {
 
     private String profilePicture;
 
+    @Column(unique = true)
     private String username;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -52,7 +53,7 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Builder.Default
-    private List<PostLike> likes = new ArrayList<>();
+    private List<Like> likes = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {

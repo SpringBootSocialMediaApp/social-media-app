@@ -1,6 +1,7 @@
 package com.example.social_media_app.controller;
 
 import com.example.social_media_app.model.User;
+import com.example.social_media_app.service.PostService;
 import com.example.social_media_app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,10 +14,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
 
     private final UserService userService;
+    private final  PostService postService;
+
 
     @Autowired
-    public HomeController(UserService userService) {
+    public HomeController(UserService userService, PostService postService) {
         this.userService = userService;
+        this.postService = postService;
     }
 
     @GetMapping("/profile-settings")
@@ -37,13 +41,14 @@ public class HomeController {
     ) {
         // lookup your JPA User by the logged-in username
         User user = userService.findByEmail(currentUserDetails.getUsername());
-
         // put it into the Thymeleaf model
         model.addAttribute("currentUser", user);
-
+        model.addAttribute("user", user);
+        model.addAttribute("posts", postService.getAllPosts());
         // render templates/home.html
         return "home";
 
 
     }
+
 }

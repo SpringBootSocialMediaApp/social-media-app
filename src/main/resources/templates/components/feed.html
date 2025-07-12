@@ -1,632 +1,182 @@
 <!-- src/main/resources/templates/components/feed.html -->
-<div th:fragment="feed" class="flex-1 p-6 max-w-2xl">
-    <!-- Create Post -->
-    <div class="bg-gray-800 rounded-lg shadow-xl mb-6 p-4">
-        <div class="flex items-start space-x-3">
-            <div class="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center overflow-hidden" th:if="${#authentication.principal != 'anonymousUser'}">
-                <img th:if="${#authentication.principal.profilePicture}" th:src="${#authentication.principal.profilePicture}" class="w-full h-full object-cover" />
-                <div th:unless="${#authentication.principal.profilePicture}" class="w-full h-full flex items-center justify-center">
-                    <span class="text-white font-bold text-lg" th:text="${#strings.substring(#authentication.principal.firstName,0,1)}">U</span>
+<div th:fragment="feed" class="flex-1 max-w-2xl p-6" xmlns:sec="http://www.w3.org/1999/xhtml">
+    <!-- Create Post Form -->
+    <form th:action="@{/posts}" method="post" class="mb-6 bg-gray-800 shadow-xl card">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+        <div class="flex items-start gap-4 card-body">
+            <!-- Current user avatar -->
+            <div class="avatar">
+                <div class="flex items-center justify-center w-12 rounded-full bg-brand-500">
+                    <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                              d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                              clip-rule="evenodd"/>
+                    </svg>
                 </div>
             </div>
-            <div th:unless="${#authentication.principal != 'anonymousUser'}" class="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center">
-                <span class="text-white font-bold text-lg">?</span>
-            </div>
-            
+
             <div class="flex-1">
-                <form id="createPostForm">
-                    <textarea id="postContent" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-4 text-white placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="What's on your mind?" rows="3" maxlength="280"></textarea>
-                    
-                    <div class="flex justify-between items-center mt-4">
-                        <div class="flex space-x-4">
-                            <button type="button" id="emojiBtn" class="flex items-center space-x-1 text-gray-400 hover:text-gray-200 transition">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-7.536 5.879a1 1 0 001.415 0 3 3 0 014.242 0 1 1 0 001.415-1.415 5 5 0 00-7.072 0 1 1 0 000 1.415z" clip-rule="evenodd" />
+                <textarea name="content"
+                          class="w-full text-white placeholder-gray-400 bg-gray-700 border-gray-600 resize-none textarea textarea-bordered"
+                          placeholder="What's on your mind?"
+                          rows="3"></textarea>
+
+                <div class="flex items-center justify-between -mt-8">
+                    <!-- Action buttons -->
+                    <div class="flex gap-4">
+                        <button type="button" class="text-gray-400 btn btn-ghost btn-sm">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                      d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                                      clip-rule="evenodd"/>
+                            </svg>
+                            Emoji
+                        </button>
+                        <button type="button" class="text-gray-400 btn btn-ghost btn-sm">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                      d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                                      clip-rule="evenodd"/>
+                            </svg>
+                            Location
+                        </button>
+                        <button type="button" class="text-gray-400 btn btn-ghost btn-sm">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                      d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                                      clip-rule="evenodd"/>
+                            </svg>
+                            Event
+                        </button>
+                    </div>
+
+                    <!-- Counter + Submit -->
+                    <div class="flex items-center gap-6 mt-20">
+                        <span class="text-xs text-gray-400">0/280 Characters</span>
+                        <button type="reset" class="text-gray-300 btn btn-ghost btn-sm hover:text-white">Cancel</button>
+                        <button type="submit" class="btn btn-primary btn-sm">Post</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Posts Feed -->
+    <div class="space-y-6">
+        <div th:each="post : ${posts}" class="bg-gray-800 shadow-xl card post-card" th:data-post-id="${post.id}">
+            <div class="flex items-start gap-4 card-body">
+                <!-- Author avatar -->
+                <div class="avatar">
+                    <div class="flex items-center justify-center w-12 rounded-full bg-brand-300">
+                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                  d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                                  clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-2">
+                        <h3 class="font-semibold text-white"
+                            th:text="${post.user.firstName} + ' ' + ${post.user.lastName}">Author Name</h3>
+                        <span class="text-gray-400" th:text="'@' + ${post.user.email.split('@')[0]}">@username</span>
+                        <span class="text-gray-500">•</span>
+                        <span class="text-sm text-gray-400" th:text="${#temporals.format(post.createdAt, 'MMM dd, yyyy HH:mm')}">timestamp</span>
+
+                        <!-- Delete button for post owner -->
+                        <div class="ml-auto" sec:authorize="isAuthenticated()">
+                            <button th:if="${#authentication.name == post.user.email}"
+                                    class="text-gray-400 hover:text-red-400 btn btn-ghost btn-xs delete-post-button"
+                                    th:data-post-id="${post.id}"
+                                    title="Delete post">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                 </svg>
-                                <span>EMOJI</span>
-                            </button>
-                            <button type="button" id="photoBtn" class="flex items-center space-x-1 text-gray-400 hover:text-gray-200 transition">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path>
-                                </svg>
-                                <span>PHOTO</span>
-                            </button>
-                            <button type="button" id="locationBtn" class="flex items-center space-x-1 text-gray-400 hover:text-gray-200 transition">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
-                                </svg>
-                                <span>LOCATION</span>
                             </button>
                         </div>
-                        <div class="flex items-center space-x-3">
-                            <span class="text-sm text-gray-400" id="charCounter">0/280 characters</span>
-                            <button type="button" id="cancelPostBtn" class="text-gray-400 hover:text-gray-200 px-3 py-1 rounded-md text-sm">CANCEL</button>
-                            <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-md text-sm font-medium">POST</button>
+                    </div>
+
+                    <p class="mb-4 text-gray-300" th:text="${post.content}">Post content…</p>
+
+                    <div class="flex items-center gap-6">
+                        <button class="text-gray-400 btn btn-ghost btn-sm hover:text-red-400 like-button">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                            <span class="like-count">0</span>
+                        </button>
+                        <button class="text-gray-400 btn btn-ghost btn-sm comment-button">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                      d="M18 10c0 3.866-3.582 7-8 7-4.418 0-8-3.134-8-7s3.582-7 8-7 8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z"
+                                      clip-rule="evenodd"/>
+                            </svg>
+                            Comment
+                        </button>
+                        <button class="text-gray-400 btn btn-ghost btn-sm">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 000 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47z"/>
+                            </svg>
+                            Share
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Comment Modal -->
+    <div id="commentModal" class="fixed inset-0 z-50 flex items-center justify-center hidden overflow-auto bg-black bg-opacity-50">
+        <div class="w-full max-w-lg mx-4 transition-all transform bg-gray-800 rounded-lg shadow-xl">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-semibold text-white">Comments</h3>
+                    <button id="closeCommentModal" class="text-gray-400 hover:text-white">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Original Post -->
+                <div id="modalPostContent" class="pb-4 mb-4 border-b border-gray-700">
+                    <div class="flex items-start gap-3">
+                        <div class="avatar">
+                            <div class="flex items-center justify-center w-10 rounded-full bg-brand-300">
+                                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
                         </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h4 class="font-medium text-white" id="modalPostAuthor">Author Name</h4>
+                                <span class="text-sm text-gray-400" id="modalPostTime">timestamp</span>
+                            </div>
+                            <p class="mt-1 text-gray-300" id="modalPostText">Post content</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Comments List -->
+                <div id="commentsList" class="mb-4 space-y-4 overflow-y-auto max-h-60"></div>
+                
+                <!-- Add Comment Form -->
+                <form id="commentForm" class="mt-4">
+                    <input type="hidden" id="postIdInput">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <textarea id="commentContent" rows="2"
+                              class="w-full px-3 py-2 text-white placeholder-gray-400 bg-gray-700 border border-gray-600 rounded-lg resize-none focus:ring-2 focus:ring-brand-400 focus:border-transparent"
+                              placeholder="Write a comment..."></textarea>
+                    <div class="flex justify-end mt-2">
+                        <button type="submit" class="btn btn-primary btn-sm">Post Comment</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-
-    <!-- Posts Feed -->
-    <div class="space-y-6" id="postsContainer">
-        <!-- Post Item -->
-        <div th:each="post : ${posts}" th:id="'post-' + ${post.id}" class="bg-gray-800 rounded-lg shadow-xl">
-            <div class="p-4">
-                <div class="flex items-start space-x-3">
-                    <div class="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center overflow-hidden">
-                        <img th:if="${post.user != null && post.user.profilePicture != null}" th:src="${post.user.profilePicture}" class="w-full h-full object-cover" />
-                        <div th:unless="${post.user != null && post.user.profilePicture != null}" class="w-full h-full flex items-center justify-center">
-                            <span class="text-white font-bold text-lg" th:text="${post.user != null && post.user.firstName != null} ? ${#strings.substring(post.user.firstName,0,1)} : 'A'">A</span>
-                        </div>
-                    </div>
-                    <div class="flex-1">
-                        <div class="flex items-center space-x-2 mb-1">
-                            <h3 class="font-semibold text-white" th:text="${post.user != null} ? ${post.user.firstName + ' ' + post.user.lastName} : 'Alex Chen'">Alex Chen</h3>
-                            <span class="text-gray-400" th:text="${post.user != null && post.user.username != null} ? '@' + ${post.user.username} : '@alexchen'">@alexchen</span>
-                            <span class="text-gray-500">•</span>
-                            <span class="text-gray-400 text-sm" th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy')} ?: '2 hours ago'">2 hours ago</span>
-                        </div>
-                        <p class="text-gray-300 mb-4" th:text="${post.content}">Just finished building an amazing React app! The feeling of seeing your code come to life is incredible 🚀 Working with modern frameworks makes development so much more enjoyable.</p>
-                        
-                        <div class="flex items-center space-x-6 border-t border-gray-700 pt-3">
-                            <button th:attr="data-post-id=${post.id}" class="like-button flex items-center space-x-2 text-gray-400 hover:text-red-400 transition">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-colors" th:classappend="${post.likedByCurrentUser} ? 'text-red-500 fill-current' : ''" viewBox="0 0 20 20" fill="none">
-                                    <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
-                                </svg>
-                                <span class="like-count" th:text="${post.likeCount ?: 0}">0</span>
-                            </button>
-                            <button th:attr="data-post-id=${post.id}" class="comment-button flex items-center space-x-2 text-gray-400 hover:text-blue-400 transition">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                                </svg>
-                                <span class="comment-count" th:text="${post.commentCount ?: 0}">0</span>
-                            </button>
-                            <button class="share-button flex items-center space-x-2 text-gray-400 hover:text-green-400 transition">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
-                                </svg>
-                                <span>SHARE</span>
-                            </button>
-                        </div>
-                        
-                        <!-- Comments Section (Hidden by Default) -->
-                        <div th:attr="data-post-id=${post.id}" class="comments-section hidden mt-4 border-t border-gray-700 pt-4">
-                            <!-- Comment Form -->
-                            <div class="flex space-x-3 mb-4">
-                                <div class="w-8 h-8 rounded-full bg-gray-600 flex-shrink-0">
-                                    <div class="w-full h-full rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold">
-                                        <span th:if="${#authentication.principal != 'anonymousUser'}" 
-                                              th:text="${#strings.substring(#authentication.principal.firstName,0,1)}">U</span>
-                                        <span th:unless="${#authentication.principal != 'anonymousUser'}">U</span>
-                                    </div>
-                                </div>
-                                <div class="flex-1">
-                                    <textarea class="comment-input w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-white placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                                             rows="2" placeholder="Write a comment..." th:attr="data-post-id=${post.id}"></textarea>
-                                    <div class="flex justify-end mt-2">
-                                        <button th:attr="data-post-id=${post.id}" 
-                                                class="comment-submit bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm">Post</button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Comments List -->
-                            <div th:attr="data-post-id=${post.id}" class="comments-list space-y-3">
-                                <!-- Comments will be loaded dynamically -->
-                                <div th:each="comment : ${post.comments}" class="flex space-x-3 mb-3">
-                                    <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center overflow-hidden flex-shrink-0">
-                                        <img th:if="${comment.user != null && comment.user.profilePicture != null}" 
-                                             th:src="${comment.user.profilePicture}" class="w-full h-full object-cover" />
-                                        <span th:unless="${comment.user != null && comment.user.profilePicture != null}" 
-                                              class="text-white font-bold text-xs" 
-                                              th:text="${comment.user != null && comment.user.firstName != null} ? ${#strings.substring(comment.user.firstName,0,1)} : 'U'">U</span>
-                                    </div>
-                                    <div class="flex-1">
-                                        <div class="bg-gray-700 rounded-lg p-3">
-                                            <div class="flex items-center space-x-2 mb-1">
-                                                <span class="font-medium text-white" th:text="${comment.user != null} ? ${comment.user.firstName + ' ' + comment.user.lastName} : 'User'">User</span>
-                                                <span class="text-gray-400 text-xs" th:text="${#temporals.format(comment.createdAt, 'dd MMM yyyy')}">Date</span>
-                                            </div>
-                                            <p class="text-gray-300 text-sm" th:text="${comment.content}">Comment content goes here</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div th:if="${post.commentCount > 3}" class="mt-3 text-center">
-                                <a th:href="@{/posts/{id}(id=${post.id})}" class="text-blue-400 hover:text-blue-300 text-sm">
-                                    View all comments
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Example Post for when no posts are available -->
-        <div class="bg-gray-800 rounded-lg shadow-xl" th:if="${#lists.isEmpty(posts)}">
-            <div class="p-4">
-                <div class="flex items-start space-x-3">
-                    <div class="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center overflow-hidden">
-                        <span class="text-white font-bold text-lg">A</span>
-                    </div>
-                    <div class="flex-1">
-                        <div class="flex items-center space-x-2 mb-1">
-                            <h3 class="font-semibold text-white">Alex Chen</h3>
-                            <span class="text-gray-400">@alexchen</span>
-                            <span class="text-gray-500">•</span>
-                            <span class="text-gray-400 text-sm">2 hours ago</span>
-                        </div>
-                        <p class="text-gray-300 mb-4">Welcome to our social media app! This is an example post. Start creating your own posts to see them appear here.</p>
-                        
-                        <div class="flex items-center space-x-6 border-t border-gray-700 pt-3">
-                            <button class="like-button flex items-center space-x-2 text-gray-400 hover:text-red-400 transition">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="none">
-                                    <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
-                                </svg>
-                                <span>0</span>
-                            </button>
-                            <button class="comment-button flex items-center space-x-2 text-gray-400 hover:text-blue-400 transition">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                                </svg>
-                                <span>0</span>
-                            </button>
-                            <button class="share-button flex items-center space-x-2 text-gray-400 hover:text-green-400 transition">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
-                                </svg>
-                                <span>SHARE</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Loading Animation -->
-    <div id="loadingIndicator" class="hidden justify-center my-8">
-        <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-purple-500"></div>
-    </div>
-    
-    <!-- Load More Posts Button -->
-    <div class="mt-6 text-center" id="loadMoreContainer">
-        <button id="loadMoreBtn" class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-md text-sm font-medium">
-            LOAD MORE
-        </button>
-    </div>
 </div>
-
-<!-- JavaScript for Feed -->
-<script th:inline="javascript">
-    document.addEventListener('DOMContentLoaded', function() {
-        const postContent = document.getElementById('postContent');
-        const charCounter = document.getElementById('charCounter');
-        const createPostForm = document.getElementById('createPostForm');
-        const cancelPostBtn = document.getElementById('cancelPostBtn');
-        const postsContainer = document.getElementById('postsContainer');
-        const loadMoreBtn = document.getElementById('loadMoreBtn');
-        const loadingIndicator = document.getElementById('loadingIndicator');
-        
-        let currentPage = 0;
-        const pageSize = 10;
-        
-        // Character counter for post creation
-        if (postContent) {
-            postContent.addEventListener('input', function() {
-                const length = this.value.length;
-                charCounter.textContent = `${length}/280 characters`;
-                
-                // Change color when approaching limit
-                if (length > 240) {
-                    charCounter.classList.add('text-yellow-500');
-                    if (length > 270) {
-                        charCounter.classList.remove('text-yellow-500');
-                        charCounter.classList.add('text-red-500');
-                    }
-                } else {
-                    charCounter.classList.remove('text-yellow-500', 'text-red-500');
-                    charCounter.classList.add('text-gray-400');
-                }
-            });
-        }
-        
-        // Cancel post button
-        if (cancelPostBtn) {
-            cancelPostBtn.addEventListener('click', function() {
-                postContent.value = '';
-                charCounter.textContent = '0/280 characters';
-                charCounter.classList.remove('text-yellow-500', 'text-red-500');
-                charCounter.classList.add('text-gray-400');
-            });
-        }
-        
-        // Post creation form submission
-        if (createPostForm) {
-            createPostForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const content = postContent.value.trim();
-                if (!content) return;
-                
-                // Show loading state
-                const submitBtn = createPostForm.querySelector('button[type="submit"]');
-                const originalBtnText = submitBtn.textContent;
-                submitBtn.textContent = 'POSTING...';
-                submitBtn.disabled = true;
-                
-                fetch('/api/posts', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ content: content })
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to create post');
-                    }
-                    return response.json();
-                })
-                .then(post => {
-                    // Reset form
-                    postContent.value = '';
-                    charCounter.textContent = '0/280 characters';
-                    
-                    // Add the new post to the top of the feed
-                    addPostToFeed(post, true);
-                })
-                .catch(error => {
-                    console.error('Error creating post:', error);
-                    alert('Failed to create post. Please try again.');
-                })
-                .finally(() => {
-                    // Reset button state
-                    submitBtn.textContent = originalBtnText;
-                    submitBtn.disabled = false;
-                });
-            });
-        }
-        
-        // Like button functionality
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('.like-button')) {
-                const likeButton = e.target.closest('.like-button');
-                const postId = likeButton.getAttribute('data-post-id');
-                
-                fetch(`/api/posts/${postId}/like`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to toggle like');
-                    }
-                    return response.json();
-                })
-                .then(post => {
-                    const likeIcon = likeButton.querySelector('svg');
-                    const likeCount = likeButton.querySelector('.like-count');
-                    
-                    // Update like count
-                    likeCount.textContent = post.likeCount;
-                    
-                    // Toggle like icon appearance
-                    if (post.likedByCurrentUser) {
-                        likeIcon.classList.add('text-red-500', 'fill-current');
-                    } else {
-                        likeIcon.classList.remove('text-red-500', 'fill-current');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error toggling like:', error);
-                });
-            }
-        });
-        
-        // Comment button functionality
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('.comment-button')) {
-                const commentButton = e.target.closest('.comment-button');
-                const postId = commentButton.getAttribute('data-post-id');
-                const commentsSection = document.querySelector(`.comments-section[data-post-id="${postId}"]`);
-                
-                if (commentsSection) {
-                    // Toggle comments section visibility
-                    commentsSection.classList.toggle('hidden');
-                    
-                    // If opening comments and no comments loaded yet, fetch them
-                    if (!commentsSection.classList.contains('hidden')) {
-                        const commentsList = commentsSection.querySelector(`.comments-list[data-post-id="${postId}"]`);
-                        
-                        // Only load comments if the list is empty
-                        if (commentsList && commentsList.children.length === 0) {
-                            loadComments(postId, commentsList);
-                        }
-                    }
-                }
-            }
-        });
-        
-        // Comment submission
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('.comment-submit')) {
-                const submitButton = e.target.closest('.comment-submit');
-                const postId = submitButton.getAttribute('data-post-id');
-                const commentInput = document.querySelector(`.comment-input[data-post-id="${postId}"]`);
-                
-                if (commentInput && commentInput.value.trim()) {
-                    const content = commentInput.value.trim();
-                    
-                    // Disable button while submitting
-                    submitButton.disabled = true;
-                    submitButton.textContent = 'Posting...';
-                    
-                    fetch(`/api/posts/${postId}/comments`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ content: content })
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Failed to add comment');
-                        }
-                        return response.json();
-                    })
-                    .then(comment => {
-                        // Clear input
-                        commentInput.value = '';
-                        
-                        // Add the new comment to the list
-                        const commentsList = document.querySelector(`.comments-list[data-post-id="${postId}"]`);
-                        if (commentsList) {
-                            addCommentToList(comment, commentsList);
-                            
-                            // Update comment count
-                            updateCommentCount(postId);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error adding comment:', error);
-                        alert('Failed to add comment. Please try again.');
-                    })
-                    .finally(() => {
-                        // Reset button state
-                        submitButton.disabled = false;
-                        submitButton.textContent = 'Post';
-                    });
-                }
-            }
-        });
-        
-        // Load more posts
-        if (loadMoreBtn) {
-            loadMoreBtn.addEventListener('click', function() {
-                currentPage++;
-                loadMorePosts();
-            });
-        }
-        
-        // Function to load comments for a post
-        function loadComments(postId, commentsList) {
-            fetch(`/api/posts/${postId}/comments`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to load comments');
-                    }
-                    return response.json();
-                })
-                .then(comments => {
-                    // Clear existing comments
-                    commentsList.innerHTML = '';
-                    
-                    // Add comments to the list
-                    if (comments.length === 0) {
-                        commentsList.innerHTML = '<div class="text-gray-400 text-sm text-center py-2">No comments yet. Be the first to comment!</div>';
-                    } else {
-                        comments.forEach(comment => {
-                            addCommentToList(comment, commentsList);
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error loading comments:', error);
-                    commentsList.innerHTML = '<div class="text-red-400 text-sm text-center py-2">Failed to load comments. Please try again.</div>';
-                });
-        }
-        
-        // Function to add a comment to the list
-        function addCommentToList(comment, commentsList) {
-            const commentElement = document.createElement('div');
-            commentElement.className = 'flex space-x-3 mb-3';
-            
-            const userInitial = comment.user && comment.user.firstName 
-                ? comment.user.firstName.charAt(0) 
-                : 'U';
-                
-            const formattedDate = new Date(comment.createdAt).toLocaleDateString('en-US', {
-                day: 'numeric',
-                month: 'short',
-                year: 'numeric'
-            });
-            
-            commentElement.innerHTML = `
-                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center overflow-hidden flex-shrink-0">
-                    ${comment.user && comment.user.profilePicture 
-                        ? `<img src="${comment.user.profilePicture}" class="w-full h-full object-cover" />`
-                        : `<span class="text-white font-bold text-xs">${userInitial}</span>`
-                    }
-                </div>
-                <div class="flex-1">
-                    <div class="bg-gray-700 rounded-lg p-3">
-                        <div class="flex items-center space-x-2 mb-1">
-                            <span class="font-medium text-white">${comment.user ? comment.user.firstName + ' ' + comment.user.lastName : 'User'}</span>
-                            <span class="text-gray-400 text-xs">${formattedDate}</span>
-                        </div>
-                        <p class="text-gray-300 text-sm">${comment.content}</p>
-                    </div>
-                </div>
-            `;
-            
-            commentsList.appendChild(commentElement);
-        }
-        
-        // Function to update comment count for a post
-        function updateCommentCount(postId) {
-            fetch(`/api/posts/${postId}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to get post');
-                    }
-                    return response.json();
-                })
-                .then(post => {
-                    const commentCountElement = document.querySelector(`.comment-button[data-post-id="${postId}"] .comment-count`);
-                    if (commentCountElement) {
-                        commentCountElement.textContent = post.commentCount || '0';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error updating comment count:', error);
-                });
-        }
-        
-        // Function to add a post to the feed
-        function addPostToFeed(post, prepend = false) {
-            const postElement = document.createElement('div');
-            postElement.className = 'bg-gray-800 rounded-lg shadow-xl';
-            postElement.id = `post-${post.id}`;
-            
-            const userInitial = post.user && post.user.firstName 
-                ? post.user.firstName.charAt(0) 
-                : 'A';
-                
-            const formattedDate = new Date(post.createdAt).toLocaleDateString('en-US', {
-                day: 'numeric',
-                month: 'short',
-                year: 'numeric'
-            });
-            
-            postElement.innerHTML = `
-                <div class="p-4">
-                    <div class="flex items-start space-x-3">
-                        <div class="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center overflow-hidden">
-                            ${post.user && post.user.profilePicture 
-                                ? `<img src="${post.user.profilePicture}" class="w-full h-full object-cover" />`
-                                : `<div class="w-full h-full flex items-center justify-center">
-                                    <span class="text-white font-bold text-lg">${userInitial}</span>
-                                </div>`
-                            }
-                        </div>
-                        <div class="flex-1">
-                            <div class="flex items-center space-x-2 mb-1">
-                                <h3 class="font-semibold text-white">${post.user ? post.user.firstName + ' ' + post.user.lastName : 'User'}</h3>
-                                <span class="text-gray-400">${post.user && post.user.username ? '@' + post.user.username : '@user'}</span>
-                                <span class="text-gray-500">•</span>
-                                <span class="text-gray-400 text-sm">${formattedDate}</span>
-                            </div>
-                            <p class="text-gray-300 mb-4">${post.content}</p>
-                            
-                            <div class="flex items-center space-x-6 border-t border-gray-700 pt-3">
-                                <button data-post-id="${post.id}" class="like-button flex items-center space-x-2 text-gray-400 hover:text-red-400 transition">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-colors ${post.likedByCurrentUser ? 'text-red-500 fill-current' : ''}" viewBox="0 0 20 20" fill="none">
-                                        <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
-                                    </svg>
-                                    <span class="like-count">${post.likeCount || 0}</span>
-                                </button>
-                                <button data-post-id="${post.id}" class="comment-button flex items-center space-x-2 text-gray-400 hover:text-blue-400 transition">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                                    </svg>
-                                    <span class="comment-count">${post.commentCount || 0}</span>
-                                </button>
-                                <button class="share-button flex items-center space-x-2 text-gray-400 hover:text-green-400 transition">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
-                                    </svg>
-                                    <span>SHARE</span>
-                                </button>
-                            </div>
-                            
-                            <!-- Comments Section (Hidden by Default) -->
-                            <div data-post-id="${post.id}" class="comments-section hidden mt-4 border-t border-gray-700 pt-4">
-                                <!-- Comment Form -->
-                                <div class="flex space-x-3 mb-4">
-                                    <div class="w-8 h-8 rounded-full bg-gray-600 flex-shrink-0">
-                                        <div class="w-full h-full rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold">
-                                            <span>U</span>
-                                        </div>
-                                    </div>
-                                    <div class="flex-1">
-                                        <textarea class="comment-input w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-white placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                                                rows="2" placeholder="Write a comment..." data-post-id="${post.id}"></textarea>
-                                        <div class="flex justify-end mt-2">
-                                            <button data-post-id="${post.id}" 
-                                                   class="comment-submit bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm">Post</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Comments List -->
-                                <div data-post-id="${post.id}" class="comments-list space-y-3">
-                                    <!-- Comments will be loaded dynamically -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            if (prepend && postsContainer.firstChild) {
-                postsContainer.insertBefore(postElement, postsContainer.firstChild);
-            } else {
-                postsContainer.appendChild(postElement);
-            }
-        }
-        
-        // Function to load more posts
-        function loadMorePosts() {
-            loadingIndicator.classList.remove('hidden');
-            loadingIndicator.classList.add('flex');
-            loadMoreBtn.disabled = true;
-            
-            fetch(`/api/posts/paged?page=${currentPage}&size=${pageSize}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to load posts');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    const posts = data.content;
-                    
-                    // Add posts to the feed
-                    posts.forEach(post => {
-                        addPostToFeed(post);
-                    });
-                    
-                    // Hide load more button if no more posts
-                    if (data.last) {
-                        loadMoreBtn.classList.add('hidden');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error loading more posts:', error);
-                    alert('Failed to load more posts. Please try again.');
-                })
-                .finally(() => {
-                    loadingIndicator.classList.add('hidden');
-                    loadingIndicator.classList.remove('flex');
-                    loadMoreBtn.disabled = false;
-                });
-        }
-    });
-</script>
