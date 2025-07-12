@@ -23,7 +23,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .userDetailsService(customUserDetailsService) // ✅ THIS LINE IS CRITICAL
+                .userDetailsService(customUserDetailsService) // THIS LINE IS CRITICAL
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/js/**", "/login", "/register", "/error").permitAll()
                         .anyRequest().authenticated()
