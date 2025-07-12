@@ -65,7 +65,7 @@ public class ProfileController {
             if (!existingUser.getEmail().equals(updatedUser.getEmail())) {
                 if (userService.existsByEmail(updatedUser.getEmail())) {
                     redirectAttributes.addFlashAttribute("error",
-                            "Email address is already in use by another account.");
+                            "Email address is already in use ,Choose a different one");
                     return "redirect:/home";
                 }
             }
@@ -140,7 +140,7 @@ public class ProfileController {
             // Return updated user data
             response.put("success", true);
             response.put("message", "Profile updated successfully!");
-            
+
             Map<String, Object> userData = Map.of(
                     "id", existingUser.getId(),
                     "firstName", existingUser.getFirstName(),
@@ -148,9 +148,9 @@ public class ProfileController {
                     "email", existingUser.getEmail(),
                     "username", existingUser.getUsername(),
                     "profilePicture", existingUser.getProfilePicture() != null ? existingUser.getProfilePicture() : "");
-            
+
             response.put("user", userData);
-            
+
             System.out.println("=== Profile Update Response ===");
             System.out.println("User data being returned: " + userData);
             System.out.println("Username: " + existingUser.getUsername());
