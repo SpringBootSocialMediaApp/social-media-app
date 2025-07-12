@@ -11,6 +11,7 @@ public interface PostService {
     Post findById(Long id);
     Post save(Post post);
     void deletePost(Long id);
+    void deletePost(Post post);
     List<Post> findAll();
 
 }

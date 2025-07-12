@@ -24,6 +24,7 @@ public class Post {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnoreProperties({"posts", "comments", "likes", "password"})
     private User user;
 
     @Column(name = "author_id", insertable = false, updatable = false)
