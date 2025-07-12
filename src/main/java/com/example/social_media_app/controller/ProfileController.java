@@ -1,10 +1,12 @@
 package com.example.social_media_app.controller;
 
 import com.example.social_media_app.model.User;
+import com.example.social_media_app.security.CustomUserDetails;
 import com.example.social_media_app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -102,6 +104,17 @@ public class ProfileController {
             }
 
             userService.save(existingUser);
+            
+            // Update the SecurityContext with the updated user information
+            // This ensures that the authentication principal has the latest user data
+            CustomUserDetails updatedUserDetails = new CustomUserDetails(existingUser);
+            Authentication newAuth = new UsernamePasswordAuthenticationToken(
+                    updatedUserDetails, 
+                    null, // credentials not needed for authenticated user
+                    updatedUserDetails.getAuthorities()
+            );
+            SecurityContextHolder.getContext().setAuthentication(newAuth);
+            
             redirectAttributes.addFlashAttribute("success", "Profile updated successfully!");
 
         } catch (Exception e) {
@@ -185,6 +198,16 @@ public class ProfileController {
             }
 
             userService.save(existingUser);
+
+            // Update the SecurityContext with the updated user information
+            // This ensures that the authentication principal has the latest user data
+            CustomUserDetails updatedUserDetails = new CustomUserDetails(existingUser);
+            Authentication newAuth = new UsernamePasswordAuthenticationToken(
+                    updatedUserDetails, 
+                    authentication.getCredentials(), 
+                    updatedUserDetails.getAuthorities()
+            );
+            SecurityContextHolder.getContext().setAuthentication(newAuth);
 
             // Return updated user data
             response.put("success", true);
