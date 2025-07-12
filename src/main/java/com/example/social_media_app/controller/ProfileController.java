@@ -47,6 +47,10 @@ public class ProfileController {
             response.put("email", currentUser.getEmail());
             response.put("username", currentUser.getUsername());
             response.put("profilePicture", currentUser.getProfilePicture());
+            response.put("city", currentUser.getCity());
+            response.put("country", currentUser.getCountry());
+            response.put("education", currentUser.getEducation());
+            response.put("workplace", currentUser.getWorkplace());
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -129,6 +133,23 @@ public class ProfileController {
                 existingUser.setUsername(newUsername);
             }
 
+            // Update new profile fields
+            if (updateData.get("profilePicture") != null) {
+                existingUser.setProfilePicture(updateData.get("profilePicture"));
+            }
+            if (updateData.get("city") != null) {
+                existingUser.setCity(updateData.get("city"));
+            }
+            if (updateData.get("country") != null) {
+                existingUser.setCountry(updateData.get("country"));
+            }
+            if (updateData.get("education") != null) {
+                existingUser.setEducation(updateData.get("education"));
+            }
+            if (updateData.get("workplace") != null) {
+                existingUser.setWorkplace(updateData.get("workplace"));
+            }
+
             // Update password only if provided
             String newPassword = updateData.get("password");
             if (newPassword != null && !newPassword.trim().isEmpty()) {
@@ -147,7 +168,11 @@ public class ProfileController {
                     "lastName", existingUser.getLastName(),
                     "email", existingUser.getEmail(),
                     "username", existingUser.getUsername(),
-                    "profilePicture", existingUser.getProfilePicture() != null ? existingUser.getProfilePicture() : "");
+                    "profilePicture", existingUser.getProfilePicture() != null ? existingUser.getProfilePicture() : "",
+                    "city", existingUser.getCity() != null ? existingUser.getCity() : "",
+                    "country", existingUser.getCountry() != null ? existingUser.getCountry() : "",
+                    "education", existingUser.getEducation() != null ? existingUser.getEducation() : "",
+                    "workplace", existingUser.getWorkplace() != null ? existingUser.getWorkplace() : "");
 
             response.put("user", userData);
 

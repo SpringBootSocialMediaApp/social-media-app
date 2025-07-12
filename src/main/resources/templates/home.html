@@ -19,13 +19,13 @@
 <!-- Hidden input to store current user email for JavaScript -->
 <input type="hidden" id="currentUserEmail" th:value="${#authentication.name}" sec:authorize="isAuthenticated()">
 
-<div th:replace="components/navbar :: navbar"></div>
+<div th:replace="~{components/navbar :: navbar}"></div>
 <div class="flex mx-auto max-w-7xl">
-  <div th:replace="components/profile-sidebar :: profileSidebar"></div>
-  <div th:replace="components/feed :: feed"></div>
-  <div th:replace="components/right-sidebar :: rightSidebar"></div>
+  <div th:replace="~{components/profile-sidebar :: profileSidebar}"></div>
+  <div th:replace="~{components/feed :: feed}"></div>
+  <div th:replace="~{components/right-sidebar :: rightSidebar}"></div>
 </div>
-<div th:replace="components/mobile-navbar :: mobileNavbar"></div>
+<div th:replace="~{components/mobile-navbar :: mobileNavbar}"></div>
 <script>
   // CSRF setup for AJAX
   const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
@@ -428,7 +428,12 @@ function getCurrentUserEmail() {
         document.getElementById('firstName').value = data.firstName || '';
         document.getElementById('lastName').value = data.lastName || '';
         document.getElementById('email').value = data.email || '';
+        document.getElementById('profilePicture').value = data.profilePicture || '';
         document.getElementById('password').value = ''; // Never pre-populate password
+        document.getElementById('city').value = data.city || '';
+        document.getElementById('country').value = data.country || '';
+        document.getElementById('education').value = data.education || '';
+        document.getElementById('workplace').value = data.workplace || '';
         console.log('Form populated with current data');
       })
       .catch(error => {
@@ -454,7 +459,12 @@ function getCurrentUserEmail() {
       firstName: document.getElementById('firstName').value,
       lastName: document.getElementById('lastName').value,
       email: document.getElementById('email').value,
-      password: document.getElementById('password').value
+      profilePicture: document.getElementById('profilePicture').value,
+      password: document.getElementById('password').value,
+      city: document.getElementById('city').value,
+      country: document.getElementById('country').value,
+      education: document.getElementById('education').value,
+      workplace: document.getElementById('workplace').value
     };
     
     console.log('=== Submitting profile update ===');
@@ -528,6 +538,80 @@ function getCurrentUserEmail() {
     } else {
       console.log('❌ Email element not found');
     }
+
+    // Update location display
+    const locationElement = document.querySelector('[data-user-location]');
+    const locationSpan = locationElement?.querySelector('span');
+    if (locationElement && locationSpan) {
+      if (userData.city || userData.country) {
+        let locationText = '';
+        if (userData.city) locationText += userData.city;
+        if (userData.country && userData.city) locationText += ', ';
+        if (userData.country) locationText += userData.country;
+        locationSpan.textContent = locationText;
+        locationElement.style.display = 'flex';
+        console.log('✅ Updated location to:', locationText);
+      } else {
+        locationElement.style.display = 'none';
+        console.log('✅ Hidden location (no data)');
+      }
+    }
+
+    // Update education display
+    const educationElement = document.querySelector('[data-user-education]');
+    const educationSpan = educationElement?.querySelector('span');
+    if (educationElement && educationSpan) {
+      if (userData.education && userData.education.trim() !== '') {
+        educationSpan.textContent = `Studies at ${userData.education}`;
+        educationElement.style.display = 'flex';
+        console.log('✅ Updated education to:', educationSpan.textContent);
+      } else {
+        educationElement.style.display = 'none';
+        console.log('✅ Hidden education (no data)');
+      }
+    }
+
+    // Update workplace display
+    const workplaceElement = document.querySelector('[data-user-workplace]');
+    const workplaceSpan = workplaceElement?.querySelector('span');
+    if (workplaceElement && workplaceSpan) {
+      if (userData.workplace && userData.workplace.trim() !== '') {
+        workplaceSpan.textContent = `Works at ${userData.workplace}`;
+        workplaceElement.style.display = 'flex';
+        console.log('✅ Updated workplace to:', workplaceSpan.textContent);
+      } else {
+        workplaceElement.style.display = 'none';
+        console.log('✅ Hidden workplace (no data)');
+      }
+    }
+
+    // Update profile picture if it exists
+    const profileImg = document.getElementById('profile-picture-img');
+    const defaultIcon = document.getElementById('profile-default-icon');
+    const avatarContainer = document.getElementById('profile-avatar-container');
+    
+    if (userData.profilePicture && userData.profilePicture.trim() !== '') {
+      // Show profile picture, hide default icon
+      if (profileImg) {
+        profileImg.src = userData.profilePicture;
+        profileImg.style.display = 'block';
+      } else if (avatarContainer) {
+        // Create img element if it doesn't exist
+        const newImg = document.createElement('img');
+        newImg.id = 'profile-picture-img';
+        newImg.src = userData.profilePicture;
+        newImg.alt = 'Profile';
+        newImg.className = 'w-full h-full rounded-full object-cover';
+        avatarContainer.appendChild(newImg);
+      }
+      if (defaultIcon) defaultIcon.style.display = 'none';
+      console.log('✅ Updated profile picture');
+    } else {
+      // Hide profile picture, show default icon
+      if (profileImg) profileImg.style.display = 'none';
+      if (defaultIcon) defaultIcon.style.display = 'block';
+      console.log('✅ Using default profile icon');
+    }
     
     // Update any other name displays in the UI (for posts, comments, etc.)
     const nameDisplays = document.querySelectorAll('[data-user-name]');
@@ -554,33 +638,6 @@ function getCurrentUserEmail() {
     };
     console.log('Testing with data:', testData);
     updateUIWithUserData(testData);
-  }
-
-  // Function to show notification messages
-  function showNotification(message, type = 'info') {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 transform translate-x-full ${
-      type === 'success' ? 'bg-green-600 text-white' : 
-      type === 'error' ? 'bg-red-600 text-white' : 
-      'bg-blue-600 text-white'
-    }`;
-    notification.textContent = message;
-    
-    document.body.appendChild(notification);
-    
-    // Animate in
-    setTimeout(() => {
-      notification.classList.remove('translate-x-full');
-    }, 100);
-    
-    // Remove after 3 seconds
-    setTimeout(() => {
-      notification.classList.add('translate-x-full');
-      setTimeout(() => {
-        document.body.removeChild(notification);
-      }, 300);
-    }, 3000);
   }
 </script>
 
@@ -624,10 +681,47 @@ function getCurrentUserEmail() {
         </div>
 
         <div>
+          <label for="profilePicture" class="block text-sm font-medium text-gray-300 mb-2">Profile Picture (URL)</label>
+          <input type="url" id="profilePicture" name="profilePicture" 
+                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                 placeholder="https://example.com/your-image.jpg">
+        </div>
+
+        <div>
           <label for="password" class="block text-sm font-medium text-gray-300 mb-2">New Password (optional)</label>
           <input type="password" id="password" name="password" 
                  class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                  placeholder="Leave blank to keep current password">
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="city" class="block text-sm font-medium text-gray-300 mb-2">City</label>
+            <input type="text" id="city" name="city" 
+                   class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                   placeholder="Your current city">
+          </div>
+
+          <div>
+            <label for="country" class="block text-sm font-medium text-gray-300 mb-2">Country</label>
+            <input type="text" id="country" name="country" 
+                   class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                   placeholder="Your country">
+          </div>
+        </div>
+
+        <div>
+          <label for="education" class="block text-sm font-medium text-gray-300 mb-2">Education</label>
+          <input type="text" id="education" name="education" 
+                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                 placeholder="University, College, or School">
+        </div>
+
+        <div>
+          <label for="workplace" class="block text-sm font-medium text-gray-300 mb-2">Workplace</label>
+          <input type="text" id="workplace" name="workplace" 
+                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                 placeholder="Company or organization">
         </div>
 
         <div class="flex gap-3 pt-4">

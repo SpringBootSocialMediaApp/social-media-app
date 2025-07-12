@@ -46,6 +46,15 @@ public class User {
     @Column(unique = true)
     private String username;
 
+    // New profile fields
+    private String city;
+    
+    private String country;
+    
+    private String education;
+    
+    private String workplace;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Builder.Default
     @JsonIgnore
