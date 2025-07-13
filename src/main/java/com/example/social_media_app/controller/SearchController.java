@@ -36,14 +36,14 @@ public class SearchController {
             @RequestParam(defaultValue = "all") String type,
             @AuthenticationPrincipal UserDetails currentUserDetails,
             Model model) {
-        
+
         User currentUser = userService.findByEmail(currentUserDetails.getUsername());
         model.addAttribute("currentUser", currentUser);
-        
+
         if (q != null && !q.trim().isEmpty()) {
             model.addAttribute("searchTerm", q);
             model.addAttribute("searchType", type);
-            
+
             if ("people".equals(type)) {
                 // Search for users
                 Pageable pageable = PageRequest.of(0, 20);
@@ -60,14 +60,14 @@ public class SearchController {
                 Pageable pageable = PageRequest.of(0, 10);
                 Page<User> userResults = userService.searchUsers(currentUser.getId(), q, pageable);
                 List<Post> postResults = postService.searchPostsInFeed(currentUser.getId(), q);
-                
+
                 model.addAttribute("users", userResults.getContent());
                 model.addAttribute("posts", postResults);
                 model.addAttribute("totalUsers", userResults.getTotalElements());
                 model.addAttribute("totalPosts", postResults.size());
             }
         }
-        
+
         return "search";
     }
 
@@ -76,29 +76,29 @@ public class SearchController {
     public ResponseEntity<Map<String, Object>> getSearchSuggestions(
             @RequestParam String q,
             @AuthenticationPrincipal UserDetails currentUserDetails) {
-        
+
         if (q == null || q.trim().length() < 2) {
             return ResponseEntity.ok(Map.of("suggestions", List.of()));
         }
-        
+
         User currentUser = userService.findByEmail(currentUserDetails.getUsername());
-        
+
         // Get top 5 user suggestions
         List<User> userSuggestions = userService.searchUsersWithRelevance(currentUser.getId(), q)
                 .stream()
                 .limit(5)
                 .toList();
-        
+
         // Get top 3 post suggestions
         List<Post> postSuggestions = postService.searchPostsInFeed(currentUser.getId(), q)
                 .stream()
                 .limit(3)
                 .toList();
-        
+
         Map<String, Object> response = new HashMap<>();
         response.put("users", userSuggestions);
         response.put("posts", postSuggestions);
-        
+
         return ResponseEntity.ok(response);
     }
 
@@ -108,16 +108,16 @@ public class SearchController {
             @RequestParam String q,
             @RequestParam(defaultValue = "all") String type,
             @AuthenticationPrincipal UserDetails currentUserDetails) {
-        
+
         User currentUser = userService.findByEmail(currentUserDetails.getUsername());
         Map<String, Object> response = new HashMap<>();
-        
+
         if (q == null || q.trim().isEmpty()) {
             response.put("users", List.of());
             response.put("posts", List.of());
             return ResponseEntity.ok(response);
         }
-        
+
         if ("people".equals(type) || "all".equals(type)) {
             List<User> users = userService.searchUsersWithRelevance(currentUser.getId(), q)
                     .stream()
@@ -125,7 +125,7 @@ public class SearchController {
                     .toList();
             response.put("users", users);
         }
-        
+
         if ("posts".equals(type) || "all".equals(type)) {
             List<Post> posts = postService.searchPostsInFeed(currentUser.getId(), q)
                     .stream()
@@ -133,7 +133,7 @@ public class SearchController {
                     .toList();
             response.put("posts", posts);
         }
-        
+
         return ResponseEntity.ok(response);
     }
 }

@@ -24,10 +24,10 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<Post> findAll() {
         List<Post> posts = postRepository.findAllByOrderByCreatedAtDesc();
-        
+
         // Update like and comment counts if needed
         posts.forEach(this::updateCounts);
-        
+
         return posts;
     }
 
@@ -66,10 +66,10 @@ public class PostServiceImpl implements PostService {
     public Post findById(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Post not found with id: " + id));
-        
+
         // Update like and comment counts
         updateCounts(post);
-        
+
         return post;
     }
 
@@ -77,19 +77,22 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public Post save(Post post) {
         // Set initial values if they're null
-        if (post.getLikeCount() == null) post.setLikeCount(0);
-        if (post.getCommentCount() == null) post.setCommentCount(0);
-        if (post.getCreatedAt() == null) post.setCreatedAt(LocalDateTime.now());
+        if (post.getLikeCount() == null)
+            post.setLikeCount(0);
+        if (post.getCommentCount() == null)
+            post.setCommentCount(0);
+        if (post.getCreatedAt() == null)
+            post.setCreatedAt(LocalDateTime.now());
         post.setUpdatedAt(LocalDateTime.now());
-        
+
         // Make sure authorId is set from the user relationship
         if (post.getUser() != null) {
             post.setAuthorId(post.getUser().getId());
         }
-        
+
         return postRepository.save(post);
     }
-    
+
     private void updateCounts(Post post) {
         // Update like count
         int likeCount = likeRepository.countByPost(post);
@@ -97,7 +100,7 @@ public class PostServiceImpl implements PostService {
             post.setLikeCount(likeCount);
             postRepository.save(post);
         }
-        
+
         // Update comment count
         int commentCount = commentRepository.countByPost(post);
         if (post.getCommentCount() == null || post.getCommentCount() != commentCount) {
@@ -119,20 +122,20 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<Post> searchPostsInFeed(Long userId, String searchTerm) {
         List<Post> posts = postRepository.searchPostsInFeed(userId, searchTerm);
-        
+
         // Update like and comment counts for each post
         posts.forEach(this::updateCounts);
-        
+
         return posts;
     }
 
     @Override
     public List<Post> searchAllPosts(String searchTerm) {
         List<Post> posts = postRepository.searchAllPosts(searchTerm);
-        
+
         // Update like and comment counts for each post
         posts.forEach(this::updateCounts);
-        
+
         return posts;
     }
 }

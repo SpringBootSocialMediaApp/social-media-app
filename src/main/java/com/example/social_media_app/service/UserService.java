@@ -11,18 +11,23 @@ public interface UserService {
     void save(User user);
 
     void registerUser(User user);
+
     User findByEmail(String email);
+
     boolean existsByEmail(String email);
+
     User findByUsername(String username);
+
     User findById(Long id);
 
     // NEW
     Page<User> findAllUsersExceptCurrent(Long currentUserId, Pageable pageable);
-    
+
     // NEW - for friend suggestions (excludes current friends and pending requests)
     Page<User> findUsersForFriendSuggestions(Long currentUserId, Pageable pageable);
-    
+
     // Search methods for navbar search functionality
     Page<User> searchUsers(Long currentUserId, String searchTerm, Pageable pageable);
+
     List<User> searchUsersWithRelevance(Long currentUserId, String searchTerm);
 }
