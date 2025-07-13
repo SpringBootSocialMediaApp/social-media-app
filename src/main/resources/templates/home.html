@@ -14,7 +14,6 @@
 
   <!-- Custom styles for scrollable posts -->
   <style>
-    /* Custom scrollbar styles for post content */
     .post-content-scroll {
       scrollbar-width: thin;
       scrollbar-color: #d1d5db #f9fafb;
@@ -38,7 +37,6 @@
       background: #9ca3af;
     }
     
-    /* Smooth scrolling */
     .post-content-scroll {
       scroll-behavior: smooth;
     }
@@ -75,15 +73,9 @@
 </div>
 
 <div th:replace="~{components/navbar :: navbar}"></div>
-<!--<div class="flex justify-between max-w-xl">-->
-<!--  <div th:replace="~{components/profile-sidebar :: profileSidebar}"></div>-->
-<!--  <div th:replace="~{components/feed :: feed}"></div>-->
-<!--  <div th:replace="~{components/right-sidebar :: rightSidebar}"></div>-->
-<!--</div>-->
-<!--<div th:replace="~{components/mobile-navbar :: mobileNavbar}"></div>-->
+
 <div class="flex flex-col justify-between lg:flex-row min-h-screen mt-6">
-<!--   Left Sidebar (Desktop only)-->
-<!--  <aside class="hidden lg:block  ml-10">-->
+
   <aside class="hidden lg:block ml-10 sticky top-20 self-start h-[calc(100vh-5rem)] overflow-y-auto">
     <div th:replace="~{components/profile-sidebar :: profileSidebar}"></div>
   </aside>
@@ -99,10 +91,7 @@
   </aside>
 </div>
 
-<!--&lt;!&ndash; Mobile Bottom Navbar &ndash;&gt;-->
-<!--<div class="lg:hidden fixed bottom-0 inset-x-0 z-50">-->
-<!--  <div th:replace="~{components/mobile-navbar :: mobileNavbar}"></div>-->
-<!--</div>-->
+
 
 
 <script>
@@ -127,7 +116,6 @@
   document.addEventListener('DOMContentLoaded', function() {
     // Character counter for post textarea
     const textarea = document.querySelector('textarea[name="content"]');
-    // const charCounter = document.querySelector('.text-xs.text-gray-700');
     const charCounter = document.getElementById("charCounter");
     const postForm = document.querySelector('form[action*="/posts"]');
     const postButton = document.querySelector('form[action*="/posts"] button[type="submit"]');
@@ -212,25 +200,19 @@
       // Initialize like count and status
       fetchLikeStatus(postId, likeButton);
       
-      // Add event listener for like button
       likeButton.addEventListener('click', () => toggleLike(postId, likeButton));
       
-      // Add event listener for comment button
       commentButton.addEventListener('click', () => openCommentModal(postId));
 
-      // Add event listener for delete button (if it exists)
       if (deleteButton) {
         deleteButton.addEventListener('click', () => deletePost(postId));
       }
     });
     
-    // Setup comment modal close button
     document.getElementById('closeCommentModal').addEventListener('click', closeCommentModal);
     
-    // Setup comment form submission
     document.getElementById('commentForm').addEventListener('submit', submitComment);
     
-    // Close modal when clicking outside
     document.getElementById('commentModal').addEventListener('click', function(e) {
       if (e.target === this) {
         closeCommentModal();
@@ -408,11 +390,11 @@ function createCommentElement(comment) {
     const firstName = comment.user && comment.user.firstName ? comment.user.firstName : 'Unknown';
     const lastName = comment.user && comment.user.lastName ? comment.user.lastName : 'User';
     
-    // Get current user info from the post card (since we know the current user can see the page)
+    // Get current user info from the post card
     const currentUserEmail = document.querySelector('meta[name="_csrf"]') ?
       getCurrentUserEmail() : '';
 
-    // Determine if current user can delete this comment (comment owner OR post owner)
+    // Determine if current user can delete this comment
     const isCommentOwner = comment.user && comment.user.email === currentUserEmail;
     const isPostOwner = comment.post && comment.post.user && comment.post.user.email === currentUserEmail;
     const canDelete = isCommentOwner || isPostOwner;
@@ -461,7 +443,6 @@ function createCommentElement(comment) {
 
 // Helper function to get current user email
 function getCurrentUserEmail() {
-    // Get the current user email from the hidden input field
     const currentUserEmailInput = document.getElementById('currentUserEmail');
     if (currentUserEmailInput && currentUserEmailInput.value) {
         return currentUserEmailInput.value;
@@ -569,7 +550,6 @@ function getCurrentUserEmail() {
     })
       .then(response => response.json())
       .then(comment => {
-        // Reset form and re-fetch comments
         document.getElementById('commentContent').value = '';
         fetchComments(postId);
         submitButton.disabled = false;
@@ -595,8 +575,7 @@ function getCurrentUserEmail() {
         document.getElementById('firstName').value = data.firstName || '';
         document.getElementById('lastName').value = data.lastName || '';
         document.getElementById('email').value = data.email || '';
-        // Don't pre-populate file input - it's not possible for security reasons
-        document.getElementById('password').value = ''; // Never pre-populate password
+        document.getElementById('password').value = '';
         document.getElementById('city').value = data.city || '';
         document.getElementById('country').value = data.country || '';
         document.getElementById('education').value = data.education || '';
@@ -653,7 +632,6 @@ function getCurrentUserEmail() {
       method: 'POST',
       headers: {
         'X-CSRF-TOKEN': csrfToken
-        // Don't set Content-Type - let browser set it for FormData
       },
       body: formData
     })
@@ -795,7 +773,7 @@ function getCurrentUserEmail() {
       console.log('✅ Using default profile icon');
     }
     
-    // Update any other name displays in the UI (for posts, comments, etc.)
+    // Update any other name displays in the UI 
     const nameDisplays = document.querySelectorAll('[data-user-name]');
     nameDisplays.forEach(element => {
       element.textContent = `${userData.firstName} ${userData.lastName}`;

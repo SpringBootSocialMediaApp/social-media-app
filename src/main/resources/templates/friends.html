@@ -29,7 +29,6 @@
         }
     </script>
     <style>
-        /* Custom scrollbar styling */
         .scroll-container::-webkit-scrollbar {
             width: 8px;
         }
@@ -58,29 +57,24 @@
             box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.15);
         }
 
-        /* Scrollbar for main content */
         .scroll-container {
             scrollbar-width: thin;
             scrollbar-color: #cbd5e0 #f1f5f9;
         }
 
-        /* Modern smooth scrolling */
         html {
             scroll-behavior: smooth;
         }
 
-        /* Enhanced border radius for modern look */
         .modern-card {
             border-radius: 16px;
         }
 
-        /* Gradient background for online status */
         .online-indicator {
             background: linear-gradient(45deg, #10b981, #34d399);
             box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
         }
 
-        /* Mobile responsive adjustments */
         @media (max-width: 768px) {
             .w-64 {
                 width: 100%;
@@ -102,13 +96,11 @@
             }
         }
 
-        /* Enhanced focus states for accessibility */
         input:focus, select:focus, button:focus {
             outline: 2px solid #3b82f6;
             outline-offset: 2px;
         }
 
-        /* Loading animation for images */
         img {
             transition: opacity 0.3s ease;
         }
@@ -119,6 +111,7 @@
     </style>
 </head>
 <body class="bg-brand-50 min-h-screen flex flex-col">
+
 <!-- Include the navbar component -->
 <div th:replace="components/navbar :: navbar" class="z-10"></div>
 
@@ -254,26 +247,6 @@
             </ul>
         </nav>
 
-        <!-- Online Friends Section -->
-<!--        <div class="mt-auto p-4 border-t border-gray-200">-->
-<!--            <h3 class="font-semibold text-gray-700 mb-3">Online Now</h3>-->
-<!--            <div class="flex items-center space-x-3 mb-3">-->
-<!--                <div class="relative">-->
-<!--                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face"-->
-<!--                         class="w-10 h-10 rounded-full object-cover" alt="John">-->
-<!--                    <span class="online-indicator absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white"></span>-->
-<!--                </div>-->
-<!--                <span class="text-sm font-medium">John</span>-->
-<!--            </div>-->
-<!--            <div class="flex items-center space-x-3">-->
-<!--                <div class="relative">-->
-<!--                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=40&h=40&fit=crop&crop=face"-->
-<!--                         class="w-10 h-10 rounded-full object-cover" alt="Mike">-->
-<!--                    <span class="online-indicator absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white"></span>-->
-<!--                </div>-->
-<!--                <span class="text-sm font-medium">Mike</span>-->
-<!--            </div>-->
-<!--        </div>-->
     </div>
 
     <!-- Main Content Area -->
@@ -287,13 +260,13 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
-<!--                        <input type="text" placeholder="Search friends..."-->
-<!--                               class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent transition  duration-200 !bg-white !text-black !placeholder-gray-400">-->
                         <input  type="text"
                                 placeholder="Search friends..."
                                 class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg
                                          focus:ring-2 focus:ring-brand-500 focus:border-transparent
-                                         !bg-white  dark:!bg-white !text-black !placeholder-gray-400" />
+                                         !bg-white  dark:!bg-white !text-black !placeholder-gray-400"
+                        />
+
                     </div>
                 </div>
             </div>
@@ -307,7 +280,6 @@
                         <span class="ml-3 text-gray-600">Loading friends...</span>
                     </div>
                     
-                    <!-- Friends will be loaded here dynamically -->
                 </div>
             </div>
         </div>
@@ -320,15 +292,12 @@
             </div>
 
             <div class="p-6">
-                <!-- Dynamic Friend Requests Container -->
                 <div id="friend-requests-container">
-                    <!-- Loading indicator -->
                     <div id="loading-requests" class="flex items-center justify-center py-8" style="display: none;">
                         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600"></div>
                         <span class="ml-3 text-gray-600">Loading requests...</span>
                     </div>
                     
-                    <!-- Friend requests will be loaded here dynamically -->
                 </div>
             </div>
         </div>
@@ -349,7 +318,6 @@
                         <span class="ml-3 text-gray-600">Loading sent requests...</span>
                     </div>
                     
-                    <!-- Sent requests will be loaded here dynamically -->
                 </div>
             </div>
         </div>
@@ -366,10 +334,9 @@
                         <input type="text" placeholder="Search people..."
                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg
                                          focus:ring-2 focus:ring-brand-500 focus:border-transparent
-                                         !bg-white  dark:!bg-white !text-black !placeholder-gray-400">
-<!--                        <input type="text" placeholder="Search people..."-->
-<!--                               class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all duration-200">-->
-<!--                        -->
+                                         !bg-white  dark:!bg-white !text-black !placeholder-gray-400"
+                        />
+
                     </div>
                     <button class="bg-brand-600 text-white px-4 py-2 rounded-lg hover:bg-brand-700 transition-colors w-full md:w-auto">
                         Search
@@ -379,7 +346,7 @@
 
             <div class="p-6">
                 <div id="user-directory-cards" class="space-y-4">
-                    <!-- User Directory Cards will be populated dynamically -->
+                    <!-- User Directory Cards  -->
                     <div id="loading-users" class="flex justify-center items-center py-8">
                         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600"></div>
                         <span class="ml-3 text-gray-600">Loading users...</span>
@@ -393,7 +360,6 @@
                             Previous
                         </button>
                         <div id="page-numbers" class="flex space-x-2">
-                            <!-- Page numbers will be populated dynamically -->
                         </div>
                         <button id="next-page" class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
                             Next
@@ -409,7 +375,7 @@
     // Global variables for user directory
     let currentPage = 0;
     let totalPages = 0;
-    let currentUserId = null; // Will be loaded dynamically
+    let currentUserId = null;
 
     // Function to get current user ID
     async function getCurrentUserId() {
@@ -551,8 +517,8 @@
 
             if (response.ok) {
                 showNotification('Friend request declined', 'success');
-                loadIncomingRequests(); // Refresh the list
-                loadFriendStats(); // Update counts
+                loadIncomingRequests();
+                loadFriendStats();
             } else {
                 const errorText = await response.text();
                 showNotification(errorText || 'Failed to decline friend request', 'error');
@@ -572,8 +538,8 @@
 
             if (response.ok) {
                 showNotification('Friend request cancelled', 'success');
-                loadOutgoingRequests(); // Refresh the list
-                loadFriendStats(); // Update counts
+                loadOutgoingRequests();
+                loadFriendStats();
             } else {
                 const errorText = await response.text();
                 showNotification(errorText || 'Failed to cancel friend request', 'error');
@@ -699,7 +665,7 @@
         container.innerHTML = users.map(user => createUserCard(user)).join('');
     }
 
-    // Function to display friends list
+    // Function to display friend list
     function displayFriendsList(friends) {
         const container = document.getElementById('all-friends-container');
         const loadingDiv = document.getElementById('loading-friends');
@@ -795,8 +761,7 @@
     // Function to create friend card
     function createFriendCard(friend) {
         const fullName = `${friend.firstName} ${friend.lastName}`;
-        // Use actual profile picture if available, otherwise use default avatar
-        const profileImage = friend.profilePicture && friend.profilePicture.trim() !== '' ? 
+        const profileImage = friend.profilePicture && friend.profilePicture.trim() !== '' ?
             friend.profilePicture : 
             getDefaultAvatar();
         
@@ -835,8 +800,7 @@
     function createIncomingRequestCard(request) {
         const sender = request.sender;
         const fullName = `${sender.firstName} ${sender.lastName}`;
-        // Use actual profile picture if available, otherwise use default avatar
-        const profileImage = sender.profilePicture && sender.profilePicture.trim() !== '' ? 
+        const profileImage = sender.profilePicture && sender.profilePicture.trim() !== '' ?
             sender.profilePicture : 
             getDefaultAvatar();
         const timeAgo = getTimeAgo(request.createdAt);
@@ -873,8 +837,7 @@
     function createOutgoingRequestCard(request) {
         const receiver = request.receiver;
         const fullName = `${receiver.firstName} ${receiver.lastName}`;
-        // Use actual profile picture if available, otherwise use default avatar
-        const profileImage = receiver.profilePicture && receiver.profilePicture.trim() !== '' ? 
+        const profileImage = receiver.profilePicture && receiver.profilePicture.trim() !== '' ?
             receiver.profilePicture : 
             getDefaultAvatar();
         const timeAgo = getTimeAgo(request.createdAt);
@@ -996,8 +959,7 @@
             return;
         }
 
-        // For now, we'll filter the current results
-        // You might want to implement server-side search later
+
         const cards = document.querySelectorAll('#user-directory-cards .friend-card');
         cards.forEach(card => {
             const nameElement = card.querySelector('h3');
@@ -1037,7 +999,6 @@
                 // Update counts and refresh relevant sections
                 loadFriendStats();
                 
-                // If user is currently viewing sent requests, refresh that section
                 const sentRequestsSection = document.getElementById('sent-requests');
                 if (sentRequestsSection && !sentRequestsSection.classList.contains('hidden')) {
                     loadOutgoingRequests(0);
@@ -1054,7 +1015,6 @@
 
     function viewProfile(userId) {
         console.log('viewProfile called with userId:', userId, 'Type:', typeof userId);
-        // Fetch user details and show profile modal
         fetchUserProfile(userId);
     }
 
@@ -1234,11 +1194,9 @@
         const urlParams = new URLSearchParams(window.location.search);
         const section = urlParams.get('section');
         
-        // Show the appropriate section based on URL parameter or default to user-directory (Find Friends)
         if (section === 'all-friends' || section === 'friend-requests' || section === 'sent-requests' || section === 'user-directory') {
             showSection(section);
         } else {
-            // Default to user-directory (Find Friends) when coming from "SEE ALL" button
             showSection('user-directory');
         }
     }
@@ -1263,7 +1221,7 @@
             e.target.closest('.bg-white').style.display = 'none';
         }
 
-        // Handle Add Friend buttons that don't have onclick handlers (legacy)
+        // Handle Add Friend buttons that don't have onclick handlers
         if (e.target.textContent === 'Add Friend' && !e.target.hasAttribute('onclick')) {
             e.target.textContent = 'Request Sent';
             e.target.classList.remove('bg-brand-600', 'hover:bg-brand-700');
@@ -1280,7 +1238,6 @@
             // Check if we're in the user directory section
             const userDirectorySection = document.getElementById('user-directory');
             if (!userDirectorySection.classList.contains('hidden')) {
-                // Handle user directory search
                 searchUsers(searchTerm);
             } else {
                 // Handle regular friend search
