@@ -838,7 +838,10 @@
     function createIncomingRequestCard(request) {
         const sender = request.sender;
         const fullName = `${sender.firstName} ${sender.lastName}`;
-        const profileImage = getRandomProfileImage(sender.gender, sender.id);
+        // Use actual profile picture if available, otherwise use random image as fallback
+        const profileImage = sender.profilePicture && sender.profilePicture.trim() !== '' ? 
+            sender.profilePicture : 
+            getRandomProfileImage(sender.gender, sender.id);
         const timeAgo = getTimeAgo(request.createdAt);
 
         return `
@@ -859,6 +862,10 @@
                                 onclick="declineFriendRequest(${request.id})">
                             Decline
                         </button>
+                        <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+                                onclick="viewProfile(${sender.id})">
+                            View Profile
+                        </button>
                     </div>
                 </div>
             </div>
@@ -869,7 +876,10 @@
     function createOutgoingRequestCard(request) {
         const receiver = request.receiver;
         const fullName = `${receiver.firstName} ${receiver.lastName}`;
-        const profileImage = getRandomProfileImage(receiver.gender, receiver.id);
+        // Use actual profile picture if available, otherwise use random image as fallback
+        const profileImage = receiver.profilePicture && receiver.profilePicture.trim() !== '' ? 
+            receiver.profilePicture : 
+            getRandomProfileImage(receiver.gender, receiver.id);
         const timeAgo = getTimeAgo(request.createdAt);
 
         return `
