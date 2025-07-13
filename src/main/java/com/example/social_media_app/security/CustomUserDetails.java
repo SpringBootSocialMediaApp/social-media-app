@@ -80,7 +80,6 @@ public class CustomUserDetails implements UserDetails {
         return user.getUsername();
     }
 
-    // New profile field getters
     public String getCity() {
         return user.getCity();
     }

@@ -19,7 +19,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     long countByUserId(Long userId);
 
     // Friend Integration: Get posts from user and their friends, sorted by
-    // timestamp (newest first)
+    // timestamp newest first
     @Query("SELECT p FROM Post p WHERE " +
             "p.user.id = :userId OR " +
             "p.user.id IN (" +

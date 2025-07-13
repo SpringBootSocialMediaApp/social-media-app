@@ -106,7 +106,7 @@ public class ProfileController {
             userService.save(existingUser);
             
             // Update the SecurityContext with the updated user information
-            // This ensures that the authentication principal has the latest user data
+
             CustomUserDetails updatedUserDetails = new CustomUserDetails(existingUser);
             Authentication newAuth = new UsernamePasswordAuthenticationToken(
                     updatedUserDetails, 
@@ -143,7 +143,7 @@ public class ProfileController {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             User existingUser = userService.findByEmail(authentication.getName());
 
-            // Check if email is being changed and if new email already exists
+
             if (email != null && !existingUser.getEmail().equals(email)) {
                 if (userService.existsByEmail(email)) {
                     response.put("success", false);
@@ -199,7 +199,7 @@ public class ProfileController {
 
             userService.save(existingUser);
 
-            // Update the SecurityContext with the updated user information
+
             // This ensures that the authentication principal has the latest user data
             CustomUserDetails updatedUserDetails = new CustomUserDetails(existingUser);
             Authentication newAuth = new UsernamePasswordAuthenticationToken(

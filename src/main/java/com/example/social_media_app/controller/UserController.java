@@ -16,7 +16,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*") // Allow CORS for API endpoints
+@CrossOrigin(origins = "*")
 public class UserController {
 
     private final UserService userService;
@@ -39,7 +39,7 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    // Get user by ID (for profile viewing)
+    // Get user by ID for profile viewing
     @GetMapping("/{userId}")
     public ResponseEntity<User> getUserById(@PathVariable Long userId, Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -55,7 +55,7 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    //  Get paginated list of users excluding the current user (for friend suggestions)
+    //  Get paginated list of users excluding the current user for friend suggestions
     @GetMapping
     public Page<User> getAllUsersExceptCurrent(
             @RequestParam Long currentUserId,

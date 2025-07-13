@@ -39,20 +39,20 @@ public class HomeController {
         User user = userService.findByEmail(currentUserDetails.getUsername());
         model.addAttribute("currentUser", user);
 
-        return "friends"; // resolves to src/main/resources/templates/friends.html
+        return "friends";
     }
 
     @GetMapping({ "/", "/home" })
     public String home(
             @AuthenticationPrincipal UserDetails currentUserDetails,
             Model model) {
-        // lookup your JPA User by the logged-in username
+
         User user = userService.findByEmail(currentUserDetails.getUsername());
 
         // Get user stats
         UserStatsDto userStats = userStatsService.getUserStats(user.getId());
 
-        // Get friend suggestions (limit to 8 for sidebar)
+        // Get friend suggestions limit to 8 for sidebar
         org.springframework.data.domain.PageRequest pageRequest = org.springframework.data.domain.PageRequest.of(0, 8);
         org.springframework.data.domain.Page<User> friendSuggestions = userService
                 .findUsersForFriendSuggestions(user.getId(), pageRequest);
@@ -64,7 +64,7 @@ public class HomeController {
         model.addAttribute("posts", postService.getFeedPosts(user.getId()));
         model.addAttribute("friendSuggestions", friendSuggestions.getContent());
 
-        // render templates/home.html
+
         return "home";
     }
 

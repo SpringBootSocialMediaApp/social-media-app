@@ -1,7 +1,5 @@
 -- Add unique constraint for username field if it doesn't exist
--- Email unique constraint should already exist from User entity annotation
 
--- Add unique constraint to username field only if it doesn't exist
 DO $$
 BEGIN
     IF NOT EXISTS (

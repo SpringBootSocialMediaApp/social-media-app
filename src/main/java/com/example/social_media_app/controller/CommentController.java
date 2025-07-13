@@ -48,7 +48,7 @@ public class CommentController {
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         try {
-            // Get the authenticated user by email (which is the username in Spring Security)
+            // Get the authenticated user by email
             User user = userService.findByEmail(userDetails.getUsername());
 
             if (user == null) {
@@ -116,17 +116,4 @@ public class CommentController {
         }
     }
 
-    //    @PostMapping("/{postId}")
-    // public ResponseEntity<Comment> addComment(
-    //         @PathVariable Long postId,
-    //         @RequestBody Map<String, String> payload,
-    //         @AuthenticationPrincipal UserDetails userDetails) {
-    //     User user = userService.findByEmail(userDetails.getUsername());
-    //     Post post = postService.findById(postId);
-        
-    //     String content = payload.get("content");
-
-    //     Comment comment = commentService.createComment(content, post, user);
-    //     return ResponseEntity.ok(comment);
-    // }
 }

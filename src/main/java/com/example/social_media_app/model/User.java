@@ -46,7 +46,6 @@ public class User {
     @Column(unique = true)
     private String username;
 
-    // New profile fields
     private String city;
     
     private String country;

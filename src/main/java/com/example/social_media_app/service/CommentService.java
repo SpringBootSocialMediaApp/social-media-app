@@ -14,8 +14,12 @@ public interface CommentService {
     List<Comment> getCommentsByPostId(Long postId);
 
     List<Comment> findByPost(Post post);
+
     Comment save(Comment comment);
+
     Comment findById(Long commentId);
+
     int countByPost(Post post);
+
     void deleteComment(Comment comment);
 }

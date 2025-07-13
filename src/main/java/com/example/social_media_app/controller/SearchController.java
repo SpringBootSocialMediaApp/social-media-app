@@ -56,7 +56,7 @@ public class SearchController {
                 model.addAttribute("posts", searchResults);
                 model.addAttribute("totalPosts", searchResults.size());
             } else {
-                // Search for both (default)
+                // Search for both
                 Pageable pageable = PageRequest.of(0, 10);
                 Page<User> userResults = userService.searchUsers(currentUser.getId(), q, pageable);
                 List<Post> postResults = postService.searchPostsInFeed(currentUser.getId(), q);

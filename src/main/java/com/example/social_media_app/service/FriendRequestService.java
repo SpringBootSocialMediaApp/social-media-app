@@ -16,7 +16,7 @@ public interface FriendRequestService {
     // Decline friend request
     void declineFriendRequest(Long requestId, Long userId);
     
-    // Cancel friend request (for sender)
+    // Cancel friend request for sender
     void cancelFriendRequest(Long requestId, Long userId);
     
     // Get incoming friend requests

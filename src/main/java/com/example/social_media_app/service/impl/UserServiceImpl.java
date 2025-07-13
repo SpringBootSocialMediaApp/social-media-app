@@ -10,7 +10,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -51,15 +50,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<User> findUsersForFriendSuggestions(Long currentUserId, Pageable pageable) {
-        // You may need to implement this method in your UserRepository as well
-        // For now, let's assume such a method exists
         return userRepository.findUsersForFriendSuggestions(currentUserId, pageable);
     }
 
-    @Override
-    public Page<User> findAllUsersExceptCurrent(Long currentUserId, Pageable pageable) {
-        return userRepository.findAllExceptCurrentUser(currentUserId, pageable);
-    }
+//    @Override
+//    public Page<User> findAllUsersExceptCurrent(Long currentUserId, Pageable pageable) {
+//        return userRepository.findAllExceptCurrentUser(currentUserId, pageable);
+//    }
 
     @Override
     public Page<User> searchUsers(Long currentUserId, String searchTerm, Pageable pageable) {
