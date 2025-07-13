@@ -75,7 +75,7 @@ The project adheres to:
 ### 1️⃣ Clone the Repository
 
 ```bash
-git clone https://github.com/social-media-app.git
+git clone https://github.com/SpringBootSocialMediaApp/social-media-app.git
 cd social-media-app
 ````
 ## 📽️ Demo Video
