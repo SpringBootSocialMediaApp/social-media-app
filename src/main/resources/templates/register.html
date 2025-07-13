@@ -90,7 +90,6 @@
 
         <!-- Terms -->
         <div class="flex items-start">
-<!--            <input type="checkbox" id="terms" class="mt-1 h-4 w-4 rounded focus:ring-brand-500 bg-white !accent-white" required>-->
             <input type="checkbox" id="terms" class="checkbox accent-white border-1 border-gray-300 bg-white checked:bg-brand-500 checked:border-transparent checked:text-white" required>
             <label for="terms" class="ml-2 text-sm text-gray-700">
                 I agree to the <a href="#" onclick="openTermsModal()" class="font-medium text-brand-600 hover:underline">Terms & Privacy Policy</a>
@@ -164,7 +163,7 @@
             <div class="pt-4 border-t border-gray-200">
                 <h4 class="mb-2 text-lg font-semibold text-gray-800">Contact Us</h4>
                 <p class="text-xs text-gray-600">
-                    If you have any questions about these terms or our privacy policy, please contact us at 
+                    If you have any questions about these terms or our privacy policy, please contact us at
                     <a href="mailto:support@socialite.com" class="text-brand-600 hover:underline">support@socialite.com</a>
                 </p>
             </div>
@@ -182,13 +181,13 @@
 <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 <script>
     AOS.init();
-    
+
     // Terms Modal Functions
     function openTermsModal() {
         const modal = document.getElementById('termsModal');
         modal.classList.remove('hidden');
         document.body.classList.add('overflow-hidden');
-        
+
         // Trigger AOS animation
         setTimeout(() => {
             const modalContent = modal.querySelector('[data-aos="zoom-in"]');
@@ -196,28 +195,28 @@
             modalContent.classList.add('scale-100');
         }, 50);
     }
-    
+
     function closeTermsModal() {
         const modal = document.getElementById('termsModal');
         const modalContent = modal.querySelector('[data-aos="zoom-in"]');
-        
+
         // Animate out
         modalContent.classList.remove('scale-100');
         modalContent.classList.add('scale-95');
-        
+
         setTimeout(() => {
             modal.classList.add('hidden');
             document.body.classList.remove('overflow-hidden');
         }, 200);
     }
-    
+
     // Close modal when clicking outside
     document.getElementById('termsModal').addEventListener('click', function(e) {
         if (e.target === this) {
             closeTermsModal();
         }
     });
-    
+
     // Close modal with Escape key
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && !document.getElementById('termsModal').classList.contains('hidden')) {
