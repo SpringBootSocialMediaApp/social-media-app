@@ -7,8 +7,13 @@
         <div class="flex gap-4 card-body bg-white rounded-xl">
             <!-- Current user avatar -->
             <div class="avatar">
-                <div class="flex items-center justify-center w-12 h-12 rounded-full bg-brand-500 ">
-                    <svg class="mt-[10px] ml-[12px] w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <div class="flex items-center justify-center w-12 h-12 rounded-full bg-brand-500">
+                    <img th:if="${#authentication.principal.profilePicture != null and #authentication.principal.profilePicture != ''}" 
+                         th:src="${#authentication.principal.profilePicture}" 
+                         alt="Profile" 
+                         class="object-cover w-full h-full rounded-full"/>
+                    <svg th:unless="${#authentication.principal.profilePicture != null and #authentication.principal.profilePicture != ''}" 
+                         class="mt-[10px] ml-[12px] w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd"
                               d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
                               clip-rule="evenodd"/>
@@ -70,8 +75,13 @@
             <div class="flex items-start gap-4 card-body">
                 <!-- Author avatar -->
                 <div class="avatar">
-                    <div class="flex items-center justify-center w-12 rounded-full bg-brand-500">
-                        <svg class="mt-[10px] ml-[12px] w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <div class="flex items-center justify-center w-12 h-12 rounded-full bg-brand-500">
+                        <img th:if="${post.user.profilePicture != null and post.user.profilePicture != ''}" 
+                             th:src="${post.user.profilePicture}" 
+                             alt="Profile" 
+                             class="object-cover w-full h-full rounded-full"/>
+                        <svg th:unless="${post.user.profilePicture != null and post.user.profilePicture != ''}" 
+                             class="mt-[10px] ml-[12px] w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd"
                                   d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
                                   clip-rule="evenodd"/>
