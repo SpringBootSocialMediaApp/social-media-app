@@ -16,4 +16,8 @@ public interface PostService {
 
     // Friend Integration: Get posts from user and their friends
     List<Post> getFeedPosts(Long userId);
+    
+    // Search methods for navbar search functionality
+    List<Post> searchPostsInFeed(Long userId, String searchTerm);
+    List<Post> searchAllPosts(String searchTerm);
 }

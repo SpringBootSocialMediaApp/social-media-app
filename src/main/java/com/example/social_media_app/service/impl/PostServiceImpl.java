@@ -115,4 +115,24 @@ public class PostServiceImpl implements PostService {
 
         return posts;
     }
+
+    @Override
+    public List<Post> searchPostsInFeed(Long userId, String searchTerm) {
+        List<Post> posts = postRepository.searchPostsInFeed(userId, searchTerm);
+        
+        // Update like and comment counts for each post
+        posts.forEach(this::updateCounts);
+        
+        return posts;
+    }
+
+    @Override
+    public List<Post> searchAllPosts(String searchTerm) {
+        List<Post> posts = postRepository.searchAllPosts(searchTerm);
+        
+        // Update like and comment counts for each post
+        posts.forEach(this::updateCounts);
+        
+        return posts;
+    }
 }

@@ -4,6 +4,8 @@ import com.example.social_media_app.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface UserService {
 
     void save(User user);
@@ -19,4 +21,8 @@ public interface UserService {
     
     // NEW - for friend suggestions (excludes current friends and pending requests)
     Page<User> findUsersForFriendSuggestions(Long currentUserId, Pageable pageable);
+    
+    // Search methods for navbar search functionality
+    Page<User> searchUsers(Long currentUserId, String searchTerm, Pageable pageable);
+    List<User> searchUsersWithRelevance(Long currentUserId, String searchTerm);
 }

@@ -43,6 +43,45 @@ public class FriendRequestController {
         }
     }
     
+    // Alternative endpoint for search functionality
+    @PostMapping("/send-request")
+    public ResponseEntity<Map<String, Object>> sendFriendRequestFromSearch(@RequestBody Map<String, Long> payload, Authentication authentication) {
+        try {
+            String email = authentication.getName();
+            User sender = userService.findByEmail(email);
+            
+            if (sender == null) {
+                Map<String, Object> response = new HashMap<>();
+                response.put("success", false);
+                response.put("message", "Sender not found");
+                return ResponseEntity.badRequest().body(response);
+            }
+            
+            Long receiverId = payload.get("userId");
+            if (receiverId == null) {
+                Map<String, Object> response = new HashMap<>();
+                response.put("success", false);
+                response.put("message", "User ID is required");
+                return ResponseEntity.badRequest().body(response);
+            }
+            
+            FriendRequest request = friendRequestService.sendFriendRequest(sender.getId(), receiverId);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Friend request sent");
+            response.put("requestId", request.getId());
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+    
     // Accept friend request
     @PostMapping("/accept/{requestId}")
     public ResponseEntity<?> acceptFriendRequest(@PathVariable Long requestId, Authentication authentication) {

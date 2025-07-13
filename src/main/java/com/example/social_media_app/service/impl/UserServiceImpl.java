@@ -8,6 +8,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.util.List;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -56,5 +59,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<User> findAllUsersExceptCurrent(Long currentUserId, Pageable pageable) {
         return userRepository.findAllExceptCurrentUser(currentUserId, pageable);
+    }
+
+    @Override
+    public Page<User> searchUsers(Long currentUserId, String searchTerm, Pageable pageable) {
+        return userRepository.searchUsers(currentUserId, searchTerm, pageable);
+    }
+
+    @Override
+    public List<User> searchUsersWithRelevance(Long currentUserId, String searchTerm) {
+        return userRepository.searchUsersWithRelevance(currentUserId, searchTerm);
     }
 }
