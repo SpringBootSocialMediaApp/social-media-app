@@ -73,7 +73,7 @@
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
                 <label class="block mb-1 text-sm font-medium text-gray-700">Date of Birth</label>
-                <input type="date" th:field="*{dateOfBirth}"
+                <input type="date" th:field="*{dateOfBirth}" min="1990-01-01" max="2012-12-31"
                        class="w-full px-4 py-2 text-gray-700 transition bg-white border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-brand-400 focus:border-brand-600">
                 <span th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}" class="text-xs text-red-500"></span>
             </div>
