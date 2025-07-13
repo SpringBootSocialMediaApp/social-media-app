@@ -57,7 +57,7 @@ The project adheres to:
 
 ---
 
-## 🌟 Optional Features (if implemented)
+## 🌟 Optional Features 
 
 ### 👥 Friend Management
 - Browse user directory
@@ -97,7 +97,7 @@ The demo includes:
 - **Feature Branches:** Named like `feature/user-auth`, `feature/posts`
 - **Pull Requests:**
   - Every feature or bugfix is submitted as a PR
-  - PRs must contain clear descriptions of changes
+  - PRs contain clear descriptions of changes
   - Peer review before merging is encouraged
 - **Commits:**
   - Use clear and meaningful commit messages  
