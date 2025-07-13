@@ -87,7 +87,7 @@ The demo includes:
 - ✅ Login & registration
 - ✅ Post creation and feed updates
 - ✅ Database operations in real time
-- ✅ *(Optional)* Friends and likes feature
+- ✅ Friends and likes feature
 
 ---
 
