@@ -1,10 +1,10 @@
 <!-- src/main/resources/templates/components/feed.html -->
 <div th:fragment="feed" class="flex-1 max-w-2xl" xmlns:sec="http://www.w3.org/1999/xhtml">
     <!-- Create Post Form -->
-    <form th:action="@{/posts}" method="post" class="mb-6 bg-gray-800 shadow-xl card  ">
+    <form th:action="@{/posts}" method="post" class="mb-6 bg-gray-800 shadow-xl card ">
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
-        <div class="flex gap-4 card-body bg-white rounded-xl">
+        <div class="flex gap-4 bg-white card-body rounded-xl">
             <!-- Current user avatar -->
             <div class="avatar">
                 <div class="flex items-center justify-center w-12 h-12 rounded-full bg-brand-500">
@@ -23,21 +23,163 @@
 
             <div class="flex-1">
                 <textarea name="content"
-                          class="w-full text-black placeholder-gray-400 bg-gray-50 border-1 border-gray-300 resize-none textarea textarea-bordered"
+                          class="w-full text-black placeholder-gray-400 border-gray-300 resize-none bg-gray-50 border-1 textarea textarea-bordered"
                           placeholder="What's on your mind?"
                           rows="3"></textarea>
 
                 <div class="flex flex-col">
                     <!-- Action buttons -->
-                    <div class="flex justify-between items-center w-full mb-4 mt-4">
-                        <button type="button" class="text-gray-700 btn btn-ghost btn-sm">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                      d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
-                                      clip-rule="evenodd"/>
-                            </svg>
-                            Emoji
-                        </button>
+                    <div class="flex items-center justify-between w-full mt-4 mb-4">
+                        <div class="relative">
+                            <button type="button" id="emojiButton" class="text-gray-700 btn btn-ghost btn-sm" onclick="toggleEmojiPicker()">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-.464 5.535a1 1 0 10-1.415-1.414 3 3 0 01-4.242 0 1 1 0 00-1.415 1.414 5 5 0 007.072 0z" clip-rule="evenodd"/>
+                                </svg>
+                                Emoji
+                            </button>
+                            
+                            <!-- Emoji Picker Popup -->
+                            <div id="emojiPicker" class="absolute left-0 z-50 hidden mb-2 top-10 bottom-full emoji-picker">
+                                <div class="p-5 overflow-y-auto bg-white border border-gray-200 shadow-xl rounded-2xl w-80 max-h-72">
+                                    <div class="mb-3">
+                                        <h3 class="mb-2 text-sm font-semibold text-gray-700">Choose an emoji</h3>
+                                        
+                                        <!-- Emoji Categories Tabs -->
+                                        <div class="mb-3 bg-gray-100 tabs tabs-boxed">
+                                            <a class="text-xs tab tab-active" onclick="showEmojiCategory('smileys')" data-category="smileys">😊</a>
+                                            <a class="text-xs tab" onclick="showEmojiCategory('animals')" data-category="animals">🐾</a>
+                                            <a class="text-xs tab" onclick="showEmojiCategory('food')" data-category="food">🍕</a>
+                                            <a class="text-xs tab" onclick="showEmojiCategory('activities')" data-category="activities">⚽</a>
+                                            <a class="text-xs tab" onclick="showEmojiCategory('travel')" data-category="travel">🌍</a>
+                                            <a class="text-xs tab" onclick="showEmojiCategory('objects')" data-category="objects">💡</a>
+                                        </div>
+                                        
+                                        <!-- Emoji Grid -->
+                                        <div class="grid grid-cols-8 gap-1 emoji-category" data-category="smileys">
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('😀')">😀</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('😃')">😃</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('😄')">😄</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('😁')">😁</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('😆')">😆</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('😅')">😅</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('😂')">😂</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🤣')">🤣</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('😊')">😊</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('😇')">😇</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🙂')">🙂</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🙃')">🙃</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('😉')">😉</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('😌')">😌</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('😍')">😍</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🥰')">🥰</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('😘')">😘</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('😗')">😗</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('😙')">😙</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('😚')">😚</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('😋')">😋</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('😛')">😛</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('😜')">😜</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🤪')">🤪</button>
+                                        </div>
+                                        
+                                        <div class="grid hidden grid-cols-8 gap-1 emoji-category" data-category="animals">
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🐶')">🐶</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🐱')">🐱</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🐭')">🐭</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🐹')">🐹</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🐰')">🐰</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🦊')">🦊</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🐻')">🐻</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🐼')">🐼</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🐨')">🐨</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🐯')">🐯</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🦁')">🦁</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🐮')">🐮</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🐷')">🐷</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🐸')">🐸</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🐵')">🐵</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🙈')">🙈</button>
+                                        </div>
+                                        
+                                        <div class="grid hidden grid-cols-8 gap-1 emoji-category" data-category="food">
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🍎')">🍎</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🍊')">🍊</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🍋')">🍋</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🍌')">🍌</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🍉')">🍉</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🍇')">🍇</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🍓')">🍓</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🍑')">🍑</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🍒')">🍒</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🥝')">🥝</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🍅')">🍅</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🥑')">🥑</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🍕')">🍕</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🍔')">🍔</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🌭')">🌭</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🍟')">🍟</button>
+                                        </div>
+                                        
+                                        <div class="grid hidden grid-cols-8 gap-1 emoji-category" data-category="activities">
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('⚽')">⚽</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🏀')">🏀</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🏈')">🏈</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('⚾')">⚾</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🎾')">🎾</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🏐')">🏐</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🏓')">🏓</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🎮')">🎮</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🎵')">🎵</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🎶')">🎶</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🎤')">🎤</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🎧')">🎧</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🎬')">🎬</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🎨')">🎨</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🎯')">🎯</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🎲')">🎲</button>
+                                        </div>
+                                        
+                                        <div class="grid hidden grid-cols-8 gap-1 emoji-category" data-category="travel">
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🚗')">🚗</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🚕')">🚕</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🚙')">🚙</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🚌')">🚌</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🚎')">🚎</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🏎️')">🏎️</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🚓')">🚓</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🚑')">🚑</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('✈️')">✈️</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🚀')">🚀</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🚁')">🚁</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🛸')">🛸</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🌍')">🌍</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🌎')">🌎</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🌏')">🌏</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🗺️')">🗺️</button>
+                                        </div>
+                                        
+                                        <div class="grid hidden grid-cols-8 gap-1 emoji-category" data-category="objects">
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('💡')">💡</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🔔')">🔔</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('📱')">📱</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('💻')">💻</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('⌨️')">⌨️</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🖥️')">🖥️</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('⌚')">⌚</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('📷')">📷</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('📚')">📚</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('✏️')">✏️</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('📝')">📝</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('💼')">💼</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🎁')">🎁</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('🔑')">🔑</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('💰')">💰</button>
+                                            <button type="button" class="p-1 text-lg transition-colors rounded emoji-btn hover:bg-gray-100" onclick="insertEmoji('💎')">💎</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <button type="button" class="text-gray-700 btn btn-ghost btn-sm">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
@@ -57,7 +199,7 @@
                     </div>
 
                     <!-- Counter + Submit -->
-                    <div class="flex justify-between items-center ">
+                    <div class="flex items-center justify-between ">
                         <span id="charCounter" class="text-xs text-gray-700">0/280 Characters</span>
                         <div class="flex gap-3">
                             <button type="reset" class="text-gray-700 btn btn-ghost btn-sm hover:bg-gray-200 hover:shadow-sm  hover:!shadow-gray-300 transition-transform hover:scale-105">Cancel</button>
@@ -112,10 +254,10 @@
                     </div>
 
                     <div class="mb-4 post-content-scroll">
-                        <p class="text-gray-700 whitespace-pre-wrap break-words" th:text="${post.content}">Post content…</p>
+                        <p class="text-gray-700 break-words whitespace-pre-wrap" th:text="${post.content}">Post content…</p>
                     </div>
 
-                    <div class="flex justify-between items-center ">
+                    <div class="flex items-center justify-between ">
                         <button class="text-gray-700 btn btn-ghost btn-sm hover:text-red-400 like-button">
 <!--                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">-->
 <!--                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" -->
@@ -178,7 +320,7 @@
                 <div id="modalPostContent" class="pb-4 mb-4 border-b border-gray-300">
                     <div class="flex items-start gap-3">
                         <div class="avatar">
-                            <div class="w-10 h-10 flex items-center justify-center rounded-full bg-brand-300">
+                            <div class="flex items-center justify-center w-10 h-10 rounded-full bg-brand-300">
                                 <svg class="mt-2 ml-[10px] w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
                                 </svg>
@@ -189,8 +331,8 @@
                                 <h4 class="font-medium text-gray-900" id="modalPostAuthor">Author Name</h4>
                                 <span class="text-sm text-gray-700" id="modalPostTime">timestamp</span>
                             </div>
-                            <div class="mt-1 max-h-24 overflow-y-auto post-content-scroll">
-                                <p class="text-gray-700 whitespace-pre-wrap break-words" id="modalPostText">Post content</p>
+                            <div class="mt-1 overflow-y-auto max-h-24 post-content-scroll">
+                                <p class="text-gray-700 break-words whitespace-pre-wrap" id="modalPostText">Post content</p>
                             </div>
                         </div>
                     </div>
@@ -204,7 +346,7 @@
                     <input type="hidden" id="postIdInput">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                     <textarea id="commentContent" rows="2"
-                              class="w-full px-3 py-2 text-gray-700 placeholder-gray-400 bg-gray-50 border border-gray-200 rounded-lg resize-none focus:ring-2 focus:border-none focus:ring-brand-400  focus:outline-none focus:border-transparent"
+                              class="w-full px-3 py-2 text-gray-700 placeholder-gray-400 border border-gray-200 rounded-lg resize-none bg-gray-50 focus:ring-2 focus:border-none focus:ring-brand-400 focus:outline-none focus:border-transparent"
                               placeholder="Write a comment..."></textarea>
                     <div class="flex justify-end mt-2">
                         <button type="submit" class="btn btn-primary btn-sm !bg-brand-500 !border-brand-500 shadow-md shadow-brand-500 transition-transform hover:scale-105">Post Comment</button>

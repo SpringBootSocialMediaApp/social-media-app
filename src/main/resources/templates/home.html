@@ -947,6 +947,79 @@ function getCurrentUserEmail() {
       notification.remove();
     }, 3000);
   }
+
+  // Emoji Picker Functions
+  function toggleEmojiPicker() {
+    const emojiPicker = document.getElementById('emojiPicker');
+    emojiPicker.classList.toggle('hidden');
+    
+    // Close emoji picker when clicking outside
+    if (!emojiPicker.classList.contains('hidden')) {
+      document.addEventListener('click', function closeEmojiPicker(e) {
+        if (!emojiPicker.contains(e.target) && !document.getElementById('emojiButton').contains(e.target)) {
+          emojiPicker.classList.add('hidden');
+          document.removeEventListener('click', closeEmojiPicker);
+        }
+      });
+    }
+  }
+
+  function showEmojiCategory(category) {
+    // Hide all emoji categories
+    const categories = document.querySelectorAll('.emoji-category');
+    categories.forEach(cat => cat.classList.add('hidden'));
+    
+    // Show selected category
+    const selectedCategory = document.querySelector(`[data-category="${category}"]`);
+    if (selectedCategory) {
+      selectedCategory.classList.remove('hidden');
+    }
+    
+    // Update tab appearance
+    const tabs = document.querySelectorAll('.tabs .tab');
+    tabs.forEach(tab => tab.classList.remove('tab-active'));
+    
+    const activeTab = document.querySelector(`[data-category="${category}"]`);
+    if (activeTab && activeTab.classList.contains('tab')) {
+      activeTab.classList.add('tab-active');
+    }
+  }
+
+  function insertEmoji(emoji) {
+    const textarea = document.querySelector('textarea[name="content"]');
+    if (textarea) {
+      const cursorPosition = textarea.selectionStart;
+      const textBefore = textarea.value.substring(0, cursorPosition);
+      const textAfter = textarea.value.substring(cursorPosition);
+      
+      // Insert emoji at cursor position
+      textarea.value = textBefore + emoji + textAfter;
+      
+      // Move cursor after the inserted emoji
+      const newCursorPosition = cursorPosition + emoji.length;
+      textarea.setSelectionRange(newCursorPosition, newCursorPosition);
+      
+      // Focus back to textarea
+      textarea.focus();
+      
+      // Trigger input event to update character counter
+      const inputEvent = new Event('input', { bubbles: true });
+      textarea.dispatchEvent(inputEvent);
+      
+      // Hide emoji picker after selection
+      document.getElementById('emojiPicker').classList.add('hidden');
+    }
+  }
+
+  // Close emoji picker when pressing Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      const emojiPicker = document.getElementById('emojiPicker');
+      if (!emojiPicker.classList.contains('hidden')) {
+        emojiPicker.classList.add('hidden');
+      }
+    }
+  });
 </script>
 
 <!-- Profile Settings Modal -->
