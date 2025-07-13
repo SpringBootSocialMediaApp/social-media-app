@@ -145,11 +145,6 @@
                             Location
                         </p>
                     </div>
-                    <div class="flex space-x-2">
-                        <button id="modalAddFriendBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                            Add Friend
-                        </button>
-                    </div>
                 </div>
                 
                 <!-- Profile Details -->
@@ -1102,10 +1097,6 @@
         // Additional information
         document.getElementById('modalEducation').textContent = user.education || '-';
         document.getElementById('modalWorkplace').textContent = user.workplace || '-';
-        
-        // Set up Add Friend button
-        const addFriendBtn = document.getElementById('modalAddFriendBtn');
-        addFriendBtn.onclick = () => addFriend(user.id, addFriendBtn);
         
         // Show modal
         modal.classList.remove('hidden');
