@@ -637,7 +637,7 @@
     }
 
     // Function to fetch users from API
-    async function fetchUsers(page = 0, size = 5) {
+    async function fetchUsers(page = 0, size = 3) {
         try {
             const response = await fetch(`/api/users/suggestions?page=${page}&size=${size}`);
 
@@ -945,7 +945,7 @@
             loadingDiv.style.display = 'flex';
         }
 
-        const data = await fetchUsers(page, 5);
+        const data = await fetchUsers(page, 3);
 
         if (data) {
             displayUsers(data.content);
@@ -1211,8 +1211,17 @@
         // Load friend stats
         await loadFriendStats();
         
-        // Show the first section by default
-        showSection('all-friends');
+        // Check URL parameters to determine which section to show
+        const urlParams = new URLSearchParams(window.location.search);
+        const section = urlParams.get('section');
+        
+        // Show the appropriate section based on URL parameter or default to user-directory (Find Friends)
+        if (section === 'all-friends' || section === 'friend-requests' || section === 'sent-requests' || section === 'user-directory') {
+            showSection(section);
+        } else {
+            // Default to user-directory (Find Friends) when coming from "SEE ALL" button
+            showSection('user-directory');
+        }
     }
 
     // Friend request actions

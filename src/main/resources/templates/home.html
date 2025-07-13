@@ -871,6 +871,81 @@ function getCurrentUserEmail() {
       preview.classList.add('hidden');
     }
   }
+
+  // Friend request functionality for right sidebar
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add event listeners to all Add buttons in right sidebar
+    const addFriendButtons = document.querySelectorAll('.add-friend-btn');
+    
+    addFriendButtons.forEach(button => {
+      button.addEventListener('click', async function() {
+        const userId = this.getAttribute('data-user-id');
+        const buttonElement = this;
+        
+        try {
+          // Show loading state
+          buttonElement.disabled = true;
+          buttonElement.textContent = 'Sending...';
+          
+          const response = await fetch('/api/friends/request', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: new URLSearchParams({
+              'receiverId': userId
+            })
+          });
+          
+          if (response.ok) {
+            // Show success notification
+            showNotification('Friend request sent successfully!', 'success');
+            
+            // Update button state
+            buttonElement.textContent = 'Sent';
+            buttonElement.disabled = true;
+            buttonElement.classList.remove('!bg-brand-500', '!border-brand-500');
+            buttonElement.classList.add('!bg-gray-400', '!border-gray-400');
+            
+          } else {
+            const errorText = await response.text();
+            showNotification(errorText || 'Failed to send friend request', 'error');
+            
+            // Reset button state
+            buttonElement.disabled = false;
+            buttonElement.textContent = 'Add';
+          }
+        } catch (error) {
+          console.error('Error sending friend request:', error);
+          showNotification('Error sending friend request', 'error');
+          
+          // Reset button state
+          buttonElement.disabled = false;
+          buttonElement.textContent = 'Add';
+        }
+      });
+    });
+  });
+
+  // Notification system for home page
+  function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 transition-all duration-300 ${
+      type === 'success' ? 'bg-green-500 text-white' :
+      type === 'error' ? 'bg-red-500 text-white' :
+      'bg-blue-500 text-white'
+    }`;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    // Remove notification after 3 seconds
+    setTimeout(() => {
+      notification.remove();
+    }, 3000);
+  }
 </script>
 
 <!-- Profile Settings Modal -->

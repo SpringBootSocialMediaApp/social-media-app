@@ -84,22 +84,39 @@
         <div class="card-body">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="card-title text-black">People You May Know</h3>
-                <button class="btn btn-ghost btn-sm text-brand-400">See all</button>
+                <a href="/friends?section=user-directory" class="btn btn-ghost btn-sm text-brand-400 hover:text-brand-600">SEE ALL</a>
             </div>
-            <div class="space-y-4">
-                <div class="flex items-center gap-3">
-                    <div class="avatar">
-                        <div class="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center">
-                            <svg class="mt-[10px] ml-[10px] w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 9 a3 3 0 100-6 3 3 0 000 6zm-7 9 a7 7 0 1114 0H3z" clip-rule="evenodd"/>
-                            </svg>
+            <div class="space-y-4" id="friend-suggestions-container">
+                <!-- Dynamic friend suggestions will be loaded here -->
+                <div th:if="${friendSuggestions != null and !#lists.isEmpty(friendSuggestions)}">
+                    <div th:each="suggestion : ${friendSuggestions}" class="flex items-center gap-3">
+                        <div class="avatar">
+                            <div th:if="${suggestion.profilePicture != null and !#strings.isEmpty(suggestion.profilePicture)}"
+                                 class="w-12 h-12 rounded-full overflow-hidden">
+                                <img th:src="@{'/uploads/profiles/' + ${suggestion.profilePicture}}" 
+                                     th:alt="${suggestion.firstName + ' ' + suggestion.lastName}" 
+                                     class="w-full h-full object-cover">
+                            </div>
+                            <div th:unless="${suggestion.profilePicture != null and !#strings.isEmpty(suggestion.profilePicture)}"
+                                 class="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center">
+                                <span th:text="${#strings.substring(suggestion.firstName, 0, 1) + #strings.substring(suggestion.lastName, 0, 1)}" 
+                                      class="text-white font-semibold text-lg"></span>
+                            </div>
                         </div>
+                        <div class="flex-1">
+                            <p th:text="${suggestion.firstName + ' ' + suggestion.lastName}" class="text-black font-semibold"></p>
+                            <p class="text-gray-400 text-sm">Suggested for you</p>
+                        </div>
+                        <button th:data-user-id="${suggestion.id}" 
+                                class="btn btn-primary btn-sm !bg-brand-500 !border-brand-500 shadow-md shadow-brand-500 transition-transform hover:scale-105 add-friend-btn">
+                            Add
+                        </button>
                     </div>
-                    <div class="flex-1">
-                        <p class="text-black font-semibold">Lisa Thompson</p>
-                        <p class="text-gray-400 text-sm">5 mutual friends</p>
-                    </div>
-                    <button class="btn btn-primary btn-sm !bg-brand-500 !border-brand-500 shadow-md shadow-brand-500 transition-transform hover:scale-105">Add</button>
+                </div>
+                <!-- No suggestions available -->
+                <div th:if="${friendSuggestions == null or #lists.isEmpty(friendSuggestions)}" 
+                     class="text-center text-gray-500 py-4">
+                    <p>No suggestions available</p>
                 </div>
             </div>
         </div>

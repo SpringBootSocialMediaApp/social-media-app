@@ -32,7 +32,14 @@ public class HomeController {
     }
 
     @GetMapping("/friends")
-    public String friends() {
+    public String friends(
+            @AuthenticationPrincipal UserDetails currentUserDetails,
+            Model model
+    ) {
+        // Get current user for friend page context
+        User user = userService.findByEmail(currentUserDetails.getUsername());
+        model.addAttribute("currentUser", user);
+        
         return "friends"; // resolves to src/main/resources/templates/friends.html
     }
 
@@ -48,11 +55,18 @@ public class HomeController {
         // Get user stats
         UserStatsDto userStats = userStatsService.getUserStats(user.getId());
         
+        // Get friend suggestions (limit to 3 for sidebar)
+        org.springframework.data.domain.PageRequest pageRequest = 
+            org.springframework.data.domain.PageRequest.of(0, 3);
+        org.springframework.data.domain.Page<User> friendSuggestions = 
+            userService.findUsersForFriendSuggestions(user.getId(), pageRequest);
+        
         // Friend Integration: Use friend-integrated feed instead of all posts
         model.addAttribute("currentUser", user);
         model.addAttribute("user", user);
         model.addAttribute("userStats", userStats);
         model.addAttribute("posts", postService.getFeedPosts(user.getId()));
+        model.addAttribute("friendSuggestions", friendSuggestions.getContent());
 
         // render templates/home.html
         return "home";
