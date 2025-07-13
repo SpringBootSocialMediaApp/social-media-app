@@ -149,9 +149,6 @@
                         <button id="modalAddFriendBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
                             Add Friend
                         </button>
-                        <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
-                            Message
-                        </button>
                     </div>
                 </div>
                 
@@ -185,29 +182,10 @@
                                 <span id="modalEducation" class="text-gray-800">-</span>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-gray-600">Occupation:</span>
-                                <span id="modalOccupation" class="text-gray-800">-</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">Relationship:</span>
-                                <span id="modalRelationship" class="text-gray-800">-</span>
+                                <span class="text-gray-600">Workplace:</span>
+                                <span id="modalWorkplace" class="text-gray-800">-</span>
                             </div>
                         </div>
-                    </div>
-                </div>
-                
-                <!-- Bio Section -->
-                <div class="mt-6 bg-gray-50 rounded-lg p-4">
-                    <h3 class="font-semibold text-gray-800 mb-3">About</h3>
-                    <p id="modalBio" class="text-gray-700 leading-relaxed">No bio available.</p>
-                </div>
-                
-                <!-- Mutual Friends Preview -->
-                <div class="mt-6">
-                    <h3 class="font-semibold text-gray-800 mb-3">Mutual Friends</h3>
-                    <div id="modalMutualFriends" class="flex -space-x-2">
-                        <!-- Mutual friends will be populated here -->
-                        <span class="text-gray-500 text-sm">Loading mutual friends...</span>
                     </div>
                 </div>
             </div>
@@ -1124,18 +1102,11 @@
         
         // Additional information
         document.getElementById('modalEducation').textContent = user.education || '-';
-        document.getElementById('modalOccupation').textContent = user.occupation || '-';
-        document.getElementById('modalRelationship').textContent = user.relationshipStatus || '-';
-        
-        // Bio
-        document.getElementById('modalBio').textContent = user.bio || 'No bio available.';
+        document.getElementById('modalWorkplace').textContent = user.workplace || '-';
         
         // Set up Add Friend button
         const addFriendBtn = document.getElementById('modalAddFriendBtn');
         addFriendBtn.onclick = () => addFriend(user.id, addFriendBtn);
-        
-        // Load mutual friends (placeholder for now)
-        loadMutualFriends(user.id);
         
         // Show modal
         modal.classList.remove('hidden');
@@ -1176,35 +1147,6 @@
         const modal = document.getElementById('profileModal');
         modal.classList.add('hidden');
         document.body.classList.remove('overflow-hidden');
-    }
-
-    // Function to load mutual friends (placeholder)
-    async function loadMutualFriends(userId) {
-        const mutualFriendsDiv = document.getElementById('modalMutualFriends');
-        
-        try {
-            // For now, we'll show a placeholder. You can implement the actual API call later
-            const mutualCount = Math.floor(Math.random() * 5) + 1;
-            
-            if (mutualCount === 0) {
-                mutualFriendsDiv.innerHTML = '<span class="text-gray-500 text-sm">No mutual friends</span>';
-            } else {
-                mutualFriendsDiv.innerHTML = `
-                    <div class="flex items-center space-x-2">
-                        <div class="flex -space-x-2">
-                            ${Array.from({length: Math.min(mutualCount, 3)}, (_, i) => `
-                                <img src="https://images.unsplash.com/photo-${1472099645785 + i}?w=40&h=40&fit=crop&crop=face" 
-                                     class="w-8 h-8 rounded-full border-2 border-white object-cover" 
-                                     alt="Mutual friend">
-                            `).join('')}
-                        </div>
-                        <span class="text-sm text-gray-600">${mutualCount} mutual friend${mutualCount > 1 ? 's' : ''}</span>
-                    </div>
-                `;
-            }
-        } catch (error) {
-            mutualFriendsDiv.innerHTML = '<span class="text-gray-500 text-sm">Unable to load mutual friends</span>';
-        }
     }
 
     // Update existing navigation functionality
