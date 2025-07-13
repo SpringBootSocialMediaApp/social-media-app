@@ -637,7 +637,7 @@
     }
 
     // Function to fetch users from API
-    async function fetchUsers(page = 0, size = 3) {
+    async function fetchUsers(page = 0, size = 5) {
         try {
             const response = await fetch(`/api/users/suggestions?page=${page}&size=${size}`);
 
@@ -945,7 +945,7 @@
             loadingDiv.style.display = 'flex';
         }
 
-        const data = await fetchUsers(page, 3);
+        const data = await fetchUsers(page, 5);
 
         if (data) {
             displayUsers(data.content);

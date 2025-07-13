@@ -55,7 +55,7 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    // ✅ Get paginated list of users excluding the current user (for friend suggestions)
+    //  Get paginated list of users excluding the current user (for friend suggestions)
     @GetMapping
     public Page<User> getAllUsersExceptCurrent(
             @RequestParam Long currentUserId,

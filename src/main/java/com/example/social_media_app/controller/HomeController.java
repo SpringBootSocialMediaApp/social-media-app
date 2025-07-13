@@ -34,33 +34,29 @@ public class HomeController {
     @GetMapping("/friends")
     public String friends(
             @AuthenticationPrincipal UserDetails currentUserDetails,
-            Model model
-    ) {
+            Model model) {
         // Get current user for friend page context
         User user = userService.findByEmail(currentUserDetails.getUsername());
         model.addAttribute("currentUser", user);
-        
+
         return "friends"; // resolves to src/main/resources/templates/friends.html
     }
 
-
-    @GetMapping({"/", "/home"})
+    @GetMapping({ "/", "/home" })
     public String home(
             @AuthenticationPrincipal UserDetails currentUserDetails,
-            Model model
-    ) {
+            Model model) {
         // lookup your JPA User by the logged-in username
         User user = userService.findByEmail(currentUserDetails.getUsername());
-        
+
         // Get user stats
         UserStatsDto userStats = userStatsService.getUserStats(user.getId());
-        
-        // Get friend suggestions (limit to 3 for sidebar)
-        org.springframework.data.domain.PageRequest pageRequest = 
-            org.springframework.data.domain.PageRequest.of(0, 3);
-        org.springframework.data.domain.Page<User> friendSuggestions = 
-            userService.findUsersForFriendSuggestions(user.getId(), pageRequest);
-        
+
+        // Get friend suggestions (limit to 8 for sidebar)
+        org.springframework.data.domain.PageRequest pageRequest = org.springframework.data.domain.PageRequest.of(0, 8);
+        org.springframework.data.domain.Page<User> friendSuggestions = userService
+                .findUsersForFriendSuggestions(user.getId(), pageRequest);
+
         // Friend Integration: Use friend-integrated feed instead of all posts
         model.addAttribute("currentUser", user);
         model.addAttribute("user", user);
