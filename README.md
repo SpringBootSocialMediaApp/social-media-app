@@ -81,7 +81,7 @@ cd social-media-app
 ## 📽️ Demo Video
 
 🎥 **Watch the demo of the working application:**  
-🔗 [Click Here to View Demo]()
+🔗 https://drive.google.com/drive/folders/1xhJijODwpacX5V8anaed7 8QoDAzqWlog
 
 The demo includes:
 - ✅ Login & registration
@@ -110,9 +110,4 @@ The demo includes:
 - ✅ **MVC Architecture**
 - ✅ **DTOs** for request/response objects
 - ✅ **OOP Principles:** Inheritance, Encapsulation, Polymorphism
-- ✅ **SOLID Principles:**
-  - Single Responsibility Principle
-  - Open/Closed Principle
-  - Liskov Substitution Principle
-  - Interface Segregation Principle
-  - Dependency Inversion Principle
+  
