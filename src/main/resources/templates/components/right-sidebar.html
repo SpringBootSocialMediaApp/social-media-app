@@ -1,13 +1,40 @@
 <!-- src/main/resources/templates/components/right-sidebar.html -->
 <div th:fragment="rightSidebar" class="hidden xl:block">
-    <!-- Search Friends -->
+<!--    &lt;!&ndash; Search Friends &ndash;&gt;-->
+<!--    <div class="card bg-white shadow-xl mb-6">-->
+<!--        <div class="card-body">-->
+<!--            <div class="form-control">-->
+<!--                <input type="text" placeholder="Search friends..." class="input input-bordered bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400" />-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <!-- People You May Know -->
     <div class="card bg-white shadow-xl mb-6">
         <div class="card-body">
-            <div class="form-control">
-                <input type="text" placeholder="Search friends..." class="input input-bordered bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400" />
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="card-title text-black">People You May Know</h3>
+                <button class="btn btn-ghost btn-sm text-brand-400">See all</button>
+            </div>
+            <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                    <div class="avatar">
+                        <div class="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center">
+                            <svg class="mt-[10px] ml-[10px] w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 9 a3 3 0 100-6 3 3 0 000 6zm-7 9 a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-black font-semibold">Lisa Thompson</p>
+                        <p class="text-gray-400 text-sm">5 mutual friends</p>
+                    </div>
+                    <button class="btn btn-primary btn-sm !bg-brand-500 !border-brand-500 shadow-md shadow-brand-500 transition-transform hover:scale-105">Add</button>
+                </div>
             </div>
         </div>
     </div>
+
     <!-- Online Friends -->
     <div class="card bg-white shadow-xl mb-6">
         <div class="card-body">
@@ -79,32 +106,9 @@
             </div>
         </div>
     </div>
-    <!-- People You May Know -->
-    <div class="card bg-white shadow-xl mb-6">
-        <div class="card-body">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="card-title text-black">People You May Know</h3>
-                <button class="btn btn-ghost btn-sm text-brand-400">See all</button>
-            </div>
-            <div class="space-y-4">
-                <div class="flex items-center gap-3">
-                    <div class="avatar">
-                        <div class="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center">
-                            <svg class="mt-[10px] ml-[10px] w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 9 a3 3 0 100-6 3 3 0 000 6zm-7 9 a7 7 0 1114 0H3z" clip-rule="evenodd"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="flex-1">
-                        <p class="text-black font-semibold">Lisa Thompson</p>
-                        <p class="text-gray-400 text-sm">5 mutual friends</p>
-                    </div>
-                    <button class="btn btn-primary btn-sm !bg-brand-500 !border-brand-500 shadow-md shadow-brand-500 transition-transform hover:scale-105">Add</button>
-                </div>
-            </div>
-        </div>
-    </div>
-<!--    &lt;!&ndash; Recent Activity &ndash;&gt;-->
+
+
+    <!--    &lt;!&ndash; Recent Activity &ndash;&gt;-->
 <!--    <div class="card bg-white shadow-xl">-->
 <!--        <div class="card-body">-->
 <!--            <h3 class="card-title text-black mb-4">Recent Activity</h3>-->
