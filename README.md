@@ -1,4 +1,4 @@
-# 🌐 Spring Boot Social Media App
+# 🌐 Socialite - Spring Boot Social Media App
 
 A lightweight social media web application built using **Spring Boot**, **PostgreSQL**, and **Thymeleaf**. Developed as a group project for **CSCI 22082 - Object-Oriented Programming II (2022/2023)**.
 
