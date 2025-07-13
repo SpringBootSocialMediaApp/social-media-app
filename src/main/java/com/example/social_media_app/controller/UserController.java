@@ -39,6 +39,22 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    // Get user by ID (for profile viewing)
+    @GetMapping("/{userId}")
+    public ResponseEntity<User> getUserById(@PathVariable Long userId, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        
+        User user = userService.findById(userId);
+        
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        
+        return ResponseEntity.ok(user);
+    }
+
     // ✅ Get paginated list of users excluding the current user (for friend suggestions)
     @GetMapping
     public Page<User> getAllUsersExceptCurrent(

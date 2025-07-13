@@ -12,6 +12,7 @@ public interface UserService {
     User findByEmail(String email);
     boolean existsByEmail(String email);
     User findByUsername(String username);
+    User findById(Long id);
 
     // NEW
     Page<User> findAllUsersExceptCurrent(Long currentUserId, Pageable pageable);

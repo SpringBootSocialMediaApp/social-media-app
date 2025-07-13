@@ -113,6 +113,108 @@
 <!-- Include the navbar component -->
 <div th:replace="components/navbar :: navbar" class="z-10"></div>
 
+<!-- Profile Modal -->
+<div id="profileModal" class="fixed inset-0 z-50 flex items-center justify-center hidden overflow-auto bg-black bg-opacity-50 backdrop-blur-sm">
+    <div class="w-full max-w-2xl mx-4 transition-all transform bg-white rounded-lg shadow-xl">
+        <div class="relative">
+            <!-- Close button -->
+            <button id="closeProfileModal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 z-10">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            
+            <!-- Profile Header -->
+            <div class="relative bg-gradient-to-r from-blue-500 to-purple-600 h-32 rounded-t-lg">
+                <div class="absolute -bottom-16 left-6">
+                    <img id="modalProfileImage" src="" alt="Profile" class="w-32 h-32 rounded-full border-4 border-white object-cover shadow-lg">
+                </div>
+            </div>
+            
+            <!-- Profile Content -->
+            <div class="pt-20 p-6">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <h2 id="modalFullName" class="text-2xl font-bold text-gray-800 mb-2">Full Name</h2>
+                        <p id="modalEmail" class="text-gray-600 mb-1">email@example.com</p>
+                        <p id="modalLocation" class="text-gray-500 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            Location
+                        </p>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button id="modalAddFriendBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            Add Friend
+                        </button>
+                        <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                            Message
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Profile Details -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Basic Info -->
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h3 class="font-semibold text-gray-800 mb-3">Basic Information</h3>
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Gender:</span>
+                                <span id="modalGender" class="text-gray-800">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Date of Birth:</span>
+                                <span id="modalDateOfBirth" class="text-gray-800">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Username:</span>
+                                <span id="modalUsername" class="text-gray-800">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Additional Info -->
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h3 class="font-semibold text-gray-800 mb-3">Additional Information</h3>
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Education:</span>
+                                <span id="modalEducation" class="text-gray-800">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Occupation:</span>
+                                <span id="modalOccupation" class="text-gray-800">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Relationship:</span>
+                                <span id="modalRelationship" class="text-gray-800">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bio Section -->
+                <div class="mt-6 bg-gray-50 rounded-lg p-4">
+                    <h3 class="font-semibold text-gray-800 mb-3">About</h3>
+                    <p id="modalBio" class="text-gray-700 leading-relaxed">No bio available.</p>
+                </div>
+                
+                <!-- Mutual Friends Preview -->
+                <div class="mt-6">
+                    <h3 class="font-semibold text-gray-800 mb-3">Mutual Friends</h3>
+                    <div id="modalMutualFriends" class="flex -space-x-2">
+                        <!-- Mutual friends will be populated here -->
+                        <span class="text-gray-500 text-sm">Loading mutual friends...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="flex flex-1 overflow-hidden">
     <!-- Left Sidebar -->
     <div class="w-64 bg-white shadow-lg border-r border-gray-200 h-screen fixed left-0 top-0 pt-16 flex flex-col z-20">
@@ -960,9 +1062,149 @@
     }
 
     function viewProfile(userId) {
-        // You can implement profile viewing here
-        console.log('Viewing profile for user ID:', userId);
-        // For example: window.location.href = `/profile/${userId}`;
+        console.log('viewProfile called with userId:', userId, 'Type:', typeof userId);
+        // Fetch user details and show profile modal
+        fetchUserProfile(userId);
+    }
+
+    // Function to fetch user profile details
+    async function fetchUserProfile(userId) {
+        try {
+            console.log('Fetching profile for user ID:', userId);
+            const response = await fetch(`/api/users/${userId}`);
+            
+            if (response.ok) {
+                const user = await response.json();
+                console.log('User profile loaded:', user);
+                showProfileModal(user);
+            } else {
+                console.error('Failed to fetch user profile. Status:', response.status, response.statusText);
+                if (response.status === 404) {
+                    showNotification('User profile not found', 'error');
+                } else if (response.status === 401) {
+                    showNotification('You need to be logged in to view profiles', 'error');
+                } else {
+                    showNotification(`Failed to load user profile (${response.status})`, 'error');
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching user profile:', error);
+            showNotification('Network error while loading user profile', 'error');
+        }
+    }
+
+    // Function to show profile modal with user data
+    function showProfileModal(user) {
+        const modal = document.getElementById('profileModal');
+        
+        // Populate modal with user data
+        document.getElementById('modalFullName').textContent = `${user.firstName} ${user.lastName}`;
+        document.getElementById('modalEmail').textContent = user.email;
+        
+        // Profile image
+        const profileImage = user.profilePicture && user.profilePicture.trim() !== '' ? 
+            user.profilePicture : 
+            getRandomProfileImage(user.gender, user.id);
+        document.getElementById('modalProfileImage').src = profileImage;
+        
+        // Location
+        const locationText = formatLocationText(user.city, user.country);
+        document.getElementById('modalLocation').innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            ${locationText}
+        `;
+        
+        // Basic information
+        document.getElementById('modalGender').textContent = user.gender || '-';
+        document.getElementById('modalDateOfBirth').textContent = user.dateOfBirth ? formatDate(user.dateOfBirth) : '-';
+        document.getElementById('modalUsername').textContent = user.username || '-';
+        
+        // Additional information
+        document.getElementById('modalEducation').textContent = user.education || '-';
+        document.getElementById('modalOccupation').textContent = user.occupation || '-';
+        document.getElementById('modalRelationship').textContent = user.relationshipStatus || '-';
+        
+        // Bio
+        document.getElementById('modalBio').textContent = user.bio || 'No bio available.';
+        
+        // Set up Add Friend button
+        const addFriendBtn = document.getElementById('modalAddFriendBtn');
+        addFriendBtn.onclick = () => addFriend(user.id, addFriendBtn);
+        
+        // Load mutual friends (placeholder for now)
+        loadMutualFriends(user.id);
+        
+        // Show modal
+        modal.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+    }
+
+    // Function to format location text
+    function formatLocationText(city, country) {
+        if (!city && !country) {
+            return 'Location not specified';
+        }
+        
+        if (city && country) {
+            return `${city}, ${country}`;
+        } else if (city) {
+            return city;
+        } else if (country) {
+            return country;
+        }
+    }
+
+    // Function to format date
+    function formatDate(dateString) {
+        try {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        } catch (error) {
+            return dateString;
+        }
+    }
+
+    // Function to close profile modal
+    function closeProfileModal() {
+        const modal = document.getElementById('profileModal');
+        modal.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+    }
+
+    // Function to load mutual friends (placeholder)
+    async function loadMutualFriends(userId) {
+        const mutualFriendsDiv = document.getElementById('modalMutualFriends');
+        
+        try {
+            // For now, we'll show a placeholder. You can implement the actual API call later
+            const mutualCount = Math.floor(Math.random() * 5) + 1;
+            
+            if (mutualCount === 0) {
+                mutualFriendsDiv.innerHTML = '<span class="text-gray-500 text-sm">No mutual friends</span>';
+            } else {
+                mutualFriendsDiv.innerHTML = `
+                    <div class="flex items-center space-x-2">
+                        <div class="flex -space-x-2">
+                            ${Array.from({length: Math.min(mutualCount, 3)}, (_, i) => `
+                                <img src="https://images.unsplash.com/photo-${1472099645785 + i}?w=40&h=40&fit=crop&crop=face" 
+                                     class="w-8 h-8 rounded-full border-2 border-white object-cover" 
+                                     alt="Mutual friend">
+                            `).join('')}
+                        </div>
+                        <span class="text-sm text-gray-600">${mutualCount} mutual friend${mutualCount > 1 ? 's' : ''}</span>
+                    </div>
+                `;
+            }
+        } catch (error) {
+            mutualFriendsDiv.innerHTML = '<span class="text-gray-500 text-sm">Unable to load mutual friends</span>';
+        }
     }
 
     // Update existing navigation functionality
@@ -1111,6 +1353,16 @@
         document.getElementById('next-page').addEventListener('click', function() {
             if (currentPage < totalPages - 1) {
                 loadUsersPage(currentPage + 1);
+            }
+        });
+
+        // Profile modal close button
+        document.getElementById('closeProfileModal').addEventListener('click', closeProfileModal);
+        
+        // Close modal when clicking outside
+        document.getElementById('profileModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeProfileModal();
             }
         });
 
