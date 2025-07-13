@@ -10,7 +10,7 @@ This application allows users to:
 - Register and log in securely
 - Create and view text-only posts
 - Maintain session state with logout functionality
-- *(Optional)* Send friend requests, accept/decline them, and like/unlike posts
+- Send friend requests, accept/decline them, and like/unlike posts
 
 The project adheres to:
 - **MVC architecture**
@@ -22,13 +22,13 @@ The project adheres to:
 ## 🛠️ Technologies Used
 
 ### ✅ Backend
-- Java 17
+- Java 21
 - Spring Boot (Web, Security, JPA, Validation)
 - PostgreSQL
 
 ### ✅ Frontend
 - Thymeleaf (template engine)
-- Bootstrap (CSS framework)
+- Tailwind CSS (CSS framework)
 
 ### ✅ Tools
 - Spring Security
