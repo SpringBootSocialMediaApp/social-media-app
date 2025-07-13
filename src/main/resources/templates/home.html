@@ -304,6 +304,20 @@
     document.getElementById('modalPostTime').textContent = postTime;
     document.getElementById('modalPostText').textContent = postContent;
     
+    // Update modal avatar with post author's profile picture
+    const modalAvatarContainer = document.querySelector('#modalPostContent .avatar > div');
+    const postAvatar = postCard.querySelector('.avatar img');
+    
+    if (postAvatar) {
+        // Post author has a profile picture
+        modalAvatarContainer.innerHTML = `<img src="${postAvatar.src}" alt="Profile" class="object-cover w-full h-full rounded-full"/>`;
+    } else {
+        // Use default avatar
+        modalAvatarContainer.innerHTML = `<svg class="mt-2 ml-[10px] w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+        </svg>`;
+    }
+    
     // Fetch comments IMMEDIATELY when modal opens
     fetchComments(postId);
   }
@@ -389,12 +403,18 @@ function createCommentElement(comment) {
       </button>
     ` : '';
 
+    // Create avatar HTML with conditional profile picture
+    const profilePicture = comment.user && comment.user.profilePicture && comment.user.profilePicture.trim() !== '';
+    const avatarHTML = profilePicture ? 
+      `<img src="${comment.user.profilePicture}" alt="Profile" class="object-cover w-full h-full rounded-full"/>` :
+      `<svg class="mt-2 ml-2 w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+         <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+       </svg>`;
+
     div.innerHTML = `
       <div class="avatar">
         <div class="w-8 h-8 flex items-center justify-center rounded-full bg-brand-300">
-          <svg class="mt-2 ml-2 w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
-          </svg>
+          ${avatarHTML}
         </div>
       </div>
       <div class="flex-1">
