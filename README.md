@@ -81,7 +81,7 @@ cd social-media-app
 ## 📽️ Demo Video
 
 🎥 **Watch the demo of the working application:**  
-🔗 https://drive.google.com/drive/folders/1xhJijODwpacX5V8anaed7 8QoDAzqWlog
+🔗 https://drive.google.com/drive/folders/1xhJijODwpacX5V8anaed78QoDAzqWlog
 
 The demo includes:
 - ✅ Login & registration
