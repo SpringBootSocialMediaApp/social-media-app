@@ -773,7 +773,7 @@ function getCurrentUserEmail() {
       console.log('✅ Using default profile icon');
     }
     
-    // Update any other name displays in the UI 
+    // Update any other name displays in the UI
     const nameDisplays = document.querySelectorAll('[data-user-name]');
     nameDisplays.forEach(element => {
       element.textContent = `${userData.firstName} ${userData.lastName}`;
